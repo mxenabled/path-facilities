@@ -1,0 +1,16 @@
+pluginManagement {
+  repositories {
+    mavenCentral()
+    gradlePluginPortal()
+    mavenLocal()
+    maven { url 'https://jitpack.io' }
+  }
+}
+
+rootProject.name = 'path-facilities'
+include 'store-redis'
+include 'store-vault'
+include 'messaging-nats'
+include 'fault-tolerant-executor-resilience4j'
+include 'error-reporter-honeybadger'
+include 'encryption-service-vault'

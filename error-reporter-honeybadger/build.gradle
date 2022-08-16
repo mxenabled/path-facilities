@@ -1,0 +1,17 @@
+group "com.mx.path.service.facility.exception-reporter"
+jar.archiveBaseName = "honeybadger"
+
+dependencies {
+  implementation "org.springframework:spring-context:5.3.+"
+
+  implementation "net.logstash.logback:logstash-logback-encoder:6.+"
+  implementation ("io.honeybadger:honeybadger-java:2.+") {
+    exclude group: "org.apache.httpcomponents", module: "fluent-hc"
+  }
+  implementation "org.apache.httpcomponents:fluent-hc:4.+"
+
+  //testing dependencies
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
+  testImplementation "org.spockframework:spock-core:2.+"
+  testImplementation "org.mockito:mockito-inline:4.+"
+}

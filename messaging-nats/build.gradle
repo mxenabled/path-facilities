@@ -1,0 +1,17 @@
+group "com.mx.path.service.facility.message-broker"
+jar.archiveBaseName = "nats"
+
+dependencies {
+  implementation "io.nats:jnats:2.8.+"
+  implementation "org.bouncycastle:bcpkix-jdk15on:1.+"
+  implementation "org.slf4j:slf4j-api:1.+"
+
+  //testing dependencies
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
+  testImplementation "org.spockframework:spock-core:2.+"
+  testImplementation "org.mockito:mockito-inline:4.+"
+}
+
+coppuccino {
+  coverage { minimumCoverage = 0.87 }
+}

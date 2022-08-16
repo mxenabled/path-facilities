@@ -1,0 +1,17 @@
+group "com.mx.path.service.facility.store"
+jar.archiveBaseName = "redis"
+
+dependencies {
+  implementation "io.lettuce:lettuce-core:6.1.6.RELEASE"
+
+  //testing dependencies
+  testImplementation "org.spockframework:spock-core:2.+"
+  testImplementation "org.mockito:mockito-inline:3.9.0"
+
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.+"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.+"
+}
+
+coppuccino {
+  coverage { minimumCoverage = 0.69 }
+}
