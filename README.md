@@ -2,13 +2,12 @@
 
 # Path - Facilities
 
-* [Common](common/README.md)
-* [Context](context/README.md)
-* [Gateway](gateway/README.md)
-* [Messaging](messaging/README.md)
-* [Models](models/README.md)
-* [Realtime](realtime/README.md)
-* [Utilities](utilities/README.md)
+* [Store/Redis](store/redis/README.md)
+* [Store/Vault](store/vault/README.md)
+* [encryption-service/Vault](encryption-service/vault/README.md)
+* [Message Broker/Nats](message-broker/nats/README.md)
+* [Fault Tolerant Executor/Resilience4J](fault-tolerant-executor/resilience4j/README.md)
+* [Exception Reporter/Honeybadger](exception-reporter/honeybadger/README.md)
 
 ## Contributing
 Create a topic branch. Make our changes commit and push to GitLab. Create an MR.

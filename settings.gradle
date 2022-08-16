@@ -8,9 +8,9 @@ pluginManagement {
 }
 
 rootProject.name = 'path-facilities'
-include 'store-redis'
-include 'store-vault'
-include 'messaging-nats'
-include 'fault-tolerant-executor-resilience4j'
-include 'error-reporter-honeybadger'
-include 'encryption-service-vault'
+include 'message-broker:nats'
+include 'store:vault'
+include 'store:redis'
+include 'fault-tolerant-executor:resilience4j'
+include 'exception-reporter:honeybadger'
+include 'encryption-service:vault'
