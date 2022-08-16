@@ -37,7 +37,7 @@ configure(project.subprojects) {
     apply plugin: "io.freefair.lombok"
 
     dependencies {
-        implementation "com.mx.path.api.gateway:gateway:18.0.0.1.pre"
+        implementation "com.mx.path.api.gateway:gateway:18.0.0.0.pre"
 
         testImplementation "org.mockito:mockito-inline:4.+"
         testImplementation "org.spockframework:spock-core:2.+"
