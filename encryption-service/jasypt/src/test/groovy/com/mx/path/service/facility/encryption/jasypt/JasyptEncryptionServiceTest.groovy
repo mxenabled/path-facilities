@@ -2,7 +2,6 @@ package com.mx.path.service.facility.encryption.jasypt;
 
 import com.mx.common.collections.ObjectArray
 import com.mx.common.collections.ObjectMap
-import com.mx.web.security.JasyptEncryptionService
 
 import spock.lang.Specification
 
