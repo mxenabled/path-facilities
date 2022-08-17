@@ -5,6 +5,7 @@
 * [Store/Redis](store/redis/README.md)
 * [Store/Vault](store/vault/README.md)
 * [encryption-service/Vault](encryption-service/vault/README.md)
+* [encryption-service/Jasypt](encryption-service/Jasypt/README.md)
 * [Message Broker/Nats](message-broker/nats/README.md)
 * [Fault Tolerant Executor/Resilience4J](fault-tolerant-executor/resilience4j/README.md)
 * [Exception Reporter/Honeybadger](exception-reporter/honeybadger/README.md)

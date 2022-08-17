@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when
 import java.nio.charset.StandardCharsets
 
 import com.mx.common.messaging.MessageResponder
+
 import io.nats.client.Connection
 import io.nats.client.Message
 

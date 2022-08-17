@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
 import com.mx.common.collections.ObjectMap
+
 import org.mockito.Mockito
 
 import io.lettuce.core.api.StatefulRedisConnection
