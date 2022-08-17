@@ -21,6 +21,8 @@ allprojects {
   repositories {
     mavenCentral()
     mavenLocal()
+    maven { url "https://artifactory.internal.mx:443/maven-local" }
+    maven { url "https://artifactory.internal.mx:443/gradle-local" }
     maven { url "https://jitpack.io" }
   }
 }
