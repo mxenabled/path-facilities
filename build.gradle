@@ -8,7 +8,7 @@ plugins {
   id "io.freefair.lombok" version "6.4.3" apply false
 }
 
-version "10.0.0.3.pre"
+version "10.0.0.4.pre"
 
 allprojects {
   group "com.mx.path.service.facility"
