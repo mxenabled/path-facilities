@@ -8,7 +8,7 @@ plugins {
   id "io.freefair.lombok" version "6.4.3" apply false
 }
 
-version "10.0.0.6.pre"
+version "10.0.0.7.pre"
 
 allprojects {
   group "com.mx.path.service.facility"
@@ -39,11 +39,7 @@ configure(project.subprojects) {
   apply plugin: "io.freefair.lombok"
 
   dependencies {
-    implementation "com.mx.path.api.gateway:gateway:18.0.0.7.pre"
-
-    testImplementation "org.mockito:mockito-inline:4.+"
-    testImplementation "org.spockframework:spock-core:2.+"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.+"
+    implementation "com.mx.path.core:common:18.0.0.7.pre"
   }
 
   test { useJUnitPlatform() }
