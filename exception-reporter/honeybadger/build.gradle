@@ -9,9 +9,4 @@ dependencies {
     exclude group: "org.apache.httpcomponents", module: "fluent-hc"
   }
   implementation "org.apache.httpcomponents:fluent-hc:4.+"
-
-  //testing dependencies
-  testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
-  testImplementation "org.spockframework:spock-core:2.+"
-  testImplementation "org.mockito:mockito-inline:4.+"
 }
