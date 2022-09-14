@@ -39,7 +39,7 @@ configure(project.subprojects) {
   apply plugin: "io.freefair.lombok"
 
   dependencies {
-    implementation "com.github.mxenabled.path-sdk:common:master-SNAPSHOT"
+    implementation "com.github.mxenabled.path-sdk:common:0.+"
   }
 
   test { useJUnitPlatform() }

@@ -3,7 +3,7 @@
 # This file is expected to be part of source control.
 antlr:antlr:2.7.7=checkstyle
 com.beust:jcommander:1.48=pmd
-com.github.mxenabled.path-sdk:common:master-SNAPSHOT=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.github.mxenabled.path-sdk:common:0.0.1=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.spotbugs:spotbugs-annotations:4.4.2=spotbugs
 com.github.spotbugs:spotbugs-annotations:4.7.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.spotbugs:spotbugs:4.4.2=spotbugs

@@ -1,4 +1,4 @@
-[Path SDK Issues](https://gitlab.mx.com/groups/mx/money-experiences/path/path-issues/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Path%20SDK)
+[![Release](https://jitpack.io/v/mxenabled/path-facilities.svg)](https://jitpack.io/p/mxenabled/path-facilities)
 
 # Path - Facilities
 
