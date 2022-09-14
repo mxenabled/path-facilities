@@ -8,4 +8,4 @@ pluginManagement {
     maven { url "https://jitpack.io" }
   }
 }
-rootProject.name = 'vault'
+rootProject.name = "store-redis"

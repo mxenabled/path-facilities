@@ -8,5 +8,4 @@ pluginManagement {
     maven { url "https://jitpack.io" }
   }
 }
-
-rootProject.name = 'resilience4j'
+rootProject.name = "store-vault"
