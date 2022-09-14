@@ -3,15 +3,15 @@ pluginManagement {
     mavenCentral()
     gradlePluginPortal()
     mavenLocal()
-    maven { url 'https://jitpack.io' }
+    maven { url "https://jitpack.io" }
   }
 }
 
-rootProject.name = 'path-facilities'
-include 'message-broker:nats'
-include 'store:vault'
-include 'store:redis'
-include 'fault-tolerant-executor:resilience4j'
-include 'exception-reporter:honeybadger'
-include 'encryption-service:vault'
-include 'encryption-service:jasypt'
+rootProject.name = "path-facilities"
+include "message-broker-nats"
+include "store-vault"
+include "store-redis"
+include "fault-tolerant-executor-resilience4j"
+include "exception-reporter-honeybadger"
+include "encryption-service-vault"
+include "encryption-service-jasypt"

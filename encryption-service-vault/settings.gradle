@@ -2,11 +2,10 @@ pluginManagement {
   repositories {
     maven { url "https://artifactory.internal.mx:443/maven-local" }
     maven { url "https://artifactory.internal.mx:443/gradle-local" }
+    jcenter()
     gradlePluginPortal()
     mavenLocal()
-    mavenCentral()
     maven { url "https://jitpack.io" }
   }
 }
-
-rootProject.name = 'honeybadger'
+rootProject.name = "encryption-service-vault"
