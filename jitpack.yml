@@ -2,4 +2,3 @@ jdk:
   - openjdk8
 before_install:
   - sdk update
-  - rm -f gradle.properties
