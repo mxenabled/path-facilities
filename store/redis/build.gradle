@@ -8,8 +8,8 @@ dependencies {
   testImplementation "org.spockframework:spock-core:2.+"
   testImplementation "org.mockito:mockito-inline:3.9.0"
 
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.+"
-  testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.+"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.+"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.+"
 }
 
 coppuccino {
