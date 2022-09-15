@@ -1,8 +1,3 @@
-[![pipeline status](https://gitlab.mx.com/path/java-path-facility-store-vault/badges/master/pipeline.svg)](https://gitlab.mx.com/path/java-path-facility-store-vault/commits/master)
-[![coverage report](https://gitlab.mx.com/path/java-path-facility-store-vault/badges/master/coverage.svg)](https://gitlab.mx.com/path/java-path-facility-store-vault/commits/master)
-
-[Path SDK Issues](https://gitlab.mx.com/groups/mx/money-experiences/path/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Path%20SDK)
-
 # MDX Dependency - Store Vault
 
 Vault store implementation
@@ -36,7 +31,7 @@ vaultStore:
 ```
 
 ## Contributing
-Create a topic branch. Make our changes commit and push to GitLab. Create an MR.
+Create a topic branch. Make our changes commit and push to Github. Create an MR.
 
 To test changes locally without generating a new version of the jar, you can package and install the jar locally by running:
 

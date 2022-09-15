@@ -11,7 +11,7 @@
 * [Exception Reporter/Honeybadger](exception-reporter/honeybadger/README.md)
 
 ## Contributing
-Create a topic branch. Make our changes commit and push to GitLab. Create an MR.
+Create a topic branch. Make our changes commit and push to Github. Create an MR.
 
 ## Building everything
 
@@ -77,7 +77,7 @@ $ ./gradlew :$projectName:clean :$projectName:test
 
 ## Managing Dependencies
 
-This project uses gradle to manage dependencies with dependency locking. The Vogue plugin is used to help keep the dependencies up-to-date. [Vogue](https://gitlab.mx.com/path/vogue)
+This project uses gradle to manage dependencies with dependency locking. The Vogue plugin is used to help keep the dependencies up-to-date. [Vogue](https://github.com/mxenabled/vogue)
 
 **Generating lockfiles for all projects**
 

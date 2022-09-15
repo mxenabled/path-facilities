@@ -1,17 +1,11 @@
-[![pipeline status](https://gitlab.mx.com/path/java-mdx-dependency-fault-tolerant-executor-resilience4j/badges/master/pipeline.svg)](https://gitlab.mx.com/mx/java-mdx-dependency-session-store-redis/commits/master)
-[![coverage report](https://gitlab.mx.com/path/java-mdx-dependency-fault-tolerant-executor-resilience4j/badges/master/coverage.svg)](https://gitlab.mx.com/mx/java-mdx-dependency-session-store-redis/commits/master)
-
-[Path SDK Issues](https://gitlab.mx.com/groups/mx/money-experiences/path/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Path%20SDK)
-
 # Facility - Fault Tolerant Executor - Resilience4j
-
 
 `FaultTolerantExecutor` implementation for [Resilience4j](https://resilience4j.readme.io/docs/getting-started).
 
 ## Usage
 
 This is meant to be a low-level facility used to wrap volatile tasks (like network communication) in a layer of fault-tolerant
-protection. This means we can do things like: limit max concurrency, kill slow tasks that exceed a configured time limit, 
+protection. This means we can do things like: limit max concurrency, kill slow tasks that exceed a configured time limit,
 prevent tasks from being submitted if there are too many failures, etc.
 
 First, retrieve the client-configured `FaultTolerantExecutor` from the `Facilities` class.
@@ -45,7 +39,7 @@ demo: # the Client ID
     faultTolerantExecutor:
       class: package.path.to.Resilience4jFaultTolerantExecutor
       configurations:
-        
+
         # Default configurations. These will be used if the scope provided doesn't have a match.
         defaults:
           circuitBreaker:
@@ -67,10 +61,10 @@ demo: # the Client ID
             maxThreadPoolSize: 30
             queueCapacity: 50
             keepAliveMillis: 20
-            
+
         # Custom configuration scopes. If the provided scope matches (fully or partially) one of these configurations,
         # then the custom configuration profile will be used instead of the defaults.
-        
+
         # Note: These configurations effectively override the default configurations.
         #       Any configurations not overridden in a custom scope will use the default configurations.
         scopes:
@@ -87,7 +81,7 @@ demo: # the Client ID
                 timeoutMillis: 1200
               bulkhead:
                 enabled: false
-                
+
           - scope: nats
             configurations:
               timeLimiter:
@@ -105,7 +99,7 @@ You can view all the possible configuration fields (as well as their defaults) f
 
 ## Managing Dependencies
 
-This project uses gradle to manage dependencies. The Vogue plugin is used to help keep the dependencies up-to-date. [Vogue](https://gitlab.mx.com/path/vogue)
+This project uses gradle to manage dependencies. The Vogue plugin is used to help keep the dependencies up-to-date. [Vogue](https://github.com/mxenabled/vogue)
 
 **View out-of-date dependencies**
 
