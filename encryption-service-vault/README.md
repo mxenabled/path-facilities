@@ -1,8 +1,3 @@
-[![pipeline status](https://gitlab.mx.com/mx/java-mdx-dependency-encryption-service-vault/badges/master/pipeline.svg)](https://gitlab.mx.com/mx/java-mdx-dependency-encryption-service-vault/commits/master)
-[![coverage report](https://gitlab.mx.com/mx/java-mdx-dependency-encryption-service-vault/badges/master/coverage.svg)](https://gitlab.mx.com/mx/java-mdx-dependency-encryption-service-vault/commits/master)
-
-[Path SDK Issues](https://gitlab.mx.com/groups/mx/money-experiences/path/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Path%20SDK)
-
 # MDX Dependency - Encryption Service Vault
 
 Vault encryption service implementation
@@ -38,7 +33,7 @@ encryptionService:
 ```
 
 ## Contributing
-Create a topic branch. Make our changes commit and push to GitLab. Create an MR.
+Create a topic branch. Make our changes commit and push to Github. Create an MR.
 
 To test changes locally without generating a new version of the jar, you can package and install the jar locally by running:
 
@@ -48,7 +43,7 @@ $ ./gradlew clean build
 
 # Managing Dependencies
 
-This project uses gradle to manage dependencies. The Vogue plugin is used to help keep the dependencies up-to-date. [Vogue](https://gitlab.mx.com/path/vogue)
+This project uses gradle to manage dependencies. The Vogue plugin is used to help keep the dependencies up-to-date. [Vogue](https://github.com/mxenabled/vogue)
 
 **View out-of-date dependencies for release**
 

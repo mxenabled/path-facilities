@@ -1,8 +1,3 @@
-[![pipeline status](https://gitlab.mx.com/mx/java-mdx-dependency-messaging-nats/badges/master/pipeline.svg)](https://gitlab.mx.com/mx/java-mdx-dependency-messaging-nats/commits/master)
-[![coverage report](https://gitlab.mx.com/mx/java-mdx-dependency-messaging-nats/badges/master/coverage.svg)](https://gitlab.mx.com/mx/java-mdx-dependency-messaging-nats/commits/master)
-
-[Path SDK Issues](https://gitlab.mx.com/groups/mx/money-experiences/path/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Path%20SDK)
-
 # NATS Messaging
 
 ## Usage

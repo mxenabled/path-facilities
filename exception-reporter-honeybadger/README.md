@@ -2,8 +2,6 @@
 
 Honey Badger error reporter dependency for Helios middlewares
 
-[Path SDK Issues](https://gitlab.mx.com/groups/mx/money-experiences/path/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Path%20SDK)
-
 ## Deploying Locally
 
 To create a local build of the accessor to use in connector services use

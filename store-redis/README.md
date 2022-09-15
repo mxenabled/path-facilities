@@ -1,8 +1,3 @@
-[![pipeline status](https://gitlab.mx.com/mx/java-mdx-dependency-session-store-redis/badges/master/pipeline.svg)](https://gitlab.mx.com/mx/java-mdx-dependency-session-store-redis/commits/master)
-[![coverage report](https://gitlab.mx.com/mx/java-mdx-dependency-session-store-redis/badges/master/coverage.svg)](https://gitlab.mx.com/mx/java-mdx-dependency-session-store-redis/commits/master)
-
-[Path SDK Issues](https://gitlab.mx.com/groups/mx/money-experiences/path/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Path%20SDK)
-
 # Lettuce Session Store
 
 Exposes `SessionStore` implementation as a Bean that uses the Lettuce library (Redis) for session state storage.
