@@ -3,7 +3,7 @@
 # This file is expected to be part of source control.
 antlr:antlr:2.7.7=checkstyle
 com.beust:jcommander:1.48=pmd
-com.github.mxenabled.path-sdk:common:0.0.1=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.github.mxenabled.path-sdk:common:v1-SNAPSHOT=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.spotbugs:spotbugs-annotations:4.4.2=spotbugs
 com.github.spotbugs:spotbugs-annotations:4.7.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.spotbugs:spotbugs:4.4.2=spotbugs
@@ -59,13 +59,13 @@ org.jacoco:org.jacoco.agent:0.8.7=jacocoAgent,jacocoAnt
 org.jacoco:org.jacoco.ant:0.8.7=jacocoAnt
 org.jacoco:org.jacoco.core:0.8.7=jacocoAnt
 org.jacoco:org.jacoco.report:0.8.7=jacocoAnt
-org.junit.jupiter:junit-jupiter-api:5.9.0=testCompileClasspath,testRuntimeClasspath
-org.junit.jupiter:junit-jupiter-engine:5.9.0=testRuntimeClasspath
-org.junit.platform:junit-platform-commons:1.9.0=testCompileClasspath,testRuntimeClasspath
-org.junit.platform:junit-platform-engine:1.9.0=testCompileClasspath,testRuntimeClasspath
+org.junit.jupiter:junit-jupiter-api:5.9.1=testCompileClasspath,testRuntimeClasspath
+org.junit.jupiter:junit-jupiter-engine:5.9.1=testRuntimeClasspath
+org.junit.platform:junit-platform-commons:1.9.1=testCompileClasspath,testRuntimeClasspath
+org.junit.platform:junit-platform-engine:1.9.1=testCompileClasspath,testRuntimeClasspath
 org.junit:junit-bom:5.8.1=spotbugs
 org.junit:junit-bom:5.8.2=runtimeClasspath
-org.junit:junit-bom:5.9.0=testCompileClasspath,testRuntimeClasspath
+org.junit:junit-bom:5.9.1=testCompileClasspath,testRuntimeClasspath
 org.mockito:mockito-core:3.9.0=testCompileClasspath,testRuntimeClasspath
 org.mockito:mockito-inline:3.9.0=testCompileClasspath,testRuntimeClasspath
 org.objenesis:objenesis:3.2=testCompileClasspath,testRuntimeClasspath

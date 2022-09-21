@@ -7,9 +7,11 @@ import java.util.concurrent.TimeoutException;
 import lombok.AccessLevel;
 import lombok.Setter;
 
+import com.mx.common.accessors.PathResponseStatus;
 import com.mx.common.configuration.Configuration;
-import com.mx.common.process.FaultTolerantExecutionException;
-import com.mx.common.process.FaultTolerantExecutionFailureStatus;
+import com.mx.common.connect.ConnectException;
+import com.mx.common.connect.ServiceUnavailableException;
+import com.mx.common.connect.TooManyRequestsException;
 import com.mx.common.process.FaultTolerantExecutor;
 import com.mx.common.process.FaultTolerantTask;
 import com.mx.path.service.facility.fault_tolerant_executor.configuration.Configurations;
@@ -35,25 +37,22 @@ public final class Resilience4jFaultTolerantExecutor implements FaultTolerantExe
     try {
       executeDecoratorStack(scope, task);
     } catch (BulkheadFullException e) {
-      throw new FaultTolerantExecutionException(
+      throw new TooManyRequestsException(
           "Resilience4j bulkhead is full. Rejecting task.",
-          e,
-          FaultTolerantExecutionFailureStatus.TASK_LIMIT_EXCEEDED);
+          e);
     } catch (CallNotPermittedException e) {
-      throw new FaultTolerantExecutionException(
+      throw new ServiceUnavailableException(
           "Resilience4j circuit breaker is open. Rejecting task.",
-          e,
-          FaultTolerantExecutionFailureStatus.TASK_EXECUTION_UNAVAILABLE);
+          e);
     } catch (TimeoutException e) {
-      throw new FaultTolerantExecutionException(
+      throw new com.mx.common.connect.TimeoutException(
           "Resilience4j triggered a timeout.",
-          e,
-          FaultTolerantExecutionFailureStatus.TASK_TIMEOUT);
+          e);
     } catch (Exception e) {
-      throw new FaultTolerantExecutionException(
+      throw new ConnectException(
           "An unknown error occurred",
-          e,
-          FaultTolerantExecutionFailureStatus.INTERNAL_ERROR);
+          PathResponseStatus.INTERNAL_ERROR,
+          e);
     }
   }
 

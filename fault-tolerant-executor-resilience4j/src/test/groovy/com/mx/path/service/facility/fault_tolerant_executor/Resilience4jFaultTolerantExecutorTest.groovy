@@ -5,8 +5,10 @@ import static org.mockito.Mockito.*
 import java.time.Duration
 import java.util.concurrent.TimeoutException
 
-import com.mx.common.process.FaultTolerantExecutionException
-import com.mx.common.process.FaultTolerantExecutionFailureStatus
+import com.mx.common.accessors.PathResponseStatus
+import com.mx.common.connect.ConnectException
+import com.mx.common.connect.ServiceUnavailableException
+import com.mx.common.connect.TooManyRequestsException
 import com.mx.common.process.FaultTolerantTask
 import com.mx.path.service.facility.fault_tolerant_executor.configuration.BulkheadConfigurations
 import com.mx.path.service.facility.fault_tolerant_executor.configuration.CircuitBreakerConfigurations
@@ -37,16 +39,16 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject.submit("DEFAULT", { config ->  })
 
     then:
-    def exception = thrown(FaultTolerantExecutionException)
+    def exception = thrown(ConnectException)
     exception.status == failureStatus
     exception.cause == originalException
 
     where:
     originalException               || failureStatus
-    mock(BulkheadFullException)     || FaultTolerantExecutionFailureStatus.TASK_LIMIT_EXCEEDED
-    mock(CallNotPermittedException) || FaultTolerantExecutionFailureStatus.TASK_EXECUTION_UNAVAILABLE
-    new TimeoutException()          || FaultTolerantExecutionFailureStatus.TASK_TIMEOUT
-    new RuntimeException()          || FaultTolerantExecutionFailureStatus.INTERNAL_ERROR
+    mock(BulkheadFullException)     || PathResponseStatus.TOO_MANY_REQUESTS
+    mock(CallNotPermittedException) || PathResponseStatus.UNAVAILABLE
+    new TimeoutException()          || PathResponseStatus.TIMEOUT
+    new RuntimeException()          || PathResponseStatus.INTERNAL_ERROR
   }
 
   def "runs a submitted task"() {
@@ -99,8 +101,8 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     thread1.join()
 
     then:
-    def exception = thrown(FaultTolerantExecutionException)
-    exception.status == FaultTolerantExecutionFailureStatus.TASK_LIMIT_EXCEEDED
+    def exception = thrown(TooManyRequestsException)
+    exception.status == PathResponseStatus.TOO_MANY_REQUESTS
   }
 
   def "times out a task if it takes too long"() {
@@ -118,8 +120,8 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject.submit("DEFAULT", { config -> Thread.sleep(1000)})
 
     then:
-    def exception = thrown(FaultTolerantExecutionException)
-    exception.status == FaultTolerantExecutionFailureStatus.TASK_TIMEOUT
+    def exception = thrown(com.mx.common.connect.TimeoutException)
+    exception.status == PathResponseStatus.TIMEOUT
   }
 
   def "circuit breaker opens if there are too many failures in sliding window (COUNT_BASED)"() {
@@ -154,8 +156,8 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     thread3.join()
 
     then:
-    def e = thrown(FaultTolerantExecutionException)
-    e.status == FaultTolerantExecutionFailureStatus.TASK_EXECUTION_UNAVAILABLE
+    def e = thrown(ServiceUnavailableException)
+    e.status == PathResponseStatus.UNAVAILABLE
   }
 
   def "circuit breaker opens if there are too many failures in sliding window (TIME_BASED)"() {
@@ -190,8 +192,8 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     thread3.join()
 
     then:
-    def e = thrown(FaultTolerantExecutionException)
-    e.status == FaultTolerantExecutionFailureStatus.TASK_EXECUTION_UNAVAILABLE
+    def e = thrown(ServiceUnavailableException)
+    e.status == PathResponseStatus.UNAVAILABLE
   }
 
   def "rejects tasks if thread-pool bulkhead is full"() {
@@ -211,7 +213,6 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) })})
     def thread2 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) })})
 
-
     thread1.start()
     thread2.start()
     Thread.sleep(150)
@@ -221,8 +222,8 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     thread2.join()
 
     then:
-    def exception = thrown(FaultTolerantExecutionException)
-    exception.status == FaultTolerantExecutionFailureStatus.TASK_LIMIT_EXCEEDED
+    def exception = thrown(TooManyRequestsException)
+    exception.status == PathResponseStatus.TOO_MANY_REQUESTS
   }
 
   def "thread-pool bulkhead queues tasks"() {
@@ -241,7 +242,6 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     when:
     def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) })})
     def thread2 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) })})
-
 
     thread1.start()
     thread2.start()
