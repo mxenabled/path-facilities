@@ -35,7 +35,7 @@ subprojects {
   apply plugin: "io.freefair.lombok"
 
   dependencies {
-    implementation "com.github.mxenabled.path-sdk:common:0.+"
+    implementation "com.github.mxenabled.path-sdk:common:v1-SNAPSHOT"
   }
 
   test { useJUnitPlatform() }
