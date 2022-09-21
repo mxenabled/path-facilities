@@ -1,6 +1,9 @@
 [![Release](https://jitpack.io/v/mxenabled/path-facilities.svg)](https://jitpack.io/p/mxenabled/path-facilities)
 
+Issues: https://github.com/mxenabled/path-sdk/issues
+
 # Path - Facilities
+
 
 * [Store/Redis](store/redis/README.md)
 * [Store/Vault](store/vault/README.md)
