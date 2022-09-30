@@ -7,7 +7,7 @@ plugins {
   id "io.freefair.lombok" version "6.5.1" apply false
 }
 
-version "0.0.2"
+version "1.0.0-rc.3"
 
 allprojects {
   group "com.github.mxenabled.path-facilities"
@@ -35,7 +35,7 @@ subprojects {
   apply plugin: "io.freefair.lombok"
 
   dependencies {
-    implementation "com.github.mxenabled.path-sdk:common:v1-SNAPSHOT"
+    implementation "com.github.mxenabled.path-sdk:common:1.0.0-rc.3"
   }
 
   test { useJUnitPlatform() }
