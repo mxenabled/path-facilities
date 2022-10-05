@@ -2,18 +2,18 @@ plugins {
   id "idea"
   id "com.github.mxenabled.binks" version "0.0.1"
   id "com.github.mxenabled.vogue" version "1.0.1"
-  id "com.github.mxenabled.coppuccino" version "3.0.4" apply false
-  id "com.github.mxenabled.hush" version "2.2.0" apply false
-  id "io.freefair.lombok" version "6.4.3" apply false
+  id "com.github.mxenabled.coppuccino" version "3.1.2" apply false
+  id "com.github.mxenabled.hush" version "2.3.1" apply false
+  id "io.freefair.lombok" version "6.5.1" apply false
 }
 
 version "0.0.1"
 
 allprojects {
-  group "com.mx.path.service.facility"
+  group "com.github.mxenabled.path-facilities"
   description "Path Facilities"
   version rootProject.version
-  apply plugin: 'java'
+  apply plugin: "java"
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
 
@@ -24,14 +24,14 @@ allprojects {
   }
 }
 
-configure(project.subprojects) {
+subprojects {
   apply plugin: "java"
   apply plugin: "java-library"
   apply plugin: "maven-publish"
   apply plugin: "groovy"
-  apply plugin: "com.mx.hush"
-  apply plugin: "com.mx.coppuccino"
-  apply plugin: "com.mx.vogue"
+  apply plugin: "com.github.mxenabled.hush"
+  apply plugin: "com.github.mxenabled.coppuccino"
+  apply plugin: "com.github.mxenabled.vogue"
   apply plugin: "io.freefair.lombok"
 
   dependencies {

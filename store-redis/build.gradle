@@ -1,17 +1,15 @@
-group "com.mx.path.service.facility.store"
-jar.archiveBaseName = "redis"
-
-dependencies {
-  implementation "io.lettuce:lettuce-core:6.1.6.RELEASE"
-
-  //testing dependencies
-  testImplementation "org.spockframework:spock-core:2.+"
-  testImplementation "org.mockito:mockito-inline:3.9.0"
-
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.+"
-  testImplementation "org.junit.jupiter:junit-jupiter-api:5.+"
+coppuccino {
+  coverage {
+    minimumCoverage = 0.69
+  }
 }
 
-coppuccino {
-  coverage { minimumCoverage = 0.69 }
+dependencies {
+  implementation "io.lettuce:lettuce-core:6.2.0.RELEASE"
+
+  //testing dependencies
+  testImplementation "org.mockito:mockito-inline:4.+"
+  testImplementation "org.spockframework:spock-core:2.+"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.+"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.+"
 }

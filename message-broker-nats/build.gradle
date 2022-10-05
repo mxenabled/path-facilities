@@ -1,5 +1,8 @@
-group "com.mx.path.service.facility.message-broker"
-jar.archiveBaseName = "nats"
+coppuccino {
+  coverage {
+    minimumCoverage = 0.87
+  }
+}
 
 dependencies {
   implementation "io.nats:jnats:2.8.+"
@@ -7,11 +10,8 @@ dependencies {
   implementation "org.slf4j:slf4j-api:1.+"
 
   //testing dependencies
-  testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
-  testImplementation "org.spockframework:spock-core:2.+"
   testImplementation "org.mockito:mockito-inline:4.+"
-}
-
-coppuccino {
-  coverage { minimumCoverage = 0.87 }
+  testImplementation "org.spockframework:spock-core:2.+"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.+"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.+"
 }
