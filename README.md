@@ -19,13 +19,13 @@ _Gradle_
 <!-- x-release-please-start-version -->
 ```groovy
 dependencies {
-  implementation "com.github.mxenabled.path-facilities:store-redis:0.0.2"
-  implementation "com.github.mxenabled.path-facilities:store-vault:0.0.2"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:0.0.2"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:0.0.2"
-  implementation "com.github.mxenabled.path-facilities:message-broker-nats:0.0.2"
-  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:0.0.2"
-  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:0.0.2"
+  implementation "com.github.mxenabled.path-facilities:store-redis:1.0.0"
+  implementation "com.github.mxenabled.path-facilities:store-vault:1.0.0"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:1.0.0"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:1.0.0"
+  implementation "com.github.mxenabled.path-facilities:message-broker-nats:1.0.0"
+  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:1.0.0"
+  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:1.0.0"
 }
 ```
 <!-- x-release-please-end -->
@@ -34,13 +34,13 @@ _Or pin to the the latest major version_
 <!-- x-release-please-start-major -->
 ```groovy
 dependencies {
-  implementation "com.github.mxenabled.path-facilities:store-redis:0.+"
-  implementation "com.github.mxenabled.path-facilities:store-vault:0.+"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:0.+"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:0.+"
-  implementation "com.github.mxenabled.path-facilities:message-broker-nats:0.+"
-  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:0.+"
-  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:0.+"
+  implementation "com.github.mxenabled.path-facilities:store-redis:1.+"
+  implementation "com.github.mxenabled.path-facilities:store-vault:1.+"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:1.+"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:1.+"
+  implementation "com.github.mxenabled.path-facilities:message-broker-nats:1.+"
+  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:1.+"
+  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:1.+"
 }
 ```
 <!-- x-release-please-end -->
