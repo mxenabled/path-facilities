@@ -4,16 +4,48 @@ Issues: https://github.com/mxenabled/path-sdk/issues
 
 # Path - Facilities
 
+* [Store/Redis](store-redis/README.md)
+* [Store/Vault](store-vault/README.md)
+* [encryption-service/Vault](encryption-service-vault/README.md)
+* [encryption-service/Jasypt](encryption-service-Jasypt/README.md)
+* [Message Broker/Nats](message-broker-nats/README.md)
+* [Fault Tolerant Executor/Resilience4J](fault-tolerant-executor-resilience4j/README.md)
+* [Exception Reporter/Honeybadger](exception-reporter-honeybadger/README.md)
 
-* [Store/Redis](store/redis/README.md)
-* [Store/Vault](store/vault/README.md)
-* [encryption-service/Vault](encryption-service/vault/README.md)
-* [encryption-service/Jasypt](encryption-service/Jasypt/README.md)
-* [Message Broker/Nats](message-broker/nats/README.md)
-* [Fault Tolerant Executor/Resilience4J](fault-tolerant-executor/resilience4j/README.md)
-* [Exception Reporter/Honeybadger](exception-reporter/honeybadger/README.md)
+## Usage
+
+_Gradle_
+<!-- x-release-please-start-version -->
+```groovy
+dependencies {
+  implementation "com.github.mxenabled.path-facilities:store-redis:0.0.2"
+  implementation "com.github.mxenabled.path-facilities:store-vault:0.0.2"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:0.0.2"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:0.0.2"
+  implementation "com.github.mxenabled.path-facilities:message-broker-nats:0.0.2"
+  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:0.0.2"
+  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:0.0.2"
+}
+```
+<!-- x-release-please-end -->
+
+_Or pin to the the latest major version_
+<!-- x-release-please-start-major -->
+```groovy
+dependencies {
+  implementation "com.github.mxenabled.path-facilities:store-redis:0.+"
+  implementation "com.github.mxenabled.path-facilities:store-vault:0.+"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:0.+"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:0.+"
+  implementation "com.github.mxenabled.path-facilities:message-broker-nats:0.+"
+  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:0.+"
+  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:0.+"
+}
+```
+<!-- x-release-please-end -->
 
 ## Contributing
+
 Create a topic branch. Make our changes commit and push to Github. Create an MR.
 
 ## Building everything
@@ -127,14 +159,3 @@ On OXS using gradle the default location for the local maven repository is
 ```shell
 ~/.m2/repository/
 ```
-
-## Deploying
-
-* Merge Pull Request to Master
-* Switch to `master` branch
-* Update version in `build.gradle` (the version must be unique)
-* Commit the updated `build.gradle`
-    * `git add build.gradle&&git commit -m "Bump version to ?.?.?"`
-* Push build.gradle update
-    * `git push origin master`
-* Release it `./gradlew release`
