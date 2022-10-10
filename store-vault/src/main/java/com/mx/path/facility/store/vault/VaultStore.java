@@ -58,21 +58,21 @@ public final class VaultStore implements Store {
     try {
       VaultConfig vaultConfig = new VaultConfig()
           .token(authToken)
-          .engineVersion(configurations.getAsInteger("engineVersion", DEFAULT_ENGINE_VERSION))
-          .address(configurations.getAsString("uri", DEFAULT_URI))
+          .engineVersion(getConfigurations().getAsInteger("engineVersion", DEFAULT_ENGINE_VERSION))
+          .address(getConfigurations().getAsString("uri", DEFAULT_URI))
           .build();
 
       Vault newDriver = new Vault(vaultConfig);
 
-      if (configurations.getAsInteger("maxRetries", DEFAULT_MAX_RETRIES) > 0) {
+      if (getConfigurations().getAsInteger("maxRetries", DEFAULT_MAX_RETRIES) > 0) {
         newDriver.withRetries(
-            configurations.getAsInteger("maxRetries", DEFAULT_MAX_RETRIES),
-            configurations.getAsInteger("retryIntervalMilliseconds", DEFAULT_RETRY_INTERVAL_MILLISECONDS));
+            getConfigurations().getAsInteger("maxRetries", DEFAULT_MAX_RETRIES),
+            getConfigurations().getAsInteger("retryIntervalMilliseconds", DEFAULT_RETRY_INTERVAL_MILLISECONDS));
       }
 
       return newDriver;
-    } catch (VaultException e) {
-      throw new RuntimeException("Unable to build Vault Configuration", e);
+    } catch (Exception e) {
+      throw new VaultStoreConfigurationException("Unable to build Vault Configuration", e);
     }
   }
 
@@ -86,26 +86,26 @@ public final class VaultStore implements Store {
     try {
       String token;
       if (getAuthenticationType().equals(AuthenticationType.TOKEN)) {
-        token = configurations.getAsString("token");
+        token = getConfigurations().getAsString("token");
 
         if (token == null) {
-          throw new RuntimeException("Vault token required for TOKEN authentication");
+          throw new VaultStoreConfigurationException("Vault token required for TOKEN authentication");
         }
       } else if (getAuthenticationType().equals(AuthenticationType.APPROLE)) {
-        AuthResponse resp = newDriver.auth().loginByAppRole(configurations.getAsString("app-role"), configurations.getAsString("secretId"));
-        validateVaultResponse(resp, "Unable to login via jwt");
+        AuthResponse resp = newDriver.auth().loginByAppRole(configurations.getAsString("app-role"), getConfigurations().getAsString("secretId"));
+        validateVaultAuthenticationResponse(resp, "Unable to login via app-role");
 
         token = resp.getAuthClientToken();
       } else {
-        AuthResponse resp = newDriver.auth().loginByAppID("app-id/login", configurations.getAsString("app-id"), configurations.getAsString("user-id"));
-        validateVaultResponse(resp, "Unable to login via app-id");
+        AuthResponse resp = newDriver.auth().loginByAppID("app-id/login", getConfigurations().getAsString("app-id"), getConfigurations().getAsString("user-id"));
+        validateVaultAuthenticationResponse(resp, "Unable to login via app-id");
 
         token = resp.getAuthClientToken();
       }
 
       return buildVaultDriver(token);
     } catch (VaultException e) {
-      throw new RuntimeException("Unable to login via app-id", e);
+      throw new VaultStoreAuthenticationException("Unable to authenticate", e);
     }
   }
 
@@ -123,13 +123,20 @@ public final class VaultStore implements Store {
   }
 
   private AuthenticationType getAuthenticationType() {
-    return AuthenticationType.valueOf(configurations.getAsString("authentication", DEFAULT_AUTHENTICATION));
+    return AuthenticationType.valueOf(getConfigurations().getAsString("authentication", DEFAULT_AUTHENTICATION));
   }
 
   @SuppressWarnings("checkstyle:MagicNumber")
-  private void validateVaultResponse(VaultResponse response, String errorMessage) throws VaultException {
+  private void validateVaultAuthenticationResponse(VaultResponse response, String errorMessage) {
     if (response != null && response.getRestResponse() != null && (response.getRestResponse().getStatus() < 200 || response.getRestResponse().getStatus() >= 300)) {
-      throw new VaultException(errorMessage + " (" + response.getRestResponse().getStatus() + ")");
+      throw new VaultStoreAuthenticationException(errorMessage + " (" + response.getRestResponse().getStatus() + ")");
+    }
+  }
+
+  @SuppressWarnings("checkstyle:MagicNumber")
+  private void validateVaultOperationResponse(VaultResponse response, String errorMessage) {
+    if (response != null && response.getRestResponse() != null && (response.getRestResponse().getStatus() < 200 || response.getRestResponse().getStatus() >= 300)) {
+      throw new VaultStoreOperationException(errorMessage + " (" + response.getRestResponse().getStatus() + ")", response.getRestResponse().getStatus());
     }
   }
 
@@ -152,18 +159,13 @@ public final class VaultStore implements Store {
   @Override
   public void delete(String key) {
     String path = "secret/" + key;
-
-    try {
-      LogicalResponse response = logicalDeleteWithReauthentication(path);
-      validateVaultResponse(response, "Delete failed");
-    } catch (VaultException e) {
-      throw new RuntimeException("Unable to delete key", e);
-    }
+    LogicalResponse response = logicalDeleteWithReauthentication(path);
+    validateVaultOperationResponse(response, "Delete failed");
   }
 
   @Override
   public void deleteSet(String key, String value) {
-    throw new UnsupportedOperationException(SET_UNSUPPORTED);
+    throw new VaultStoreUnsupportedOperation(SET_UNSUPPORTED);
   }
 
   @Override
@@ -172,25 +174,25 @@ public final class VaultStore implements Store {
 
     try {
       LogicalResponse response = logicalReadWithReauthentication(path);
-      validateVaultResponse(response, "Get failed");
+      validateVaultOperationResponse(response, "Get failed");
 
       return decodeBase64(response.getData().get("value"));
-    } catch (VaultException e) {
+    } catch (VaultStoreOperationException e) {
       if (e.getHttpStatusCode() == KEY_NOT_FOUND) {
         return null;
       }
-      throw new RuntimeException("Unable to get value", e);
+      throw e;
     }
   }
 
   @Override
   public Set<String> getSet(String key) {
-    throw new UnsupportedOperationException(SET_UNSUPPORTED);
+    throw new VaultStoreUnsupportedOperation(SET_UNSUPPORTED);
   }
 
   @Override
   public boolean inSet(String key, String value) {
-    throw new UnsupportedOperationException(SET_UNSUPPORTED);
+    throw new VaultStoreUnsupportedOperation(SET_UNSUPPORTED);
   }
 
   @Override
@@ -198,44 +200,40 @@ public final class VaultStore implements Store {
     String encodedValue = encodeBase64(value);
     String path = "secret/" + key;
 
-    try {
-      LogicalResponse response = logicalWriteWithReauthentication(path, Collections.singletonMap("value", encodedValue));
-      validateVaultResponse(response, "Put failed");
-    } catch (VaultException e) {
-      throw new RuntimeException("Unable to put value", e);
-    }
+    LogicalResponse response = logicalWriteWithReauthentication(path, Collections.singletonMap("value", encodedValue));
+    validateVaultOperationResponse(response, "Put failed");
   }
 
   @Override
   public void put(String key, String value, long expirySeconds) {
-    throw new UnsupportedOperationException(TTL_UNSUPPORTED);
+    throw new VaultStoreUnsupportedOperation(TTL_UNSUPPORTED);
   }
 
   @Override
   public void putSet(String key, String value, long expirySeconds) {
-    throw new UnsupportedOperationException(SET_UNSUPPORTED);
+    throw new VaultStoreUnsupportedOperation(SET_UNSUPPORTED);
   }
 
   @Override
   public void putSet(String key, String value) {
-    throw new UnsupportedOperationException(SET_UNSUPPORTED);
+    throw new VaultStoreUnsupportedOperation(SET_UNSUPPORTED);
   }
 
   @Override
   public boolean putIfNotExist(String key, String value, long expirySeconds) {
-    throw new UnsupportedOperationException(PUT_IF_NOT_EXIST_UNSUPPORTED);
+    throw new VaultStoreUnsupportedOperation(PUT_IF_NOT_EXIST_UNSUPPORTED);
   }
 
   @Override
   public boolean putIfNotExist(String key, String value) {
-    throw new UnsupportedOperationException(PUT_IF_NOT_EXIST_UNSUPPORTED);
+    throw new VaultStoreUnsupportedOperation(PUT_IF_NOT_EXIST_UNSUPPORTED);
   }
 
   private void reauthenticateDriver() {
     authenticateDriver(getDriver());
   }
 
-  private LogicalResponse logicalReadWithReauthentication(final String path) throws VaultException {
+  private LogicalResponse logicalReadWithReauthentication(final String path) {
     for (int i = 0; i < MAXIMUM_REAUTHENTICATION_RETRIES; i++) {
       try {
         return getDriver().logical().read(path);
@@ -246,14 +244,14 @@ public final class VaultStore implements Store {
           continue;
         }
 
-        throw e;
+        throw new VaultStoreOperationException("Logical read failed", e);
       }
     }
 
-    throw new VaultException("permission denied and unable to reauthenticate");
+    throw new VaultStoreAuthenticationException("Logical read permission denied and unable to reauthenticate");
   }
 
-  private LogicalResponse logicalWriteWithReauthentication(final String path, final Map<String, Object> nameValuePairs) throws VaultException {
+  private LogicalResponse logicalWriteWithReauthentication(final String path, final Map<String, Object> nameValuePairs) {
     for (int i = 0; i < MAXIMUM_REAUTHENTICATION_RETRIES; i++) {
       try {
         return getDriver().logical().write(path, nameValuePairs);
@@ -264,14 +262,14 @@ public final class VaultStore implements Store {
           continue;
         }
 
-        throw e;
+        throw new VaultStoreOperationException("Logical write failed", e);
       }
     }
 
-    throw new VaultException("permission denied and unable to reauthenticate");
+    throw new VaultStoreAuthenticationException("Logical write permission denied and unable to reauthenticate");
   }
 
-  private LogicalResponse logicalDeleteWithReauthentication(final String path) throws VaultException {
+  private LogicalResponse logicalDeleteWithReauthentication(final String path) {
     for (int i = 0; i < MAXIMUM_REAUTHENTICATION_RETRIES; i++) {
       try {
         return getDriver().logical().delete(path);
@@ -282,11 +280,10 @@ public final class VaultStore implements Store {
           continue;
         }
 
-        throw e;
+        throw new VaultStoreOperationException("Logical delete failed", e);
       }
     }
 
-    throw new VaultException("permission denied and unable to reauthenticate");
+    throw new VaultStoreAuthenticationException("Logical delete permission denied and unable to reauthenticate");
   }
-
 }

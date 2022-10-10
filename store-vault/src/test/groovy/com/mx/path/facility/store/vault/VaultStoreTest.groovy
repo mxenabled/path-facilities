@@ -2,12 +2,14 @@ package com.mx.path.facility.store.vault
 
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.ArgumentMatchers.eq
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS
 import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.doThrow
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.when
 
 import com.bettercloud.vault.Vault
 import com.bettercloud.vault.VaultException
@@ -15,6 +17,7 @@ import com.bettercloud.vault.api.Auth
 import com.bettercloud.vault.api.Logical
 import com.bettercloud.vault.response.AuthResponse
 import com.bettercloud.vault.response.LogicalResponse
+import com.bettercloud.vault.rest.RestResponse
 import com.mx.common.collections.ObjectMap
 
 import spock.lang.Specification
@@ -116,6 +119,72 @@ class VaultStoreTest extends Specification {
     configWithAppRole() | _
   }
 
+  def "buildVaultDriver with invalid configuration"() {
+    given:
+    def config = new ObjectMap().tap {
+      put("uri", "")
+      put("enabled", true)
+      put("maxRetries", "junk")
+    }
+
+    subject = new VaultStore(config)
+
+    when:
+    subject.buildVaultDriver(config.getAsString("token"))
+
+    then:
+    def ex = thrown(VaultStoreConfigurationException)
+    ex.message == "Unable to build Vault Configuration"
+  }
+
+  def "authenticateDriver with missing token"() {
+    given:
+    def config = new ObjectMap().tap {
+      put("authentication", "TOKEN")
+      put("enabled", true)
+      put("token", null)
+    }
+
+    subject = new VaultStore(config)
+    subject.buildVaultDriver(config.getAsString("token"))
+
+    when:
+    subject.get("key")
+
+    then:
+    def ex = thrown(VaultStoreConfigurationException)
+    ex.message == "Vault token required for TOKEN authentication"
+  }
+
+  def "authenticateDriver failed authentication app-role"() {
+    given:
+    def config = new ObjectMap().tap {
+      put("authentication", "APPROLE")
+      put("enabled", true)
+      put("secretId", "secret1")
+      put("app-role", "app-role1")
+    }
+
+    def driver = mock(Vault, RETURNS_DEEP_STUBS)
+    subject = spy(new VaultStore(config))
+    doReturn(driver).when(subject).buildVaultDriver(null)
+
+    def restResponse = mock(RestResponse)
+    when(restResponse.getStatus()).thenReturn(401)
+
+    def response = mock(AuthResponse)
+    when(response.getRestResponse()).thenReturn(restResponse)
+
+    when(driver.auth().loginByAppRole("app-role1", "secret1")).thenReturn(response)
+
+    when:
+    subject.get("key")
+
+    then:
+    def ex = thrown(VaultStoreAuthenticationException)
+    ex.message == "Unable to login via app-role (401)"
+  }
+
   @Unroll
   def "put"() {
     given:
@@ -149,7 +218,7 @@ class VaultStoreTest extends Specification {
     subject.put("foo", "bar", 99)
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(VaultStoreUnsupportedOperation)
 
     where:
     config              | _
@@ -168,7 +237,7 @@ class VaultStoreTest extends Specification {
     def getResponse = mock(LogicalResponse)
     doReturn(Collections.singletonMap("value", subject.encodeBase64("bar"))).when(getResponse).getData()
     doReturn(getResponse).when(logicalDriver).read("secret/foo")
-    def  response = subject.get("foo")
+    def response = subject.get("foo")
     verify(logicalDriver).read("secret/foo")
 
     then:
@@ -179,6 +248,29 @@ class VaultStoreTest extends Specification {
     configWithAppId()   | _
     configWithToken()   | _
     configWithAppRole() | _
+  }
+
+  def "get - key not found"() {
+    given:
+    def config = new ObjectMap()
+    subject = new VaultStore(config)
+
+    def driver = mock(Vault, RETURNS_DEEP_STUBS)
+    subject.setDriver(driver)
+
+    def restResponse = mock(RestResponse)
+    when(restResponse.getStatus()).thenReturn(404)
+
+    def response = mock(LogicalResponse)
+    when(response.getRestResponse()).thenReturn(restResponse)
+
+    when(driver.logical().read("secret/key")).thenReturn(response)
+
+    when:
+    def result = subject.get("key")
+
+    then:
+    result == null
   }
 
   def "delete"() {
@@ -205,7 +297,7 @@ class VaultStoreTest extends Specification {
     subject.deleteSet("foo", "bar")
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(VaultStoreUnsupportedOperation)
   }
 
   def "getSet"() {
@@ -217,7 +309,7 @@ class VaultStoreTest extends Specification {
     subject.getSet("foo")
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(VaultStoreUnsupportedOperation)
   }
 
   def "inSet"() {
@@ -229,7 +321,7 @@ class VaultStoreTest extends Specification {
     subject.inSet("foo", "bar")
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(VaultStoreUnsupportedOperation)
   }
 
   def "putSet with ttl"() {
@@ -241,7 +333,7 @@ class VaultStoreTest extends Specification {
     subject.putSet("foo", "bar", 99)
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(VaultStoreUnsupportedOperation)
   }
 
   def "putSet"() {
@@ -253,7 +345,7 @@ class VaultStoreTest extends Specification {
     subject.putSet("foo", "bar")
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(VaultStoreUnsupportedOperation)
   }
 
   def "putIfNotExist"() {
@@ -265,7 +357,7 @@ class VaultStoreTest extends Specification {
     subject.putIfNotExist("foo", "bar")
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(VaultStoreUnsupportedOperation)
   }
 
   def "putIfNotExist with TTL"() {
@@ -277,7 +369,7 @@ class VaultStoreTest extends Specification {
     subject.putIfNotExist("foo", "bar", 99)
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(VaultStoreUnsupportedOperation)
   }
 
   def "Permission Denied Write"() {
@@ -305,7 +397,7 @@ class VaultStoreTest extends Specification {
     subject.put("foo", "bar")
 
     then:
-    thrown(RuntimeException)
+    thrown(VaultStoreAuthenticationException)
     // Should only authenticate once
     verify(authDriver, times(4)).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id")) || true
   }
@@ -313,37 +405,41 @@ class VaultStoreTest extends Specification {
   @Unroll
   def "Permission Denied Get"() {
     given:
-    subject = new VaultStore(config)
-    subject.setDriver(vaultDriver)
+    def config = configWithAppId()
+    subject = spy(new VaultStore(config))
+
+    def authDriver = mock(Auth)
+    def authResponse = mock(AuthResponse)
+
+    doReturn(authDriver).when(vaultDriver).auth()
+    doReturn(logicalDriver).when(vaultDriver).logical()
+    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))
+    doThrow(new VaultException("permission denied")).when(logicalDriver).read(eq("secret/foo"))
 
     when:
-    def getResponse = mock(LogicalResponse)
-    doReturn(Collections.singletonMap("value", subject.encodeBase64("bar"))).when(getResponse).getData()
-    doThrow(new VaultException("permission denied")).when(logicalDriver).read("secret/foo")
-    def  response = subject.get("foo")
+    subject.get("foo")
 
     then:
-    thrown(RuntimeException)
-
-    where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
-    configWithAppRole() | _
+    thrown(VaultStoreAuthenticationException)
   }
 
   def "Permission Denied Delete"() {
     given:
-    subject = new VaultStore(configWithAppId())
-    subject.setDriver(vaultDriver)
+    def config = configWithAppId()
+    subject = spy(new VaultStore(config))
+
+    def authDriver = mock(Auth)
+    def authResponse = mock(AuthResponse)
+
+    doReturn(authDriver).when(vaultDriver).auth()
+    doReturn(logicalDriver).when(vaultDriver).logical()
+    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))
+    doThrow(new VaultException("permission denied")).when(logicalDriver).delete(eq("secret/foo"))
 
     when:
-    def deleteResponse = mock(LogicalResponse)
-    doReturn(Collections.singletonMap("", "")).when(deleteResponse).getData()
-    doThrow(new VaultException("permission denied")).when(logicalDriver).delete(eq("secret/foo"))
     subject.delete("foo")
 
     then:
-    thrown(RuntimeException)
+    thrown(VaultStoreAuthenticationException)
   }
 }
