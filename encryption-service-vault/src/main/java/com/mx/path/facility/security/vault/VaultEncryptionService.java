@@ -114,9 +114,9 @@ public class VaultEncryptionService implements EncryptionService {
   public final void rotateKeys() {
     try {
       VaultResponse response = logicalWriteWithReauthentication("transit/keys/" + configurations.getAsString("keyName", DEFAULT_KEY_NAME) + "/rotate", null);
-      validateVaultResponse(response, "Unable to rotate vault key");
+      validateVaultOperationResponse(response, "Unable to rotate vault key");
       LOGGER.info("Rotated vault key: " + configurations.getAsString("keyName", DEFAULT_KEY_NAME));
-    } catch (VaultException e) {
+    } catch (RuntimeException e) {
       LOGGER.warn("Unable to rotate vault key", e);
     }
 
@@ -141,7 +141,7 @@ public class VaultEncryptionService implements EncryptionService {
    * @param authToken
    * @return configured Vault driver
    */
-  Vault buildVaultDriver(@Nullable String authToken) {
+  final Vault buildVaultDriver(@Nullable String authToken) {
     try {
       VaultConfig vaultConfig = new VaultConfig()
           .token(authToken)
@@ -159,7 +159,7 @@ public class VaultEncryptionService implements EncryptionService {
 
       return newDriver;
     } catch (VaultException e) {
-      throw new RuntimeException("Unable to build Vault Configuration", e);
+      throw new VaultEncryptionConfigurationException("Unable to build Vault Encryption Configuration", e);
     }
   }
 
@@ -171,8 +171,8 @@ public class VaultEncryptionService implements EncryptionService {
   final void initKey() {
     try {
       VaultResponse response = logicalWriteWithReauthentication("transit/keys/" + configurations.getAsString("keyName", DEFAULT_KEY_NAME), Collections.singletonMap("exportable", "true"));
-      validateVaultResponse(response, "Unable to initialize vault key");
-    } catch (VaultException e) {
+      validateVaultOperationResponse(response, "Unable to initialize vault key");
+    } catch (RuntimeException e) {
       LOGGER.warn("Unable to initialize new vault key. Assuming that the key already exists", e);
     }
   }
@@ -180,21 +180,22 @@ public class VaultEncryptionService implements EncryptionService {
   /**
    * Load key configuration
    *
+   * Does not raise exceptions
+   *
    * @return the key, if successful, else null
    */
   final VaultTransitKey loadKey() {
     try {
       LogicalResponse response = logicalReadWithReauthentication("transit/keys/" + configurations.getAsString("keyName", DEFAULT_KEY_NAME));
-      validateVaultResponse(response, "Key read failed");
+      validateVaultOperationResponse(response, "Key read failed");
 
       JsonObject j = response.getDataObject();
 
       return VaultTransitKey.fromJsonObject(j);
-    } catch (VaultException e) {
+    } catch (RuntimeException e) {
       LOGGER.warn("Unable to read vault key", e);
+      return null;
     }
-
-    return null;
   }
 
   /**
@@ -207,8 +208,8 @@ public class VaultEncryptionService implements EncryptionService {
   final void setMinDecryptionVersion(int minDecryptionVersion) {
     try {
       VaultResponse response = logicalWriteWithReauthentication("transit/keys/" + configurations.getAsString("keyName", DEFAULT_KEY_NAME), Collections.singletonMap("min_decryption_version", minDecryptionVersion));
-      validateVaultResponse(response, "Unable to update vault key");
-    } catch (VaultException e) {
+      validateVaultOperationResponse(response, "Unable to update vault key");
+    } catch (RuntimeException e) {
       LOGGER.warn("Unable to update vault key", e);
     }
   }
@@ -216,71 +217,70 @@ public class VaultEncryptionService implements EncryptionService {
   /**
    * Gets a token using given driver then builds and returns a new, authenticated driver
    *
-   * @param newDriver that can be used to get an auth token
+   * @param authenticationDriver that can be used to get an auth token
    * @return new driver with auth token
    */
-  Vault authenticateDriver(Vault newDriver) {
+  final Vault buildAuthenticatedDriver(Vault authenticationDriver) {
     try {
       String token;
       if (getAuthenticationType().equals(AuthenticationType.TOKEN)) {
         token = configurations.getAsString("token");
 
         if (token == null) {
-          throw new RuntimeException("Vault token required for TOKEN authentication");
+          throw new VaultEncryptionConfigurationException("Vault token required for TOKEN authentication");
         }
       } else if (getAuthenticationType().equals(AuthenticationType.APPROLE)) {
-        AuthResponse resp = newDriver.auth().loginByAppRole(configurations.getAsString("app-role"), configurations.getAsString("secretId"));
-        validateVaultResponse(resp, "Unable to login via jwt");
+        AuthResponse resp = authenticationDriver.auth().loginByAppRole(configurations.getAsString("app-role"), configurations.getAsString("secretId"));
+        validateVaultAuthenticationResponse(resp, "Unable to login via jwt");
 
         token = resp.getAuthClientToken();
       } else {
-        AuthResponse resp = newDriver.auth().loginByAppID("app-id/login", configurations.getAsString("app-id"), configurations.getAsString("user-id"));
-        validateVaultResponse(resp, "Unable to login via app-id");
+        AuthResponse resp = authenticationDriver.auth().loginByAppID("app-id/login", configurations.getAsString("app-id"), configurations.getAsString("user-id"));
+        validateVaultAuthenticationResponse(resp, "Unable to login via app-id");
 
         token = resp.getAuthClientToken();
       }
 
       return buildVaultDriver(token);
     } catch (VaultException e) {
-      throw new RuntimeException("Unable to login to vault", e);
+      throw new VaultEncryptionAuthenticationException("Unable to login to vault", e);
     }
+  }
+
+  /**
+   * Resets the driver. Calling {@link #getDriver()} will create a new, authenticated driver.
+   */
+  final void resetDriver() {
+    this.driver = null;
   }
 
   private String doEncrypt(String plaintext) {
-    try {
-      String encodedValue = encodeBase64(plaintext);
-      String path = "transit/encrypt/" + configurations.getAsString("keyName", DEFAULT_KEY_NAME);
+    String encodedValue = encodeBase64(plaintext);
+    String path = "transit/encrypt/" + configurations.getAsString("keyName", DEFAULT_KEY_NAME);
 
-      LogicalResponse response = logicalWriteWithReauthentication(path, Collections.singletonMap("plaintext", encodedValue));
-      validateVaultResponse(response, "Encrypt failed");
+    LogicalResponse response = logicalWriteWithReauthentication(path, Collections.singletonMap("plaintext", encodedValue));
+    validateVaultOperationResponse(response, "Encrypt failed");
 
-      return response.getData().get("ciphertext");
-    } catch (VaultException e) {
-      throw new RuntimeException("Unable to encrypt value", e);
-    }
+    return response.getData().get("ciphertext");
   }
 
   private String doDecrypt(String ciphertext) {
-    try {
-      LogicalResponse response = logicalWriteWithReauthentication(
-          "transit/decrypt/" + configurations.getAsString("keyName", DEFAULT_KEY_NAME),
-          Collections.singletonMap("ciphertext", ciphertext));
-      validateVaultResponse(response, "Decrypt failed");
+    LogicalResponse response = logicalWriteWithReauthentication(
+        "transit/decrypt/" + configurations.getAsString("keyName", DEFAULT_KEY_NAME),
+        Collections.singletonMap("ciphertext", ciphertext));
+    validateVaultOperationResponse(response, "Decrypt failed");
 
-      String plaintext = response.getData().get("plaintext");
+    String plaintext = response.getData().get("plaintext");
 
-      return decodeBase64(plaintext);
-    } catch (VaultException e) {
-      throw new RuntimeException("Unable to decrypt value", e);
-    }
+    return decodeBase64(plaintext);
   }
 
   private Vault getDriver() {
     if (driver == null) {
       synchronized (this) {
         if (driver == null) {
-          Vault newDriver = buildVaultDriver(null);
-          driver = authenticateDriver(newDriver);
+          Vault authenticationDriver = buildVaultDriver(null); // This is used to authenticate only
+          driver = buildAuthenticatedDriver(authenticationDriver);
         }
       }
     }
@@ -288,22 +288,21 @@ public class VaultEncryptionService implements EncryptionService {
     return driver;
   }
 
-  /**
-   * reauthenticat to vault using the configured driver
-   */
-  void reauthenticateDriver() {
-    driver = null;
-    getDriver();
-  }
-
   private AuthenticationType getAuthenticationType() {
     return AuthenticationType.valueOf(configurations.getAsString("authentication", DEFAULT_AUTHENTICATION));
   }
 
   @SuppressWarnings("checkstyle:MagicNumber")
-  private void validateVaultResponse(VaultResponse response, String errorMessage) throws VaultException {
+  private void validateVaultAuthenticationResponse(VaultResponse response, String errorMessage) {
     if (response != null && response.getRestResponse() != null && (response.getRestResponse().getStatus() < 200 || response.getRestResponse().getStatus() >= 300)) {
-      throw new VaultException(errorMessage + " (" + response.getRestResponse().getStatus() + ")");
+      throw new VaultEncryptionOperationException(errorMessage + " (" + response.getRestResponse().getStatus() + ")");
+    }
+  }
+
+  @SuppressWarnings("checkstyle:MagicNumber")
+  private void validateVaultOperationResponse(VaultResponse response, String errorMessage) {
+    if (response != null && response.getRestResponse() != null && (response.getRestResponse().getStatus() < 200 || response.getRestResponse().getStatus() >= 300)) {
+      throw new VaultEncryptionOperationException(errorMessage + " (" + response.getRestResponse().getStatus() + ")");
     }
   }
 
@@ -327,37 +326,53 @@ public class VaultEncryptionService implements EncryptionService {
     if (initialized) {
       return;
     }
-
     initKey();
-
     initialized = true;
   }
 
-  private LogicalResponse logicalReadWithReauthentication(final String path) throws VaultException {
+  private LogicalResponse logicalReadWithReauthentication(final String path) {
     for (int i = 0; i < MAXIMUM_REAUTHENTICATION_RETRIES; i++) {
-      LogicalResponse response = getDriver().logical().read(path);
+      LogicalResponse response = null;
+      try {
+        response = getDriver().logical().read(path);
+      } catch (VaultEncryptionAuthenticationException e) {
+        resetDriver();
+        continue;
+      } catch (VaultException e) {
+        throw new VaultEncryptionOperationException("Logical read failed", e);
+      }
 
+      // If the response is permission denied
       if (response != null && response.getRestResponse() != null && response.getRestResponse().getStatus() == PERMISSION_DENIED_STATUS) {
-        reauthenticateDriver();
+        resetDriver();
       } else {
         return response;
       }
     }
 
-    throw new VaultException("permission denied and unable to reauthenticate");
+    throw new VaultEncryptionAuthenticationException("Permission denied and unable to reauthenticate");
   }
 
-  private LogicalResponse logicalWriteWithReauthentication(final String path, final Map<String, Object> nameValuePairs) throws VaultException {
+  private LogicalResponse logicalWriteWithReauthentication(final String path, final Map<String, Object> nameValuePairs) {
     for (int i = 0; i < MAXIMUM_REAUTHENTICATION_RETRIES; i++) {
-      LogicalResponse response = getDriver().logical().write(path, nameValuePairs);
+      LogicalResponse response = null;
+      try {
+        response = getDriver().logical().write(path, nameValuePairs);
+      } catch (VaultEncryptionAuthenticationException e) {
+        resetDriver();
+        continue;
+      } catch (VaultException e) {
+        throw new VaultEncryptionOperationException("Logical write failed", e);
+      }
 
+      // If the response is permission denied
       if (response != null && response.getRestResponse() != null && response.getRestResponse().getStatus() == PERMISSION_DENIED_STATUS) {
-        reauthenticateDriver();
+        resetDriver();
       } else {
         return response;
       }
     }
 
-    throw new VaultException("permission denied and unable to reauthenticate");
+    throw new VaultEncryptionAuthenticationException("Permission denied and unable to reauthenticate");
   }
 }

@@ -2,21 +2,23 @@ package com.mx.path.facility.security.vault
 
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.ArgumentMatchers.eq
+import static org.mockito.Mockito.doReturn
+import static org.mockito.Mockito.doThrow
 import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.never
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
 import com.bettercloud.vault.Vault
+import com.bettercloud.vault.VaultException
 import com.bettercloud.vault.api.Auth
 import com.bettercloud.vault.api.Logical
 import com.bettercloud.vault.response.AuthResponse
 import com.bettercloud.vault.response.LogicalResponse
 import com.bettercloud.vault.rest.RestResponse
 import com.mx.common.collections.ObjectMap
-
-import org.mockito.Mockito
 
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -89,7 +91,7 @@ class VaultEncryptionServiceTest extends Specification {
     when(encryptResponse.getData()).thenReturn(Collections.singletonMap("ciphertext", "vault-12341234123412341"))
     when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any())).thenReturn(encryptResponse)
 
-    Mockito.doReturn(vaultDriver).when(subject).buildVaultDriver(any())
+    doReturn(vaultDriver).when(subject).buildVaultDriver(any())
 
     when:
     subject.encrypt("text")
@@ -232,7 +234,7 @@ class VaultEncryptionServiceTest extends Specification {
   def "decrypt rebuilds driver and re-authenticates on errors"() {
     given:
     subject = spy(new VaultEncryptionService(config))
-    Mockito.doReturn(vaultDriver).when(subject).authenticateDriver(any())
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
     when(logicalDriver.write(eq("transit/decrypt/" + config.getAsString("keyName")), any()))
         .thenReturn(
@@ -244,7 +246,7 @@ class VaultEncryptionServiceTest extends Specification {
 
     then:
     noExceptionThrown()
-    verify(subject).reauthenticateDriver() || true
+    verify(subject).resetDriver() || true
 
     where:
     config              | _
@@ -253,11 +255,65 @@ class VaultEncryptionServiceTest extends Specification {
     configWithAppRole() | _
   }
 
+  def "decrypt rebuilds driver and re-authenticates on authentication exception"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.write(eq("transit/decrypt/" + config.getAsString("keyName")), any()))
+        .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
+        .thenReturn(new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
+
+    when:
+    subject.decrypt("ciphertext")
+
+    then:
+    noExceptionThrown()
+    verify(subject, times(1)).resetDriver() || true
+  }
+
+  def "decrypt raises exception if unable to authenticate"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.write(eq("transit/decrypt/" + config.getAsString("keyName")), any()))
+        .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
+
+    when:
+    subject.decrypt("ciphertext")
+
+    then:
+    def ex = thrown(VaultEncryptionAuthenticationException)
+    ex.getMessage() == "Permission denied and unable to reauthenticate"
+    verify(subject, times(3)).resetDriver() || true
+  }
+
+  def "decrypt raises exception operation failed"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.write(eq("transit/decrypt/" + config.getAsString("keyName")), any()))
+        .thenThrow(new VaultException("something bad happened"))
+
+    when:
+    subject.decrypt("ciphertext")
+
+    then:
+    def ex = thrown(VaultEncryptionOperationException)
+    ex.getMessage() == "Logical write failed"
+    verify(subject, never()).resetDriver() || true
+  }
+
   @Unroll
-  def "encrypt rebuilds driver and re-authenticates on errors"() {
+  def "encrypt() rebuilds driver and re-authenticates on permission denied"() {
     given:
     subject = spy(new VaultEncryptionService(config))
-    Mockito.doReturn(vaultDriver).when(subject).authenticateDriver(any())
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
     when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any()))
         .thenReturn(
@@ -269,13 +325,67 @@ class VaultEncryptionServiceTest extends Specification {
 
     then:
     noExceptionThrown()
-    verify(subject).reauthenticateDriver() || true
+    verify(subject).resetDriver() || true
 
     where:
     config              | _
     configWithAppId()   | _
     configWithToken()   | _
     configWithAppRole() | _
+  }
+
+  def "encrypt() rebuilds driver and re-authenticates on authentication exception"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any()))
+        .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
+        .thenReturn(new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
+
+    when:
+    subject.encrypt("plaintext")
+
+    then:
+    noExceptionThrown()
+    verify(subject).resetDriver() || true
+  }
+
+  def "encrypt() resets driver and raises exception if unable to authenticate after 3 attempts"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any()))
+        .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
+
+    when:
+    subject.encrypt("plaintext")
+
+    then:
+    def ex = thrown(VaultEncryptionAuthenticationException)
+    ex.getMessage() == "Permission denied and unable to reauthenticate"
+    verify(subject, times(3)).resetDriver() || true
+  }
+
+  def "encrypt() raises exception operation failed"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any()))
+        .thenThrow(new VaultException("something bad happened"))
+
+    when:
+    subject.encrypt("plaintext")
+
+    then:
+    def ex = thrown(VaultEncryptionOperationException)
+    ex.getMessage() == "Logical write failed"
+    verify(subject, never()).resetDriver() || true
   }
 
   @Unroll
@@ -342,8 +452,8 @@ class VaultEncryptionServiceTest extends Specification {
       "5":  1456
     ]).build()
 
-    Mockito.doReturn(vaultDriver).when(subject).buildVaultDriver(any())
-    Mockito.doReturn(key).when(subject).loadKey()
+    doReturn(vaultDriver).when(subject).buildVaultDriver(any())
+    doReturn(key).when(subject).loadKey()
 
     when:
     subject.rotateKeys()
@@ -358,6 +468,32 @@ class VaultEncryptionServiceTest extends Specification {
     configWithAppId()   | _
     configWithToken()   | _
     configWithAppRole() | _
+  }
+
+  def "rotateKeys() does not raise exceptions"() {
+    given:
+    def config = configWithAppId().tap {
+      put("keyName", "key1")
+    }
+    subject = spy(new VaultEncryptionService(config))
+
+    def authDriver = mock(Auth)
+    def authResponse = mock(AuthResponse)
+
+    when(vaultDriver.auth()).thenReturn(authDriver)
+    when(vaultDriver.logical()).thenReturn(logicalDriver)
+
+    when(authDriver.loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))).thenReturn(authResponse)
+    when(authResponse.getAuthClientToken()).thenReturn("token12345")
+
+    doReturn(vaultDriver).when(subject).buildVaultDriver(any())
+    doThrow(new RuntimeException("runtime exception")).when(logicalDriver).write("transit/keys/key1/rotate", null)
+
+    when:
+    subject.rotateKeys()
+
+    then:
+    noExceptionThrown()
   }
 
   @Unroll
@@ -380,7 +516,7 @@ class VaultEncryptionServiceTest extends Specification {
   }
 
   @Unroll
-  def "getKey()"() {
+  def "loadKey()"() {
     given:
     subject = new VaultEncryptionService(config)
     subject.setDriver(vaultDriver)
@@ -425,6 +561,76 @@ class VaultEncryptionServiceTest extends Specification {
     configWithAppId()   | _
     configWithToken()   | _
     configWithAppRole() | _
+  }
+
+  def "loadKeys() rebuilds driver and re-authenticates on permission denied"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.read(eq("transit/keys/" + config.getAsString("keyName"))))
+        .thenReturn(new LogicalResponse(new RestResponse(403, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
+        .thenReturn(new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
+
+    when:
+    subject.loadKey()
+
+    then:
+    noExceptionThrown()
+    verify(subject).resetDriver() || true
+  }
+
+  def "loadKeys() rebuilds driver and re-authenticates on authentication exception"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.read(eq("transit/keys/" + config.getAsString("keyName"))))
+        .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
+        .thenReturn(new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
+
+    when:
+    subject.loadKey()
+
+    then:
+    noExceptionThrown()
+    verify(subject).resetDriver() || true
+  }
+
+  def "loadKeys() resets driver if unable to authenticate, returning null after 3 attempts"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.read(eq("transit/keys/" + config.getAsString("keyName"))))
+        .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
+
+    when:
+    def key = subject.loadKey()
+
+    then:
+    key == null
+    verify(subject, times(3)).resetDriver() || true
+  }
+
+  def "loadKeys() returns null when logical read fails"() {
+    given:
+    def config = configWithAppId()
+    subject = spy(new VaultEncryptionService(config))
+    doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
+
+    when(logicalDriver.read(eq("transit/keys/" + config.getAsString("keyName"))))
+        .thenThrow(new VaultException("something bad happened"))
+
+    when:
+    def key = subject.loadKey()
+
+    then:
+    key == null
+    verify(subject, never()).resetDriver() || true
   }
 
   def "can retrieve configurations"() {
