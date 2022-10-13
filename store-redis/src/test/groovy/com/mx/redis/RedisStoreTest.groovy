@@ -1,7 +1,9 @@
 package com.mx.redis
 
+import static org.mockito.Mockito.doThrow
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.never
+import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
@@ -9,6 +11,7 @@ import com.mx.common.collections.ObjectMap
 
 import org.mockito.Mockito
 
+import io.lettuce.core.RedisException
 import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.sync.RedisCommands
 
@@ -26,7 +29,7 @@ class RedisStoreTest extends Specification implements WithMockery {
     commands = mock(RedisCommands.class)
     when(connection.sync()).thenReturn(commands)
 
-    subject = new RedisStore(configurations)
+    subject = spy(new RedisStore(configurations))
     subject.setConnection(connection)
   }
 
@@ -98,7 +101,7 @@ class RedisStoreTest extends Specification implements WithMockery {
     subject.put("key1", "value1")
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(RedisStoreUnsupportedException)
   }
 
   def "putSet"() {
@@ -115,7 +118,7 @@ class RedisStoreTest extends Specification implements WithMockery {
     subject.putSet("key1", "value1")
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(RedisStoreUnsupportedException)
   }
 
   def "putIfNotExist with two arguments"() {
@@ -123,7 +126,7 @@ class RedisStoreTest extends Specification implements WithMockery {
     subject.putIfNotExist("key1", "value1")
 
     then:
-    thrown(UnsupportedOperationException)
+    thrown(RedisStoreUnsupportedException)
   }
 
   def "setIfNotExist when does not exist"() {
@@ -168,5 +171,47 @@ class RedisStoreTest extends Specification implements WithMockery {
 
     then:
     subject.status() == "OK"
+  }
+
+  def "rethrows connection failure"() {
+    given:
+    subject.setConnection(null)
+    def exception = new RedisStoreConnectionException("Something happened when connecting", null)
+    doThrow(exception).when(subject).buildConnection()
+
+    when:
+    subject.get("junk")
+
+    then:
+    def ex = thrown(RedisStoreConnectionException)
+    ex == exception
+  }
+
+  def "wraps RedisException"() {
+    given:
+    subject.setConnection(null)
+    def exception = new RedisException("Something happened when performing operation")
+    doThrow(exception).when(subject).buildConnection()
+
+    when:
+    subject.get("junk")
+
+    then:
+    def ex = thrown(RedisStoreOperationException)
+    ex.getMessage() == "Redis error occurred on get"
+  }
+
+  def "wraps unknown error"() {
+    given:
+    subject.setConnection(null)
+    def exception = new RuntimeException("Something happened")
+    doThrow(exception).when(subject).buildConnection()
+
+    when:
+    subject.get("junk")
+
+    then:
+    def ex = thrown(RedisStoreOperationException)
+    ex.getMessage() == "Unknown exception thrown by redis on get"
   }
 }
