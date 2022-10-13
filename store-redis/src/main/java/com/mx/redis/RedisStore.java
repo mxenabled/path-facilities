@@ -2,6 +2,7 @@ package com.mx.redis;
 
 import java.time.Duration;
 import java.util.Set;
+import java.util.function.Function;
 
 import lombok.Getter;
 
@@ -10,6 +11,7 @@ import com.mx.common.store.Store;
 
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisException;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.protocol.ProtocolVersion;
@@ -42,83 +44,119 @@ public class RedisStore implements Store {
 
   @Override
   public final void delete(String key) {
-    connection().sync().del(key);
+    safeCall("delete", (conn) -> {
+      conn.sync().del(key);
+      return Void.TYPE;
+    });
   }
 
   @Override
   public final void deleteSet(String key, String value) {
-    connection().sync().srem(key, value);
+    safeCall("deleteSet", (conn) -> {
+      conn.sync().srem(key, value);
+      return Void.TYPE;
+    });
   }
 
   @Override
   public final String get(String key) {
-    return connection().sync().get(key);
+    return safeCall("get", (conn) -> {
+      return conn.sync().get(key);
+    });
   }
 
   @Override
   public final Set<String> getSet(String key) {
-    return connection().sync().smembers(key);
+    return safeCall("getSet", (conn) -> {
+      return conn.sync().smembers(key);
+    });
   }
 
   @Override
   public final boolean inSet(String key, String value) {
-    return connection().sync().sismember(key, value);
+    return safeCall("inSet", (conn) -> {
+      return conn.sync().sismember(key, value);
+    });
   }
 
   @Override
   public final void put(String key, String value, long expirySeconds) {
-    connection().sync().set(key, value);
-    connection().sync().expire(key, expirySeconds);
+    safeCall("put", (conn) -> {
+      conn.sync().set(key, value);
+      conn.sync().expire(key, expirySeconds);
+      return Void.TYPE;
+    });
   }
 
   @Override
   public final void put(String key, String value) {
-    throw new UnsupportedOperationException(PUT_UNSUPPORTED_OPERATION);
+    throw new RedisStoreUnsupportedException(PUT_UNSUPPORTED_OPERATION);
   }
 
   @Override
   public final void putSet(String key, String value, long expirySeconds) {
-    connection().sync().sadd(key, value);
-    connection().sync().expire(key, expirySeconds);
+    safeCall("putSet", (conn) -> {
+      conn.sync().sadd(key, value);
+      conn.sync().expire(key, expirySeconds);
+      return Void.TYPE;
+    });
   }
 
   @Override
   public final void putSet(String key, String value) {
-    throw new UnsupportedOperationException(PUT_UNSUPPORTED_OPERATION);
+    throw new RedisStoreUnsupportedException(PUT_UNSUPPORTED_OPERATION);
   }
 
   @Override
   public final boolean putIfNotExist(String key, String value, long expirySeconds) {
-    boolean result = connection().sync().setnx(key, value);
-    if (result) {
-      connection().sync().expire(key, expirySeconds);
-    }
+    return safeCall("putIfNotExist", (conn) -> {
+      boolean result = conn.sync().setnx(key, value);
+      if (result) {
+        conn.sync().expire(key, expirySeconds);
+      }
 
-    return result;
+      return result;
+    });
   }
 
   @Override
   public final boolean putIfNotExist(String key, String value) {
-    throw new UnsupportedOperationException(PUT_UNSUPPORTED_OPERATION);
+    throw new RedisStoreUnsupportedException(PUT_UNSUPPORTED_OPERATION);
   }
 
   // Private
 
-  private synchronized StatefulRedisConnection<String, String> buildConnection() {
-    ClientResources resources = ClientResources.builder()
-        .ioThreadPoolSize(configurations.getAsInteger("ioThreadPoolSize", DEFAULT_THREAD_POOL_SIZE))
-        .computationThreadPoolSize(configurations.getAsInteger("computationThreadPoolSize", DEFAULT_COMPUTATION_THREAD_POOL_SIZE))
-        .build();
+  final synchronized StatefulRedisConnection<String, String> buildConnection() {
+    try {
+      ClientResources resources = ClientResources.builder()
+          .ioThreadPoolSize(configurations.getAsInteger("ioThreadPoolSize", DEFAULT_THREAD_POOL_SIZE))
+          .computationThreadPoolSize(configurations.getAsInteger("computationThreadPoolSize", DEFAULT_COMPUTATION_THREAD_POOL_SIZE))
+          .build();
 
-    RedisClient redisClient = RedisClient.create(resources, new RedisURI(configurations.getAsString("host", DEFAULT_HOST), configurations.getAsInteger("port", DEFAULT_PORT), Duration.ofSeconds(configurations.getAsInteger("connectionTimeoutSeconds", DEFAULT_CONNECTION_TIMEOUT_IN_SECONDS))));
+      RedisClient redisClient = RedisClient.create(resources, new RedisURI(configurations.getAsString("host", DEFAULT_HOST), configurations.getAsInteger("port", DEFAULT_PORT), Duration.ofSeconds(configurations.getAsInteger("connectionTimeoutSeconds", DEFAULT_CONNECTION_TIMEOUT_IN_SECONDS))));
 
-    // RESP3 executes a HELLO command to discover the protocol before executing any commands made by the client.
-    // This can cause issues if we are communicating over a proxy and the proxy doesn't speak RESP3. For now, it is safer
-    // to default to RESP2 until RESP3 becomes more normalized.
-    ClientOptions options = ClientOptions.builder().protocolVersion(ProtocolVersion.RESP2).build();
-    redisClient.setOptions(options);
+      // RESP3 executes a HELLO command to discover the protocol before executing any commands made by the client.
+      // This can cause issues if we are communicating over a proxy and the proxy doesn't speak RESP3. For now, it is safer
+      // to default to RESP2 until RESP3 becomes more normalized.
+      ClientOptions options = ClientOptions.builder().protocolVersion(ProtocolVersion.RESP2).build();
+      redisClient.setOptions(options);
 
-    return redisClient.connect();
+      return redisClient.connect();
+    } catch (RedisException e) {
+      throw new RedisStoreConnectionException("An error occurred connecting to redis", e);
+    }
+  }
+
+  private <T> T safeCall(String operation, Function<StatefulRedisConnection<String, String>, T> runnable) {
+    try {
+      return runnable.apply(connection());
+    } catch (RedisStoreConnectionException e) {
+      throw e;
+    } catch (RedisException e) {
+      throw new RedisStoreOperationException("Redis error occurred on " + operation, e);
+    } catch (RuntimeException e) {
+      throw new RedisStoreOperationException("Unknown exception thrown by redis on " + operation, e);
+    }
   }
 
   private StatefulRedisConnection<String, String> connection() {
@@ -128,5 +166,4 @@ public class RedisStore implements Store {
 
     return connection;
   }
-
 }
