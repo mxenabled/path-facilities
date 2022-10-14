@@ -1,11 +1,18 @@
 package com.mx.path.service.facility.encryption.jasypt;
 
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.when
+
 import com.mx.common.collections.ObjectArray
 import com.mx.common.collections.ObjectMap
 
-import spock.lang.Specification
+import org.jasypt.encryption.pbe.PooledPBEStringEncryptor
+import org.jasypt.exceptions.EncryptionInitializationException
 
-class JasyptEncryptionServiceTest extends Specification {
+import spock.lang.Specification
+import spock.lang.Unroll
+
+class JasyptEncryptionServiceTest extends Specification implements WithMockery {
 
   ObjectMap configurations
   JasyptEncryptionService subject
@@ -24,39 +31,107 @@ class JasyptEncryptionServiceTest extends Specification {
     subject = new JasyptEncryptionService(configurations)
   }
 
-  def "encryptsWhenEnabled"() {
-    given:
+  def "encrypt() encrypts when enabled"() {
+    when:
     String cyphertext = subject.encrypt("test")
 
-    expect:
+    then:
     cyphertext.contains("jasypt:781e5e245d69b566979b86e28d23f2c7")
   }
 
-  def "decryptsWhenEnabled"() {
-    given:
-    def cyphertext = subject.encrypt("test")
-    assert "test" != cyphertext
-
-    expect:
-    def plaintext = subject.decrypt(cyphertext)
-    "test" == plaintext
-  }
-
-  def "doesNotEncryptWhenNotEnabled"() {
-    given:
+  def "encrypt() does noting when not enabled"() {
+    when:
     configurations.put("enabled", false)
     subject = new JasyptEncryptionService(configurations)
     def cyphertext = subject.encrypt("test")
 
-    expect:
+    then:
     "test" == cyphertext
   }
 
-  def "canRetrieveConfigurations"() {
-    given:
+  def "encrypt() does nothing when blank"() {
+    when:
+    configurations.put("enabled", false)
+    subject = new JasyptEncryptionService(configurations)
+    def cyphertext = subject.encrypt(null)
+
+    then:
+    cyphertext == null
+
+    when:
+    cyphertext = subject.encrypt("")
+
+    then:
+    cyphertext == ""
+  }
+
+  def "decrypt() decrypts when enabled"() {
+    when:
+    def cyphertext = subject.encrypt("test")
+    assert "test" != cyphertext
+
+    then:
+    def plaintext = subject.decrypt(cyphertext)
+    "test" == plaintext
+  }
+
+  @Unroll
+  def "decrypt() does nothing when not encrypted"() {
+    when:
+    def plaintext = subject.decrypt(value)
+
+    then:
+    plaintext == value
+
+    where:
+    value                   | _
+    null                    | _
+    ""                      | _
+    "some unencrypted junk" | _
+  }
+
+  def "can retrieve configurations"() {
+    when:
     subject = new JasyptEncryptionService(configurations)
 
-    expect:
+    then:
     subject.getConfigurations() == configurations
+  }
+
+  def "decrypt() throws configuration exception when no suitable encryptor found"() {
+    given:
+    subject.getEncryptors().clear()
+
+    when:
+    def cyphertext = subject.encrypt("value")
+    subject.decrypt(cyphertext)
+
+    then:
+    def ex = thrown(JasyptEncryptionOperationException)
+    ex.getMessage() == "No suitable decryption key found"
+  }
+
+  def "decrypt() wraps jasypt exception when decryption not possible"() {
+    when:
+    def cyphertext = subject.encrypt("value")
+    subject.decrypt(cyphertext + "--junk--")
+
+    then:
+    def ex = thrown(JasyptEncryptionOperationException)
+    ex.getMessage() == "Decrypt operation failed"
+  }
+
+  def "encrypt() wraps jasypt exceptions"() {
+    given:
+    def currentEncryptor = mock(PooledPBEStringEncryptor)
+    subject.setCurrentEncryptor(currentEncryptor)
+
+    when:
+    when(currentEncryptor.encrypt("value")).thenThrow(new EncryptionInitializationException("Operation failed"))
+    subject.encrypt("value")
+
+    then:
+    def ex = thrown(JasyptEncryptionOperationException)
+    ex.getMessage() == "Encrypt operation failed"
   }
 }

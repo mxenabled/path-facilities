@@ -4,29 +4,31 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import com.mx.common.collections.ObjectArray;
 import com.mx.common.collections.ObjectMap;
-import com.mx.common.http.HttpStatus;
 import com.mx.common.security.EncryptionService;
-import com.mx.path.gateway.util.MdxApiException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
+import org.jasypt.exceptions.EncryptionInitializationException;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 
 /**
  * <h1>Jasypt EncryptionService</h1>
  *
  * <p>
- * Provides encryption service for using the Jasypt library. Allows for multiple
- * keys for easy key rotation. Uses key at currentKeyIndex for all encryption and
- * decrypts using the key used to encrypt (hashed identifier encoded in the cyphertext)
+ * Provides encryption service using the Jasypt library. Allows for multiple
+ * keys and easy key rotation. Uses key at currentKeyIndex for all encryption and
+ * decrypts using the original key used to encrypt (hashed identifier encoded in the cyphertext)
  * </p>
  *
  * <p>
- * Internally uses thread-safe, singleton EncryptionService
+ * Uses thread-safe, {@link PooledPBEStringEncryptor}
  * </p>
  *
  * <p>
@@ -46,8 +48,8 @@ import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
  * }
  *
  * <p>
- * To rotate keys, add to the keys list (removing any keys not needed anymore).
- * Change the currentKeyIndex to the zero-based index to use for all encryption
+ * To rotate keys, add to the keys list.
+ * Change the currentKeyIndex to the zero-based index of key to use for all encryption
  * </p>
  */
 public class JasyptEncryptionService implements EncryptionService {
@@ -58,10 +60,12 @@ public class JasyptEncryptionService implements EncryptionService {
   // Fields
 
   @Getter
-  private ObjectMap configurations;
+  private final ObjectMap configurations;
+  @Setter(AccessLevel.PACKAGE)
   private PooledPBEStringEncryptor currentEncryptor;
   private String currentKeyIdentifier;
-  private Map<String, PooledPBEStringEncryptor> encryptors = new HashMap<String, PooledPBEStringEncryptor>();
+  @Getter(AccessLevel.PACKAGE)
+  private final Map<String, PooledPBEStringEncryptor> encryptors = new HashMap<String, PooledPBEStringEncryptor>();
 
   // Constructors
 
@@ -80,32 +84,40 @@ public class JasyptEncryptionService implements EncryptionService {
 
   @Override
   public final String decrypt(String cypher) {
-    if (!configurations.getAsBoolean("enabled", DEFAULT_ENABLED)) {
-      return cypher;
+    try {
+      if (!isEncrypted(cypher)) {
+        return cypher;
+      }
+
+      String[] parts = cypher.split(":");
+      String key = parts[1];
+      cypher = parts[2];
+      PooledPBEStringEncryptor encryptor = encryptors.get(key);
+
+      if (Objects.isNull(encryptor)) {
+        throw new JasyptEncryptionOperationException("No suitable decryption key found");
+      }
+
+      return encryptor.decrypt(cypher);
+    } catch (EncryptionOperationNotPossibleException | EncryptionInitializationException e) {
+      throw new JasyptEncryptionOperationException("Decrypt operation failed", e);
     }
-
-    String[] parts = cypher.split(":");
-    String key = parts[1];
-    cypher = parts[2];
-    PooledPBEStringEncryptor encryptor = encryptors.get(key);
-
-    if (Objects.isNull(encryptor)) {
-      throw new MdxApiException("No suitable decyprtion key found", HttpStatus.INTERNAL_SERVER_ERROR, true, null);
-    }
-
-    return encryptor.decrypt(cypher);
   }
 
   @Override
   public final String encrypt(String value) {
-    if (!configurations.getAsBoolean("enabled", DEFAULT_ENABLED)) {
-      return value;
+    try {
+      if (!configurations.getAsBoolean("enabled", DEFAULT_ENABLED)) {
+        return value;
+      }
+
+      String cypher = currentEncryptor.encrypt(value);
+      cypher = "jasypt:" + currentKeyIdentifier + ":" + cypher;
+
+      return cypher;
+    } catch (EncryptionOperationNotPossibleException | EncryptionInitializationException e) {
+      throw new JasyptEncryptionOperationException("Encrypt operation failed", e);
     }
-
-    String cypher = currentEncryptor.encrypt(value);
-    cypher = "jasypt:" + currentKeyIdentifier + ":" + cypher;
-
-    return cypher;
   }
 
   @Override
