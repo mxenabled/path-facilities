@@ -11,7 +11,6 @@ import com.mx.common.messaging.EventListener;
 import com.mx.common.messaging.MessageBroker;
 import com.mx.common.messaging.MessageError;
 import com.mx.common.messaging.MessageResponder;
-import com.mx.common.messaging.MessageStatus;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,14 +58,14 @@ public class NatsMessageBroker implements MessageBroker {
 
       // io.nats.client.Connection#request docs indicate that a null is returned if timeout is reached
       if (msg == null) {
-        throw new MessageError("Request timed out (returned null)", MessageStatus.TIMEOUT, null);
+        throw new NatsMessageBrokerTimeoutException("Request timed out (returned null)");
       }
 
       return new String(msg.getData(), StandardCharsets.UTF_8);
     } catch (MessageError e) {
       throw e;
     } catch (InterruptedException e) {
-      throw new MessageError("Request interrupted", e);
+      throw new NatsMessageBrokerMessageInterruptedException("Request interrupted", e);
     } catch (Exception e) {
       throw new MessageError("Request failed", e);
     }
@@ -87,13 +86,13 @@ public class NatsMessageBroker implements MessageBroker {
   final Connection connection() {
     if (connection == null) {
       if (configuration == null || !configuration.isEnabled()) {
-        throw new MessageError("Nats messaging is disabled", MessageStatus.DISABLED, null);
+        throw new NatsMessageBrokerDisabledException("Nats messaging is disabled", null);
       }
 
       try {
         connection = Nats.connect(new NatsConfigurationBuilder(configuration).buildNATSConfiguration());
       } catch (IOException | InterruptedException e) {
-        throw new MessageError("Failed to establish nats connection", e);
+        throw new NatsMessageBrokerOperationException("Failed to establish nats connection", e);
       }
     }
 

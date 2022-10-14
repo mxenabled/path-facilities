@@ -70,7 +70,7 @@ class NatsConfigurationBuilderTest extends Specification {
     def options = subject.buildNATSConfiguration()
 
     then:
-    thrown(MessageError)
+    thrown(NatsMessageBrokerConfigurationException)
   }
 
   def "fails when not configured"() {
@@ -81,6 +81,6 @@ class NatsConfigurationBuilderTest extends Specification {
     def options = subject.buildNATSConfiguration()
 
     then:
-    thrown(MessageError)
+    thrown(NatsMessageBrokerConfigurationException)
   }
 }

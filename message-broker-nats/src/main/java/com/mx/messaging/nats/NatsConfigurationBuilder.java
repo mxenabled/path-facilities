@@ -20,8 +20,6 @@ import javax.net.ssl.TrustManagerFactory;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.mx.common.lang.Strings;
-import com.mx.common.messaging.MessageError;
-import com.mx.common.messaging.MessageStatus;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -34,7 +32,7 @@ import io.nats.client.Options;
 @SuppressFBWarnings
 public class NatsConfigurationBuilder {
 
-  private NatsConfiguration configuration;
+  private final NatsConfiguration configuration;
 
   public NatsConfigurationBuilder(NatsConfiguration configuration) {
     this.configuration = configuration;
@@ -42,11 +40,11 @@ public class NatsConfigurationBuilder {
 
   public final Options buildNATSConfiguration() {
     if (configuration == null) {
-      throw new MessageError("Nats configuration not provided", MessageStatus.DISABLED, null);
+      throw new NatsMessageBrokerConfigurationException("Nats configuration not provided");
     }
 
     if (!configuration.isEnabled()) {
-      throw new MessageError("Nats configuration disabled", MessageStatus.DISABLED, null);
+      throw new NatsMessageBrokerConfigurationException("Nats configuration disabled");
     }
 
     String[] natsServers = configuration.getServers().split(",");
@@ -99,7 +97,7 @@ public class NatsConfigurationBuilder {
       context = SSLContext.getInstance("TLSv1.2");
       context.init(keyManager.getKeyManagers(), trustManager.getTrustManagers(), null);
     } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException | UnrecoverableKeyException | KeyManagementException e) {
-      throw new MessageError("Failed to load nats SSL certificates", e);
+      throw new NatsMessageBrokerConfigurationException("Failed to load nats SSL certificates", e);
     }
     return context;
   }
@@ -108,9 +106,9 @@ public class NatsConfigurationBuilder {
     try (PEMParser pemParser = new PEMParser(new FileReader(path))) {
       return pemParser.readObject();
     } catch (FileNotFoundException e) {
-      throw new MessageError("Unable to create Nats SSL Context - File not found " + path, e);
+      throw new NatsMessageBrokerConfigurationException("Unable to create Nats SSL Context - File not found " + path, e);
     } catch (IOException e) {
-      throw new MessageError("Unable to create Nats SSL Context - Cannot read file " + path, e);
+      throw new NatsMessageBrokerConfigurationException("Unable to create Nats SSL Context - Cannot read file " + path, e);
     }
   }
 }
