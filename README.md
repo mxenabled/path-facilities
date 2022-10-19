@@ -19,13 +19,13 @@ _Gradle_
 <!-- x-release-please-start-version -->
 ```groovy
 dependencies {
-  implementation "com.github.mxenabled.path-facilities:store-redis:1.0.0"
-  implementation "com.github.mxenabled.path-facilities:store-vault:1.0.0"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:1.0.0"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:1.0.0"
-  implementation "com.github.mxenabled.path-facilities:message-broker-nats:1.0.0"
-  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:1.0.0"
-  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:1.0.0"
+  implementation "com.github.mxenabled.path-facilities:store-redis:1.1.0"
+  implementation "com.github.mxenabled.path-facilities:store-vault:1.1.0"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:1.1.0"
+  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:1.1.0"
+  implementation "com.github.mxenabled.path-facilities:message-broker-nats:1.1.0"
+  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:1.1.0"
+  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:1.1.0"
 }
 ```
 <!-- x-release-please-end -->
