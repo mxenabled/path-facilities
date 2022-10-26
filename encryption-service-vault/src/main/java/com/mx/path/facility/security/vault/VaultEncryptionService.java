@@ -57,10 +57,10 @@ public class VaultEncryptionService implements EncryptionService {
   /**
    * Encrypts given plaintext. Blank and null are returned unaffected
    *
-   * Rebuilds the driver on failure and tries again.
+   * <p>Rebuilds the driver on failure and tries again.
    *
-   * @param plaintext
-   * @return ciphertext
+   * @param plaintext unencrypted text
+   * @return ciphertext encrypted text
    */
   @Override
   public final String encrypt(String plaintext) {
@@ -76,10 +76,10 @@ public class VaultEncryptionService implements EncryptionService {
   /**
    * Decrypt given ciphertext
    *
-   * Rebuilds the driver on failure and tries again.
+   * <p>Rebuilds the driver on failure and tries again.
    *
-   * @param ciphertext
-   * @return plaintext
+   * @param ciphertext encrypted text
+   * @return plaintext unencrypted text
    */
   @Override
   public final String decrypt(String ciphertext) {
@@ -93,6 +93,8 @@ public class VaultEncryptionService implements EncryptionService {
   }
 
   /**
+   * Determines if given text is a valid ciphertext
+   *
    * @param value to evaluate
    * @return true if given value is encrypted by this service, otherwise false
    */
@@ -108,7 +110,7 @@ public class VaultEncryptionService implements EncryptionService {
   /**
    * Rotate transit key
    *
-   * Does not raise exception on failure.
+   * <p>Does not raise exception on failure.
    */
   @Override
   public final void rotateKeys() {
@@ -138,7 +140,7 @@ public class VaultEncryptionService implements EncryptionService {
   /**
    * Builds and configures instance of Vault
    *
-   * @param authToken
+   * @param authToken auth token for driver
    * @return configured Vault driver
    */
   final Vault buildVaultDriver(@Nullable String authToken) {
@@ -166,7 +168,7 @@ public class VaultEncryptionService implements EncryptionService {
   /**
    * Create transit key
    *
-   * Does not raise exception on failure.
+   * <p>Does not raise exception on failure.
    */
   final void initKey() {
     try {
@@ -180,7 +182,7 @@ public class VaultEncryptionService implements EncryptionService {
   /**
    * Load key configuration
    *
-   * Does not raise exceptions
+   * <p>Does not raise exceptions
    *
    * @return the key, if successful, else null
    */
@@ -201,7 +203,7 @@ public class VaultEncryptionService implements EncryptionService {
   /**
    * Set the minimum decryption key
    *
-   * Does not raise exception on failure.
+   * <p>Does not raise exception on failure.
    *
    * @param minDecryptionVersion
    */

@@ -13,9 +13,9 @@ public final class ConfigurationUtils {
   /**
    * Utility method for easily merging configuration objects. Ignores source-properties that are null.
    *
-   * @param destination
-   * @param source
-   * @param <T>
+   * @param destination object
+   * @param source object
+   * @param <T> type of configuration objects
    */
   public <T> void mergeNonNullProperties(@NonNull T destination, @NonNull T source) {
     try {

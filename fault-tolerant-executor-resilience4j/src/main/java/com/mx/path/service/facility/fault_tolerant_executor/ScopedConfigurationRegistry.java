@@ -91,10 +91,11 @@ public final class ScopedConfigurationRegistry {
 
   /**
    * Returns a CircuitBreaker for the provided scope, or a default CircuitBreaker if there is not a scope match.
-   * Returns null if the CircuitBreaker facility has been disabled.
    *
-   * @param scope
-   * @return
+   * <p>Returns null if the CircuitBreaker facility has been disabled.
+   *
+   * @param scope scope
+   * @return CircuitBreaker for scope
    */
   public CircuitBreaker getCircuitBreaker(String scope) {
     ScopedResilience4jConfigurations scopedConfigs = findBestConfigurations(scope);
@@ -107,10 +108,11 @@ public final class ScopedConfigurationRegistry {
 
   /**
    * Returns a Bulkhead for the provided scope, or a default Bulkhead if there is not a scope match.
-   * Returns null if the Bulkhead facility has been disabled.
    *
-   * @param scope
-   * @return
+   * <p>Returns null if the Bulkhead facility has been disabled.
+   *
+   * @param scope scope
+   * @return Bulkhead for scope
    */
   public Bulkhead getBulkhead(String scope) {
     ScopedResilience4jConfigurations scopedConfigs = findBestConfigurations(scope);
@@ -123,10 +125,11 @@ public final class ScopedConfigurationRegistry {
 
   /**
    * Returns a TimeLimiter for the provided scope, or a default TimeLimiter if there is not a scope match.
-   * Returns null if the TimeLimiter facility has been disabled.
    *
-   * @param scope
-   * @return
+   * <p>Returns null if the TimeLimiter facility has been disabled.
+   *
+   * @param scope scope
+   * @return TimeLimiter for scope
    */
   public TimeLimiter getTimeLimiter(String scope) {
     ScopedResilience4jConfigurations scopedConfigs = findBestConfigurations(scope);
@@ -139,10 +142,11 @@ public final class ScopedConfigurationRegistry {
 
   /**
    * Returns a ThreadPoolBulkhead for the provided scope, or a default ThreadPoolBulkhead if there is not a scope match.
-   * Returns null if the ThreadPoolBulkhead facility has been disabled.
    *
-   * @param scope
-   * @return
+   * <p>Returns null if the ThreadPoolBulkhead facility has been disabled.
+   *
+   * @param scope scope
+   * @return ThreadPoolBulkhead for scope
    */
   public ThreadPoolBulkhead getThreadPoolBulkhead(String scope) {
     ScopedResilience4jConfigurations scopedConfigs = findBestConfigurations(scope);
@@ -158,8 +162,8 @@ public final class ScopedConfigurationRegistry {
    * `faultTolerantScopeConfigurationMap` since it is _highly_ likely more tasks will be submitted for the provided
    * scope.
    *
-   * @param scope
-   * @return FaultTolerantScopeConfiguration
+   * @param scope scope
+   * @return FaultTolerantScopeConfiguration for scope
    */
   public FaultTolerantScopeConfiguration getFaultTolerantScopeConfiguration(String scope) {
     if (!faultTolerantScopeConfigurationMap.containsKey(scope)) {
@@ -173,8 +177,8 @@ public final class ScopedConfigurationRegistry {
    * Searches the registered configurations for a scope match. If no direct match is found, another search is done
    * for a partial match. If no match is found in either case, the default configurations are returned.
    *
-   * @param scope
-   * @return ScopedResilience4jConfigurations
+   * @param scope scope
+   * @return ScopedResilience4jConfigurations for scope
    */
   @NonNull
   ScopedResilience4jConfigurations findBestConfigurations(String scope) {
@@ -199,8 +203,8 @@ public final class ScopedConfigurationRegistry {
    * Creates a copy of the default configurations, applies the overrides, and returns the new configurations. Does not
    * mutate the input.
    *
-   * @param defaults
-   * @param overrides
+   * @param defaults configurations defaults
+   * @param overrides configuration overrides
    */
   Resilience4jConfigurations mergeConfigurations(Resilience4jConfigurations defaults, Resilience4jConfigurations overrides) {
     ConfigurationUtils configUtils = new ConfigurationUtils();
@@ -218,8 +222,8 @@ public final class ScopedConfigurationRegistry {
    * Uses the supplied configurations to register a bulkhead,
    * circuit breaker, and time limiter for the provided scope.
    *
-   * @param scope
-   * @param configurations
+   * @param scope scope
+   * @param configurations for scope
    */
   void registerConfigurations(String scope, Resilience4jConfigurations configurations) {
     ScopedResilience4jConfigurations scopedConfigurations = new ScopedResilience4jConfigurations();
@@ -235,8 +239,9 @@ public final class ScopedConfigurationRegistry {
 
   /**
    * A scope must be a dot (.) delimited string.
-   * @param scope
-   * @return
+   *
+   * @param scope scope
+   * @return true, if given scope is valid
    */
   boolean isValidScopeSyntax(String scope) {
     return SCOPE_PATTERN.matcher(scope).matches();

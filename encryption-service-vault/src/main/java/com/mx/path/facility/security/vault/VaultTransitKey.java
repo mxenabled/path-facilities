@@ -63,7 +63,8 @@ public class VaultTransitKey {
 
   /**
    * Inflate new instance of VaultTransitKey from REST API JSON response body.
-   * @param json
+   *
+   * @param json object
    * @return new VaultTransitKey instance
    */
   public static VaultTransitKey fromJsonObject(JsonObject json) {
