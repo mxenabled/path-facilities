@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/mxenabled/path-facilities/compare/v1.1.0...1.2.0) (2022-10-27)
+
+
+### Features
+
+* publish javadoc and sources artifact ([8c2fd7b](https://github.com/mxenabled/path-facilities/commit/8c2fd7bf5f62b1f04f84f0a7696b4e6c46e6b371))
+
 ## [1.1.0](https://github.com/mxenabled/path-facilities/compare/v1.0.0...v1.1.0) (2022-10-19)
 
 
