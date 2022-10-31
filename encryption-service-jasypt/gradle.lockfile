@@ -2,8 +2,16 @@
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
 antlr:antlr:2.7.7=checkstyle
+com.auth0:java-jwt:4.2.1=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.beust:jcommander:1.48=pmd
+com.fasterxml.jackson.core:jackson-annotations:2.14.0-rc1=runtimeClasspath,testRuntimeClasspath
+com.fasterxml.jackson.core:jackson-core:2.14.0-rc1=runtimeClasspath,testRuntimeClasspath
+com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1=runtimeClasspath,testRuntimeClasspath
+com.fasterxml.jackson:jackson-bom:2.14.0-rc1=runtimeClasspath,testRuntimeClasspath
 com.github.mxenabled.path-core:common:1.2.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.github.mxenabled.path-core:context:1.2.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.github.mxenabled.path-core:platform:1.2.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.github.mxenabled.path-core:utilities:1.2.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.spotbugs:spotbugs-annotations:4.4.2=spotbugs
 com.github.spotbugs:spotbugs-annotations:4.7.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.spotbugs:spotbugs:4.4.2=spotbugs
@@ -23,7 +31,9 @@ commons-beanutils:commons-beanutils:1.9.4=checkstyle
 commons-codec:commons-codec:1.15=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 commons-collections:commons-collections:3.2.2=checkstyle
 commons-io:commons-io:2.6=pmd
+commons-lang:commons-lang:2.6=runtimeClasspath,testRuntimeClasspath
 info.picocli:picocli:4.1.4=checkstyle
+io.opentracing:opentracing-api:0.33.0=runtimeClasspath,testRuntimeClasspath
 jaxen:jaxen:1.2.0=spotbugs
 net.bytebuddy:byte-buddy-agent:1.12.16=testCompileClasspath,testRuntimeClasspath
 net.bytebuddy:byte-buddy:1.12.16=testCompileClasspath,testRuntimeClasspath

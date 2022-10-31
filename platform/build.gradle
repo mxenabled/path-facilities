@@ -1,0 +1,37 @@
+plugins {
+  id "java-platform"
+  id "maven-publish"
+}
+
+javaPlatform {
+  allowDependencies()
+}
+
+dependencyLocking {
+  lockAllConfigurations()
+  lockMode = LockMode.STRICT
+}
+
+// Dependency versions aren't resolved, by default. Check this out to resolve this issue:
+// https://github.com/gradle/gradle/issues/8887
+dependencies {
+  api(platform("com.github.mxenabled.path-sdk:platform:${project.ext.pathSDKVersion}"))
+
+  constraints {
+    api(project(":message-broker-nats"))
+    api(project(":store-vault"))
+    api(project(":store-redis"))
+    api(project(":fault-tolerant-executor-resilience4j"))
+    api(project(":exception-reporter-honeybadger"))
+    api(project(":encryption-service-vault"))
+    api(project(":encryption-service-jasypt"))
+  }
+}
+
+publishing {
+  publications {
+    bom(MavenPublication) {
+      from components.javaPlatform
+    }
+  }
+}

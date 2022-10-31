@@ -2,8 +2,16 @@
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
 antlr:antlr:2.7.7=checkstyle
+com.auth0:java-jwt:4.2.1=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.beust:jcommander:1.48=pmd
+com.fasterxml.jackson.core:jackson-annotations:2.14.0-rc1=runtimeClasspath,testRuntimeClasspath
+com.fasterxml.jackson.core:jackson-core:2.14.0-rc1=runtimeClasspath,testRuntimeClasspath
+com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1=runtimeClasspath,testRuntimeClasspath
+com.fasterxml.jackson:jackson-bom:2.14.0-rc1=runtimeClasspath,testRuntimeClasspath
 com.github.mxenabled.path-core:common:1.2.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.github.mxenabled.path-core:context:1.2.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.github.mxenabled.path-core:platform:1.2.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.github.mxenabled.path-core:utilities:1.2.0=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.spotbugs:spotbugs-annotations:4.4.2=spotbugs
 com.github.spotbugs:spotbugs-annotations:4.7.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.github.spotbugs:spotbugs:4.4.2=spotbugs
@@ -22,6 +30,7 @@ com.puppycrawl.tools:checkstyle:8.29=checkstyle
 commons-beanutils:commons-beanutils:1.9.4=checkstyle
 commons-collections:commons-collections:3.2.2=checkstyle
 commons-io:commons-io:2.6=pmd
+commons-lang:commons-lang:2.6=runtimeClasspath,testRuntimeClasspath
 info.picocli:picocli:4.1.4=checkstyle
 io.github.resilience4j:resilience4j-bulkhead:1.7.1=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 io.github.resilience4j:resilience4j-circuitbreaker:1.7.1=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
@@ -29,6 +38,7 @@ io.github.resilience4j:resilience4j-core:1.7.1=compileClasspath,runtimeClasspath
 io.github.resilience4j:resilience4j-ratelimiter:1.7.1=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 io.github.resilience4j:resilience4j-retry:1.7.1=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 io.github.resilience4j:resilience4j-timelimiter:1.7.1=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+io.opentracing:opentracing-api:0.33.0=runtimeClasspath,testRuntimeClasspath
 io.vavr:vavr-match:0.10.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 io.vavr:vavr:0.10.2=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 jaxen:jaxen:1.2.0=spotbugs

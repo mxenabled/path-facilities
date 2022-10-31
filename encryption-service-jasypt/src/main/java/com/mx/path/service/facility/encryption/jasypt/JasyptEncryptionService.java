@@ -25,15 +25,12 @@ import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
  * Provides encryption service using the Jasypt library. Allows for multiple
  * keys and easy key rotation. Uses key at currentKeyIndex for all encryption and
  * decrypts using the original key used to encrypt (hashed identifier encoded in the cyphertext)
- * </p>
  *
  * <p>
  * Uses thread-safe, {@link PooledPBEStringEncryptor}
- * </p>
  *
  * <p>
  * To configure:
- * </p>
  *
  * <h2>In gateway.yml</h2>
  * {@code
@@ -50,7 +47,6 @@ import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
  * <p>
  * To rotate keys, add to the keys list.
  * Change the currentKeyIndex to the zero-based index of key to use for all encryption
- * </p>
  */
 public class JasyptEncryptionService implements EncryptionService {
 

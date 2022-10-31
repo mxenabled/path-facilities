@@ -8,13 +8,23 @@ plugins {
 
 version "1.2.0" // x-release-please-version
 
+def platformProject = "platform"
+
+
 allprojects {
+  if (it.name != platformProject) {
+    apply plugin: "java"
+  }
+
   group "com.github.mxenabled.path-facilities"
   description "Path Facilities"
   version rootProject.version
-  apply plugin: "java"
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
+
+  ext {
+    pathSDKVersion = "1.+"
+  }
 
   repositories {
     mavenCentral()
@@ -24,69 +34,72 @@ allprojects {
 }
 
 subprojects {
-  apply plugin: "java"
-  apply plugin: "java-library"
-  apply plugin: "maven-publish"
-  apply plugin: "groovy"
-  apply plugin: "com.github.mxenabled.hush"
-  apply plugin: "com.github.mxenabled.coppuccino"
-  apply plugin: "com.github.mxenabled.vogue"
-  apply plugin: "io.freefair.lombok"
+  if (it.name != platformProject) {
+    apply plugin: "java-library"
+    apply plugin: "maven-publish"
+    apply plugin: "groovy"
+    apply plugin: "com.github.mxenabled.hush"
+    apply plugin: "com.github.mxenabled.coppuccino"
+    apply plugin: "com.github.mxenabled.vogue"
+    apply plugin: "io.freefair.lombok"
 
-  dependencies {
-    implementation "com.github.mxenabled.path-core:common:1.+"
-  }
-
-  test { useJUnitPlatform() }
-
-  compileJava { options.compilerArgs << "-parameters" }
-
-  sourceSets {
-    test {
-      groovy { srcDirs "src/test/groovy" }
-      java { srcDirs "src/test/java" }
+    dependencies {
+      implementation platform("com.github.mxenabled.path-core:platform:${project.ext.pathSDKVersion}")
+      implementation "com.github.mxenabled.path-core:common"
+      implementation "com.github.mxenabled.path-core:context"
     }
-  }
 
-  javadoc {
-    source = sourceSets.main.allJava
-    classpath = configurations.compileClasspath
-    options {
-      setMemberLevel JavadocMemberLevel.PUBLIC
-      setAuthor true
+    test { useJUnitPlatform() }
+
+    compileJava { options.compilerArgs << "-parameters" }
+
+    sourceSets {
+      test {
+        groovy { srcDirs "src/test/groovy" }
+        java { srcDirs "src/test/java" }
+      }
     }
-  }
 
-  coppuccino {
-    rootDir = "${projectDir}/"
-  }
+    javadoc {
+      source = sourceSets.main.allJava
+      classpath = configurations.compileClasspath
+      options {
+        setMemberLevel JavadocMemberLevel.PUBLIC
+        setAuthor true
+      }
+    }
 
-  vogue {
-    dependencyUpdatesOutputDir = "${projectDir}/build/dependencyUpdates"
-  }
+    coppuccino {
+      rootDir = "${projectDir}/"
+    }
 
-  task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
-  }
+    vogue {
+      dependencyUpdatesOutputDir = "${projectDir}/build/dependencyUpdates"
+    }
 
-  task packageJavadoc(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-  }
+    task sourcesJar(type: Jar, dependsOn: classes) {
+      classifier = "sources"
+      from sourceSets.main.allSource
+    }
 
-  artifacts {
-    archives sourcesJar
-    archives jar
-    archives packageJavadoc
-  }
+    task packageJavadoc(type: Jar) {
+      classifier = 'javadoc'
+      from javadoc
+    }
 
-  publishing {
-    publications {
-      mavenJava(MavenPublication) {
-        from components.java
-        artifact sourcesJar
-        artifact packageJavadoc
+    artifacts {
+      archives sourcesJar
+      archives jar
+      archives packageJavadoc
+    }
+
+    publishing {
+      publications {
+        mavenJava(MavenPublication) {
+          from components.java
+          artifact sourcesJar
+          artifact packageJavadoc
+        }
       }
     }
   }
@@ -94,27 +107,33 @@ subprojects {
 
 task spotlessApply {
   subprojects.each {
-    it.afterEvaluate {
-      def spotlessApplyTask = it.tasks.findByName("spotlessApply")
-      dependsOn(spotlessApplyTask)
+    if (it.name != platformProject) {
+      it.afterEvaluate {
+        def spotlessApplyTask = it.tasks.findByName("spotlessApply")
+        dependsOn(spotlessApplyTask)
+      }
     }
   }
 }
 
 task dependencyCheckAnalyze {
   subprojects.each {
-    it.afterEvaluate {
-      def dependencyCheckAnalyzeTask = it.tasks.findByName("dependencyCheckAnalyze")
-      dependsOn(dependencyCheckAnalyzeTask)
+    if (it.name != platformProject) {
+      it.afterEvaluate {
+        def dependencyCheckAnalyzeTask = it.tasks.findByName("dependencyCheckAnalyze")
+        dependsOn(dependencyCheckAnalyzeTask)
+      }
     }
   }
 }
 
 task subdependencies {
   subprojects.each {
-    it.afterEvaluate {
-      def dependenciesTask = it.tasks.findByName("dependencies")
-      dependsOn(dependenciesTask)
+    if (it.name != platformProject) {
+      it.afterEvaluate {
+        def dependenciesTask = it.tasks.findByName("dependencies")
+        dependsOn(dependenciesTask)
+      }
     }
   }
 }
