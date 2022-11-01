@@ -7,7 +7,7 @@ coppuccino {
 dependencies {
   implementation "org.jasypt:jasypt:1.9.3"
   implementation "commons-codec:commons-codec:1.15"
-  compileOnly "org.slf4j:slf4j-api:1.7.30"
+  compileOnly "org.slf4j:slf4j-api"
 
   //testing dependencies
   testImplementation "org.mockito:mockito-inline:4.+"
