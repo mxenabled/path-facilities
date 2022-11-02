@@ -19,7 +19,7 @@ import org.jasypt.exceptions.EncryptionInitializationException;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 
 /**
- * <h1>Jasypt EncryptionService</h1>
+ * Jasypt EncryptionService
  *
  * <p>
  * Provides encryption service using the Jasypt library. Allows for multiple
