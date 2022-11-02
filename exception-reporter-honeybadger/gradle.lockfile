@@ -94,4 +94,4 @@ org.springframework:spring-core:5.3.23=compileClasspath,runtimeClasspath,testCom
 org.springframework:spring-expression:5.3.23=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.springframework:spring-jcl:5.3.23=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 org.yaml:snakeyaml:1.33=compileClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
-empty=spotbugsPlugins
+empty=signatures,spotbugsPlugins

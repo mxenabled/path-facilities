@@ -15,36 +15,41 @@ Issues: https://github.com/mxenabled/path-sdk/issues
 
 ## Usage
 
+### Using platform (preferred)
+
 _Gradle_
 <!-- x-release-please-start-version -->
 ```groovy
 dependencies {
-  implementation "com.github.mxenabled.path-facilities:store-redis:1.2.0"
-  implementation "com.github.mxenabled.path-facilities:store-vault:1.2.0"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:1.2.0"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:1.2.0"
-  implementation "com.github.mxenabled.path-facilities:message-broker-nats:1.2.0"
-  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:1.2.0"
-  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:1.2.0"
+  api platform("com.mx.path-core:platform:1.2.0")
+
+  implementation "com.mx.path-facilities:store-redis"
+  implementation "com.mx.path-facilities:store-vault"
+  implementation "com.mx.path-facilities:encryption-service-vault"
+  implementation "com.mx.path-facilities:encryption-service-jasypt"
+  implementation "com.mx.path-facilities:message-broker-nats"
+  implementation "com.mx.path-facilities:fault-tolerant-executor-resilience4j"
+  implementation "com.mx.path-facilities:exception-reporter-honeybadger"
 }
 ```
 <!-- x-release-please-end -->
 
-_Or pin to the the latest major version_
-<!-- x-release-please-start-major -->
+### Using without platform
+
+_Gradle_
+<!-- x-release-please-start-version -->
 ```groovy
 dependencies {
-  implementation "com.github.mxenabled.path-facilities:store-redis:1.+"
-  implementation "com.github.mxenabled.path-facilities:store-vault:1.+"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-vault:1.+"
-  implementation "com.github.mxenabled.path-facilities:encryption-service-jasypt:1.+"
-  implementation "com.github.mxenabled.path-facilities:message-broker-nats:1.+"
-  implementation "com.github.mxenabled.path-facilities:fault-tolerant-executor-resilience4j:1.+"
-  implementation "com.github.mxenabled.path-facilities:exception-reporter-honeybadger:1.+"
+  implementation "com.mx.path-facilities:store-redis:1.2.0"
+  implementation "com.mx.path-facilities:store-vault:1.2.0"
+  implementation "com.mx.path-facilities:encryption-service-vault:1.2.0"
+  implementation "com.mx.path-facilities:encryption-service-jasypt:1.2.0"
+  implementation "com.mx.path-facilities:message-broker-nats:1.2.0"
+  implementation "com.mx.path-facilities:fault-tolerant-executor-resilience4j:1.2.0"
+  implementation "com.mx.path-facilities:exception-reporter-honeybadger:1.2.0"
 }
 ```
 <!-- x-release-please-end -->
-
 
 ## Releases
 
