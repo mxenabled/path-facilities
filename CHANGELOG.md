@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/mxenabled/path-facilities/compare/1.3.0...1.3.1) (2022-11-03)
+
+
+### Bug Fixes
+
+* subscribe publish to release publish event ([6d04a62](https://github.com/mxenabled/path-facilities/commit/6d04a62152d58232b8faeb8b374dd50d97bae722))
+
 ## [1.3.0](https://github.com/mxenabled/path-facilities/compare/1.2.0...1.3.0) (2022-11-03)
 
 
