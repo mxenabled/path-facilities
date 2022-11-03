@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/mxenabled/path-facilities/compare/1.2.0...1.3.0) (2022-11-03)
+
+
+### Features
+
+* bump version to deploy to maven central ([d947495](https://github.com/mxenabled/path-facilities/commit/d94749578705d6299976f09377c898e5b66b670c))
+* publish platform ([bbad50e](https://github.com/mxenabled/path-facilities/commit/bbad50e2e293c9771a7c80a1802d26dfccd9f2bc))
+
 ## [1.2.0](https://github.com/mxenabled/path-facilities/compare/v1.1.0...1.2.0) (2022-10-27)
 
 
