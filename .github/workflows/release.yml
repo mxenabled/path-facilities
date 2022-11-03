@@ -1,7 +1,10 @@
-name: release_manual
+name: release
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   # ---------------------------------------------------------------
