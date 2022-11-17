@@ -1,7 +1,8 @@
-[![Release](https://jitpack.io/v/mxenabled/path-facilities.svg)](https://jitpack.io/p/mxenabled/path-facilities)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.mx.path-facilities/platform/badge.svg)](https://search.maven.org/search?q=com.mx.path-facilities)
+![img](https://img.shields.io/badge/semver-2.0.0-green)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
-Issues: https://github.com/mxenabled/path-sdk/issues
+Issues: https://github.com/mxenabled/path-core/issues
 
 # Path - Facilities
 
@@ -21,7 +22,7 @@ _Gradle_
 <!-- x-release-please-start-version -->
 ```groovy
 dependencies {
-  api platform("com.mx.path-core:platform:1.3.1")
+  api platform("com.mx.path-facilities:platform:1.3.1")
 
   implementation "com.mx.path-facilities:store-redis"
   implementation "com.mx.path-facilities:store-vault"
@@ -53,7 +54,7 @@ dependencies {
 
 ## Releases
 
-The Path SDK is published via [JitPack](https://jitpack.io/#mxenabled/path-sdk).
+The Path SDK is published to Maven Central at https://search.maven.org/search?q=com.mx.path-core
 
 ### Branching Strategy
 
