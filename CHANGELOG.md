@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.2](https://github.com/mxenabled/path-facilities/compare/1.3.1...v1.3.2) (2022-12-13)
+
+
+### Bug Fixes
+
+* pin netty to 4.1.86.Final for CVE-2022-41915 ([d8199bd](https://github.com/mxenabled/path-facilities/commit/d8199bdbcec46eb57a099997075d065577a1cb31))
+* syntax ([d8199bd](https://github.com/mxenabled/path-facilities/commit/d8199bdbcec46eb57a099997075d065577a1cb31))
+
 ## [1.3.1](https://github.com/mxenabled/path-facilities/compare/1.3.0...1.3.1) (2022-11-03)
 
 
