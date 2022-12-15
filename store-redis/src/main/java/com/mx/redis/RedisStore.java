@@ -1,12 +1,12 @@
 package com.mx.redis;
 
-import java.time.Duration;
 import java.util.Set;
 import java.util.function.Function;
 
 import lombok.Getter;
 
-import com.mx.common.collections.ObjectMap;
+import com.google.gson.GsonBuilder;
+import com.mx.common.configuration.Configuration;
 import com.mx.common.store.Store;
 
 import io.lettuce.core.ClientOptions;
@@ -22,15 +22,10 @@ import io.lettuce.core.resource.ClientResources;
  */
 public class RedisStore implements Store {
 
-  private static final int DEFAULT_COMPUTATION_THREAD_POOL_SIZE = 5;
-  private static final int DEFAULT_CONNECTION_TIMEOUT_IN_SECONDS = 10;
-  private static final String DEFAULT_HOST = "localhost";
-  private static final int DEFAULT_PORT = 6379;
-  private static final int DEFAULT_THREAD_POOL_SIZE = 5;
   private static final String PUT_UNSUPPORTED_OPERATION = "Put operations must have an expiration";
 
   @Getter
-  private final ObjectMap configurations;
+  private final RedisStoreConfiguration configuration;
   @Getter
   private StatefulRedisConnection<String, String> connection;
 
@@ -38,8 +33,11 @@ public class RedisStore implements Store {
     this.connection = connection;
   }
 
-  public RedisStore(ObjectMap configurations) {
-    this.configurations = configurations;
+  public RedisStore(@Configuration RedisStoreConfiguration redisStoreConfiguration) {
+    redisStoreConfiguration.getConnectionTimeout();
+    System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(redisStoreConfiguration));
+
+    this.configuration = redisStoreConfiguration;
   }
 
   @Override
@@ -129,11 +127,11 @@ public class RedisStore implements Store {
   final synchronized StatefulRedisConnection<String, String> buildConnection() {
     try {
       ClientResources resources = ClientResources.builder()
-          .ioThreadPoolSize(configurations.getAsInteger("ioThreadPoolSize", DEFAULT_THREAD_POOL_SIZE))
-          .computationThreadPoolSize(configurations.getAsInteger("computationThreadPoolSize", DEFAULT_COMPUTATION_THREAD_POOL_SIZE))
+          .ioThreadPoolSize(configuration.getIoThreadPoolSize())
+          .computationThreadPoolSize(configuration.getComputationThreadPoolSize())
           .build();
 
-      RedisClient redisClient = RedisClient.create(resources, new RedisURI(configurations.getAsString("host", DEFAULT_HOST), configurations.getAsInteger("port", DEFAULT_PORT), Duration.ofSeconds(configurations.getAsInteger("connectionTimeoutSeconds", DEFAULT_CONNECTION_TIMEOUT_IN_SECONDS))));
+      RedisClient redisClient = RedisClient.create(resources, new RedisURI(configuration.getHost(), configuration.getPort(), configuration.getConnectionTimeout()));
 
       // RESP3 executes a HELLO command to discover the protocol before executing any commands made by the client.
       // This can cause issues if we are communicating over a proxy and the proxy doesn't speak RESP3. For now, it is safer
