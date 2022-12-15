@@ -7,8 +7,6 @@ import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
-import com.mx.common.collections.ObjectMap
-
 import org.mockito.Mockito
 
 import io.lettuce.core.RedisException
@@ -22,9 +20,10 @@ class RedisStoreTest extends Specification implements WithMockery {
   StatefulRedisConnection<String, String> connection
   RedisCommands<String, String> commands
   RedisStore subject
-  ObjectMap configurations
+  RedisStoreConfiguration configurations
 
   def setup() {
+    configurations = new RedisStoreConfiguration()
     connection = mock(StatefulRedisConnection.class, Mockito.RETURNS_DEEP_STUBS)
     commands = mock(RedisCommands.class)
     when(connection.sync()).thenReturn(commands)
@@ -40,7 +39,7 @@ class RedisStoreTest extends Specification implements WithMockery {
 
     then:
     subject.getConnection() == conn
-    subject.getConfigurations() == configurations
+    subject.getConfiguration() == configurations
   }
 
   def "delete"() {
