@@ -35,6 +35,7 @@ public final class VaultStore implements Store {
   private volatile Vault driver;
 
   enum AuthenticationType {
+    @Deprecated
     APPID,
     APPROLE,
     TOKEN
