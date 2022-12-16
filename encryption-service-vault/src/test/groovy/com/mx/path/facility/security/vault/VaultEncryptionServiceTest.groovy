@@ -36,40 +36,40 @@ class VaultEncryptionServiceTest extends Specification {
   }
 
   def configWithAppId() {
-    return new ObjectMap().tap {
-      put("uri", "http://localhost:8200")
-      put("enabled", true)
-      put("authentication", "APPID")
-      put("app-id", "wedge")
-      put("keyName", "test-key")
-      put("user-id", "1f2cef4b6fe846fd86a4f6730ab74106")
-      put("maxRetries", 2)
-      put("numKeysToKeep", 3)
+    return new VaultEncryptionServiceConfiguration().tap {
+      setUri("http://localhost:8200")
+      setEnabled(true)
+      setAuthentication("APPID")
+      setAppId("wedge")
+      setKeyName("test-key")
+      setUserId("1f2cef4b6fe846fd86a4f6730ab74106")
+      setMaxRetries(2)
+      setNumKeysToKeep(3)
     }
   }
 
   def configWithToken() {
-    return new ObjectMap().tap {
-      put("uri", "http://localhost:8200")
-      put("enabled", true)
-      put("authentication", "TOKEN")
-      put("token", "token12345")
-      put("keyName", "test-key")
-      put("maxRetries", 2)
-      put("numKeysToKeep", 3)
+    return new VaultEncryptionServiceConfiguration().tap {
+      setUri("http://localhost:8200")
+      setEnabled(true)
+      setAuthentication("TOKEN")
+      setToken("token12345")
+      setKeyName("test-key")
+      setMaxRetries(2)
+      setNumKeysToKeep(3)
     }
   }
 
   def configWithAppRole() {
-    return new ObjectMap().tap {
-      put("uri", "http://localhost:8200")
-      put("enabled", true)
-      put("authentication", "APPROLE")
-      put("app-role", "role-k8s")
-      put("secretId", "secretId")
-      put("keyName", "test-key")
-      put("maxRetries", 2)
-      put("numKeysToKeep", 3)
+    return new VaultEncryptionServiceConfiguration().tap {
+      setUri("http://localhost:8200")
+      setEnabled(true)
+      setAuthentication("APPROLE")
+      setAppRole("role-k8s")
+      setSecretId("secretId")
+      setKeyName("test-key")
+      setMaxRetries(2)
+      setNumKeysToKeep(3)
     }
   }
 
@@ -84,12 +84,12 @@ class VaultEncryptionServiceTest extends Specification {
     when(vaultDriver.auth()).thenReturn(authDriver)
     when(vaultDriver.logical()).thenReturn(logicalDriver)
 
-    when(authDriver.loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))).thenReturn(authResponse)
+    when(authDriver.loginByAppID("app-id/login", config.getAppId(), config.getUserId())).thenReturn(authResponse)
     when(authResponse.getAuthClientToken()).thenReturn("token12345")
 
     def encryptResponse = mock(LogicalResponse)
     when(encryptResponse.getData()).thenReturn(Collections.singletonMap("ciphertext", "vault-12341234123412341"))
-    when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any())).thenReturn(encryptResponse)
+    when(logicalDriver.write(eq("transit/encrypt/" + config.getKeyName()), any())).thenReturn(encryptResponse)
 
     doReturn(vaultDriver).when(subject).buildVaultDriver(any())
 
@@ -99,7 +99,7 @@ class VaultEncryptionServiceTest extends Specification {
 
     then:
     // Should only authenticate once
-    verify(authDriver, times(1)).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id")) || true
+    verify(authDriver, times(1)).loginByAppID("app-id/login", config.getAppId(), config.getUserId()) || true
   }
 
   @Unroll
@@ -108,7 +108,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = new VaultEncryptionService(config)
 
     when:
-    def driver = subject.buildVaultDriver(config.getAsString("token"))
+    def driver = subject.buildVaultDriver(config.getToken())
 
     then:
     driver.getClass() == Vault
@@ -132,7 +132,7 @@ class VaultEncryptionServiceTest extends Specification {
 
     when:
     def plaintext = subject.decrypt("vault-12345")
-    verify(logicalDriver).write("transit/decrypt/" + config.getAsString("keyName"), Collections.singletonMap("ciphertext", "vault-12345"))
+    verify(logicalDriver).write("transit/decrypt/" + config.getKeyName(), Collections.singletonMap("ciphertext", "vault-12345"))
 
     then:
     plaintext == "plaintext"
@@ -158,7 +158,7 @@ class VaultEncryptionServiceTest extends Specification {
 
   def "decrypt() returns input when not enabled"() {
     given:
-    subject = new VaultEncryptionService(new ObjectMap().tap { put("enabled", false) })
+    subject = new VaultEncryptionService(new VaultEncryptionServiceConfiguration().tap { setEnabled(false) })
 
     when:
     def plaintext = subject.decrypt("vault-12345")
@@ -174,11 +174,11 @@ class VaultEncryptionServiceTest extends Specification {
 
     def encryptResponse = mock(LogicalResponse)
     when(encryptResponse.getData()).thenReturn(Collections.singletonMap("ciphertext", "vault-12341234123412341"))
-    when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any())).thenReturn(encryptResponse)
+    when(logicalDriver.write(eq("transit/encrypt/" + config.getKeyName()), any())).thenReturn(encryptResponse)
 
     when:
     def plaintext = subject.encrypt("plaintext")
-    verify(logicalDriver).write("transit/encrypt/" + config.getAsString("keyName"), Collections.singletonMap("plaintext", "cGxhaW50ZXh0"))
+    verify(logicalDriver).write("transit/encrypt/" + config.getKeyName(), Collections.singletonMap("plaintext", "cGxhaW50ZXh0"))
 
     then:
     plaintext == "vault-12341234123412341"
@@ -204,7 +204,7 @@ class VaultEncryptionServiceTest extends Specification {
 
   def "encrypt() returns input when not enabled"() {
     given:
-    subject = new VaultEncryptionService(new ObjectMap().tap { put("enabled", false) })
+    subject = new VaultEncryptionService(new VaultEncryptionServiceConfiguration().tap { setEnabled(false) })
 
     when:
     def ciphertext = subject.encrypt("plaintext")
@@ -236,7 +236,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.write(eq("transit/decrypt/" + config.getAsString("keyName")), any()))
+    when(logicalDriver.write(eq("transit/decrypt/" + config.getKeyName()), any()))
         .thenReturn(
         new LogicalResponse(new RestResponse(403, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication),
         new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
@@ -261,7 +261,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.write(eq("transit/decrypt/" + config.getAsString("keyName")), any()))
+    when(logicalDriver.write(eq("transit/decrypt/" + config.getKeyName()), any()))
         .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
         .thenReturn(new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
 
@@ -279,7 +279,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.write(eq("transit/decrypt/" + config.getAsString("keyName")), any()))
+    when(logicalDriver.write(eq("transit/decrypt/" + config.getKeyName()), any()))
         .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
 
     when:
@@ -297,7 +297,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.write(eq("transit/decrypt/" + config.getAsString("keyName")), any()))
+    when(logicalDriver.write(eq("transit/decrypt/" + config.getKeyName()), any()))
         .thenThrow(new VaultException("something bad happened"))
 
     when:
@@ -315,7 +315,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any()))
+    when(logicalDriver.write(eq("transit/encrypt/" + config.getKeyName()), any()))
         .thenReturn(
         new LogicalResponse(new RestResponse(403, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication),
         new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
@@ -340,7 +340,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any()))
+    when(logicalDriver.write(eq("transit/encrypt/" + config.getKeyName()), any()))
         .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
         .thenReturn(new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
 
@@ -358,7 +358,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any()))
+    when(logicalDriver.write(eq("transit/encrypt/" + config.getKeyName()), any()))
         .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
 
     when:
@@ -376,7 +376,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.write(eq("transit/encrypt/" + config.getAsString("keyName")), any()))
+    when(logicalDriver.write(eq("transit/encrypt/" + config.getKeyName()), any()))
         .thenThrow(new VaultException("something bad happened"))
 
     when:
@@ -395,7 +395,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject.setDriver(vaultDriver)
 
     subject.initKey()
-    verify(logicalDriver).write("transit/keys/" + config.getAsString("keyName"), Collections.singletonMap("exportable", "true"))
+    verify(logicalDriver).write("transit/keys/" + config.getKeyName(), Collections.singletonMap("exportable", "true"))
 
     then:
     true
@@ -413,7 +413,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = new VaultEncryptionService(config)
     subject.setDriver(vaultDriver)
 
-    when(logicalDriver.write("transit/keys/" + config.getAsString("keyName"), Collections.singletonMap("exportable", "true")))
+    when(logicalDriver.write("transit/keys/" + config.getKeyName(), Collections.singletonMap("exportable", "true")))
         .thenReturn(new LogicalResponse(new RestResponse(400, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
 
     when:
@@ -440,8 +440,8 @@ class VaultEncryptionServiceTest extends Specification {
     when(vaultDriver.auth()).thenReturn(authDriver)
     when(vaultDriver.logical()).thenReturn(logicalDriver)
 
-    when(authDriver.loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))).thenReturn(authResponse)
-    when(authDriver.loginByAppRole(config.getAsString("app-role"), config.getAsString("secretId"))).thenReturn(authResponse)
+    when(authDriver.loginByAppID("app-id/login", config.getAppId(), config.getUserId())).thenReturn(authResponse)
+    when(authDriver.loginByAppRole(config.getAppRole(), config.getSecretId())).thenReturn(authResponse)
     when(authResponse.getAuthClientToken()).thenReturn("token12345")
 
     def key = VaultTransitKey.builder().keys([
@@ -457,8 +457,8 @@ class VaultEncryptionServiceTest extends Specification {
 
     when:
     subject.rotateKeys()
-    verify(logicalDriver).write("transit/keys/" + config.getAsString("keyName") + "/rotate", null)
-    verify(logicalDriver).write("transit/keys/" + config.getAsString("keyName"), Collections.singletonMap("min_decryption_version", 2))
+    verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/rotate", null)
+    verify(logicalDriver).write("transit/keys/" + config.getKeyName(), Collections.singletonMap("min_decryption_version", 2))
 
     then:
     true
@@ -473,7 +473,7 @@ class VaultEncryptionServiceTest extends Specification {
   def "rotateKeys() does not raise exceptions"() {
     given:
     def config = configWithAppId().tap {
-      put("keyName", "key1")
+      setKeyName("key1")
     }
     subject = spy(new VaultEncryptionService(config))
 
@@ -483,7 +483,7 @@ class VaultEncryptionServiceTest extends Specification {
     when(vaultDriver.auth()).thenReturn(authDriver)
     when(vaultDriver.logical()).thenReturn(logicalDriver)
 
-    when(authDriver.loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))).thenReturn(authResponse)
+    when(authDriver.loginByAppID("app-id/login", config.getAppId(), config.getUserId())).thenReturn(authResponse)
     when(authResponse.getAuthClientToken()).thenReturn("token12345")
 
     doReturn(vaultDriver).when(subject).buildVaultDriver(any())
@@ -503,7 +503,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject.setDriver(vaultDriver)
 
     subject.setMinDecryptionVersion(12)
-    verify(logicalDriver).write("transit/keys/" + config.getAsString("keyName"), Collections.singletonMap("min_decryption_version", 12))
+    verify(logicalDriver).write("transit/keys/" + config.getKeyName(), Collections.singletonMap("min_decryption_version", 12))
 
     then:
     true
@@ -548,7 +548,7 @@ class VaultEncryptionServiceTest extends Specification {
 
     def restResponse = new RestResponse(200, "application/json", responseBody.getBytes("UTF-8"))
     def logicalResponse = new LogicalResponse(restResponse, 0, Logical.logicalOperations.readV1)
-    when(logicalDriver.read("transit/keys/" + config.getAsString("keyName"))).thenReturn(logicalResponse);
+    when(logicalDriver.read("transit/keys/" + config.getKeyName())).thenReturn(logicalResponse);
 
     when:
     def key = subject.loadKey()
@@ -569,7 +569,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.read(eq("transit/keys/" + config.getAsString("keyName"))))
+    when(logicalDriver.read(eq("transit/keys/" + config.getKeyName())))
         .thenReturn(new LogicalResponse(new RestResponse(403, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
         .thenReturn(new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
 
@@ -587,7 +587,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.read(eq("transit/keys/" + config.getAsString("keyName"))))
+    when(logicalDriver.read(eq("transit/keys/" + config.getKeyName())))
         .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
         .thenReturn(new LogicalResponse(new RestResponse(200, "application/json", "".getBytes("UTF-8")), 0, Logical.logicalOperations.authentication))
 
@@ -605,7 +605,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.read(eq("transit/keys/" + config.getAsString("keyName"))))
+    when(logicalDriver.read(eq("transit/keys/" + config.getKeyName())))
         .thenThrow(new VaultEncryptionAuthenticationException("authentication failed"))
 
     when:
@@ -622,7 +622,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = spy(new VaultEncryptionService(config))
     doReturn(vaultDriver).when(subject).buildAuthenticatedDriver(any())
 
-    when(logicalDriver.read(eq("transit/keys/" + config.getAsString("keyName"))))
+    when(logicalDriver.read(eq("transit/keys/" + config.getKeyName())))
         .thenThrow(new VaultException("something bad happened"))
 
     when:
@@ -639,6 +639,6 @@ class VaultEncryptionServiceTest extends Specification {
     subject = new VaultEncryptionService(config)
 
     then:
-    subject.getConfigurations() == config
+    subject.getConfiguration() == config
   }
 }
