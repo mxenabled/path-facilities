@@ -35,40 +35,31 @@ class VaultStoreTest extends Specification {
   }
 
   def configWithAppId() {
-    return new ObjectMap().tap {
-      put("uri", "http://localhost:8200")
-      put("enabled", true)
-      put("authentication", "APPID")
-      put("app-id", "wedge")
-      put("keyName", "test-key")
-      put("user-id", "1f2cef4b6fe846fd86a4f6730ab74106")
-      put("maxRetries", 2)
-      put("numKeysToKeep", 3)
+    return new VaultStoreConfiguration().tap {
+      setUri("http://localhost:8200")
+      setAuthentication("APPID")
+      setAppId("wedge")
+      setUserId("1f2cef4b6fe846fd86a4f6730ab74106")
+      setMaxRetries(2)
     }
   }
 
   def configWithToken() {
-    return new ObjectMap().tap {
-      put("uri", "http://localhost:8200")
-      put("enabled", true)
-      put("authentication", "TOKEN")
-      put("token", "token12345")
-      put("keyName", "test-key")
-      put("maxRetries", 2)
-      put("numKeysToKeep", 3)
+    return new VaultStoreConfiguration().tap {
+      setUri("http://localhost:8200")
+      setAuthentication("TOKEN")
+      setToken("token12345")
+      setMaxRetries(2)
     }
   }
 
   def configWithAppRole() {
-    return new ObjectMap().tap {
-      put("uri", "http://localhost:8200")
-      put("enabled", true)
-      put("authentication", "APPROLE")
-      put("app-role", "role-k8s")
-      put("secretId", "secretId")
-      put("keyName", "test-key")
-      put("maxRetries", 2)
-      put("numKeysToKeep", 3)
+    return new VaultStoreConfiguration().tap {
+      setUri("http://localhost:8200")
+      setAuthentication("APPROLE")
+      setAppRole("role-k8s")
+      setSecretId("secretId")
+      setMaxRetries(2)
     }
   }
 
@@ -83,7 +74,7 @@ class VaultStoreTest extends Specification {
     doReturn(authDriver).when(vaultDriver).auth()
     doReturn(logicalDriver).when(vaultDriver).logical()
 
-    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))
+    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAppId(), config.getUserId())
     doReturn("token12345").when(authResponse).getAuthClientToken()
 
     def putResponse = mock(LogicalResponse)
@@ -98,7 +89,7 @@ class VaultStoreTest extends Specification {
 
     then:
     // Should only authenticate once
-    verify(authDriver, times(1)).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id")) || true
+    verify(authDriver, times(1)).loginByAppID("app-id/login", config.getAppId(), config.getUserId()) || true
   }
 
   @Unroll
@@ -107,7 +98,7 @@ class VaultStoreTest extends Specification {
     subject = new VaultStore(config)
 
     when:
-    def driver = subject.buildVaultDriver(config.getAsString("token"))
+    def driver = subject.buildVaultDriver(config.getToken())
 
     then:
     driver.getClass() == Vault
@@ -121,16 +112,15 @@ class VaultStoreTest extends Specification {
 
   def "buildVaultDriver with invalid configuration"() {
     given:
-    def config = new ObjectMap().tap {
-      put("uri", "")
-      put("enabled", true)
-      put("maxRetries", "junk")
+    def config = new VaultStoreConfiguration().tap {
+      setUri(null)
+      setMaxRetries(-1)
     }
 
     subject = new VaultStore(config)
 
     when:
-    subject.buildVaultDriver(config.getAsString("token"))
+    subject.buildVaultDriver(config.getToken())
 
     then:
     def ex = thrown(VaultStoreConfigurationException)
@@ -139,14 +129,13 @@ class VaultStoreTest extends Specification {
 
   def "authenticateDriver with missing token"() {
     given:
-    def config = new ObjectMap().tap {
-      put("authentication", "TOKEN")
-      put("enabled", true)
-      put("token", null)
+    def config = new VaultStoreConfiguration().tap {
+      setAuthentication("TOKEN")
+      setToken(null)
     }
 
     subject = new VaultStore(config)
-    subject.buildVaultDriver(config.getAsString("token"))
+    subject.buildVaultDriver(config.getToken())
 
     when:
     subject.get("key")
@@ -158,11 +147,10 @@ class VaultStoreTest extends Specification {
 
   def "authenticateDriver failed authentication app-role"() {
     given:
-    def config = new ObjectMap().tap {
-      put("authentication", "APPROLE")
-      put("enabled", true)
-      put("secretId", "secret1")
-      put("app-role", "app-role1")
+    def config = new VaultStoreConfiguration().tap {
+      setAuthentication("APPROLE")
+      setSecretId("secret1")
+      setAppRole("app-role1")
     }
 
     def driver = mock(Vault, RETURNS_DEEP_STUBS)
@@ -252,7 +240,7 @@ class VaultStoreTest extends Specification {
 
   def "get - key not found"() {
     given:
-    def config = new ObjectMap()
+    def config = new VaultStoreConfiguration()
     subject = new VaultStore(config)
 
     def driver = mock(Vault, RETURNS_DEEP_STUBS)
@@ -383,7 +371,7 @@ class VaultStoreTest extends Specification {
     doReturn(authDriver).when(vaultDriver).auth()
     doReturn(logicalDriver).when(vaultDriver).logical()
 
-    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))
+    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAppId(), config.getUserId())
     doReturn("token12345").when(authResponse).getAuthClientToken()
 
     def putResponse = mock(LogicalResponse)
@@ -399,7 +387,7 @@ class VaultStoreTest extends Specification {
     then:
     thrown(VaultStoreAuthenticationException)
     // Should only authenticate once
-    verify(authDriver, times(4)).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id")) || true
+    verify(authDriver, times(4)).loginByAppID("app-id/login", config.getAppId(), config.getUserId()) || true
   }
 
   @Unroll
@@ -413,7 +401,7 @@ class VaultStoreTest extends Specification {
 
     doReturn(authDriver).when(vaultDriver).auth()
     doReturn(logicalDriver).when(vaultDriver).logical()
-    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))
+    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAppId(), config.getUserId())
     doThrow(new VaultException("permission denied")).when(logicalDriver).read(eq("secret/foo"))
 
     when:
@@ -433,7 +421,7 @@ class VaultStoreTest extends Specification {
 
     doReturn(authDriver).when(vaultDriver).auth()
     doReturn(logicalDriver).when(vaultDriver).logical()
-    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAsString("app-id"), config.getAsString("user-id"))
+    doReturn(authResponse).when(authDriver).loginByAppID("app-id/login", config.getAppId(), config.getUserId())
     doThrow(new VaultException("permission denied")).when(logicalDriver).delete(eq("secret/foo"))
 
     when:

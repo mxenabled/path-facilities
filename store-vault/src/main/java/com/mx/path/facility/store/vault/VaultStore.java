@@ -17,24 +17,20 @@ import com.bettercloud.vault.VaultException;
 import com.bettercloud.vault.response.AuthResponse;
 import com.bettercloud.vault.response.LogicalResponse;
 import com.bettercloud.vault.response.VaultResponse;
-import com.mx.common.collections.ObjectMap;
+import com.mx.common.configuration.Configuration;
 import com.mx.common.lang.Strings;
 import com.mx.common.store.Store;
 
 public final class VaultStore implements Store {
-  private static final int DEFAULT_ENGINE_VERSION = 2;
-  private static final String DEFAULT_URI = "http://127.0.0.1:8200";
-  private static final int DEFAULT_MAX_RETRIES = 0;
-  private static final int DEFAULT_RETRY_INTERVAL_MILLISECONDS = 200;
   private static final int KEY_NOT_FOUND = 404;
-  private static final String DEFAULT_AUTHENTICATION = "APPID";
   private static final String TTL_UNSUPPORTED = "TTL is not supported with Vault";
   private static final String SET_UNSUPPORTED = "Sets are not supported with Vault";
   private static final String PUT_IF_NOT_EXIST_UNSUPPORTED = "Put if not exist operations are not supported with Vault";
   private static final int MAXIMUM_REAUTHENTICATION_RETRIES = 3;
 
   @Getter
-  private final ObjectMap configurations;
+  private final VaultStoreConfiguration configuration;
+
   @Setter
   private volatile Vault driver;
 
@@ -44,8 +40,9 @@ public final class VaultStore implements Store {
     TOKEN
   }
 
-  public VaultStore(ObjectMap configurations) {
-    this.configurations = configurations;
+  public VaultStore(@Configuration VaultStoreConfiguration configuration) {
+    configuration.getRetryInterval(); // todo: remove this after retryIntervalMilliseconds has been removed.
+    this.configuration = configuration;
   }
 
   /**
@@ -58,16 +55,16 @@ public final class VaultStore implements Store {
     try {
       VaultConfig vaultConfig = new VaultConfig()
           .token(authToken)
-          .engineVersion(getConfigurations().getAsInteger("engineVersion", DEFAULT_ENGINE_VERSION))
-          .address(getConfigurations().getAsString("uri", DEFAULT_URI))
+          .engineVersion(getConfiguration().getEngineVersion())
+          .address(getConfiguration().getUri())
           .build();
 
       Vault newDriver = new Vault(vaultConfig);
 
-      if (getConfigurations().getAsInteger("maxRetries", DEFAULT_MAX_RETRIES) > 0) {
+      if (getConfiguration().getMaxRetries() > 0) {
         newDriver.withRetries(
-            getConfigurations().getAsInteger("maxRetries", DEFAULT_MAX_RETRIES),
-            getConfigurations().getAsInteger("retryIntervalMilliseconds", DEFAULT_RETRY_INTERVAL_MILLISECONDS));
+            getConfiguration().getMaxRetries(),
+            Math.toIntExact(getConfiguration().getRetryInterval().toMillis()));
       }
 
       return newDriver;
@@ -86,18 +83,18 @@ public final class VaultStore implements Store {
     try {
       String token;
       if (getAuthenticationType().equals(AuthenticationType.TOKEN)) {
-        token = getConfigurations().getAsString("token");
+        token = getConfiguration().getToken();
 
         if (token == null) {
           throw new VaultStoreConfigurationException("Vault token required for TOKEN authentication");
         }
       } else if (getAuthenticationType().equals(AuthenticationType.APPROLE)) {
-        AuthResponse resp = newDriver.auth().loginByAppRole(configurations.getAsString("app-role"), getConfigurations().getAsString("secretId"));
+        AuthResponse resp = newDriver.auth().loginByAppRole(getConfiguration().getAppRole(), getConfiguration().getSecretId());
         validateVaultAuthenticationResponse(resp, "Unable to login via app-role");
 
         token = resp.getAuthClientToken();
       } else {
-        AuthResponse resp = newDriver.auth().loginByAppID("app-id/login", getConfigurations().getAsString("app-id"), getConfigurations().getAsString("user-id"));
+        AuthResponse resp = newDriver.auth().loginByAppID("app-id/login", getConfiguration().getAppId(), getConfiguration().getUserId());
         validateVaultAuthenticationResponse(resp, "Unable to login via app-id");
 
         token = resp.getAuthClientToken();
@@ -123,7 +120,7 @@ public final class VaultStore implements Store {
   }
 
   private AuthenticationType getAuthenticationType() {
-    return AuthenticationType.valueOf(getConfigurations().getAsString("authentication", DEFAULT_AUTHENTICATION));
+    return AuthenticationType.valueOf(getConfiguration().getAuthentication());
   }
 
   @SuppressWarnings("checkstyle:MagicNumber")
