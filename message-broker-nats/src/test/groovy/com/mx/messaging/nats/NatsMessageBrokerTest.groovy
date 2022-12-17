@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when
 import java.nio.charset.StandardCharsets
 import java.time.Duration
 
-import com.mx.common.collections.ObjectMap
 import com.mx.common.messaging.EventListener
 import com.mx.common.messaging.MessageError
 import com.mx.common.messaging.MessageResponder
@@ -26,18 +25,17 @@ import io.nats.client.MessageHandler
 import spock.lang.Specification
 
 class NatsMessageBrokerTest extends Specification {
-  ObjectMap configurations
+  NatsConfiguration configurations
   Connection connection
   Dispatcher dispatcher
   NatsMessageBroker subject
 
   def setup() {
-    configurations = new ObjectMap().tap {
-      put("servers", "nats://127.0.0.1:4222")
-      put("timeoutInMilliseconds", 1000)
+    configurations = new NatsConfiguration().tap {
+      setServers("nats://127.0.0.1:4222")
+      setTimeout(Duration.ofMillis(1000))
     }
-    subject = new NatsMessageBroker()
-    subject.setConfiguration(new NatsConfiguration(configurations))
+    subject = new NatsMessageBroker(configurations)
 
     dispatcher = mock(Dispatcher)
     connection = mock(Connection)
@@ -53,14 +51,13 @@ class NatsMessageBrokerTest extends Specification {
   def "multi-dispatcher configuration"() {
     given:
     configurations.tap {
-      put("enabled", true)
-      put("dispatcherCount", 3)
+      setEnabled(true)
+      setDispatcherCount(3)
     }
-    subject = spy(new NatsMessageBroker())
-    Mockito.doReturn(mock(Connection)).when(subject).connection()
+    subject = spy(new NatsMessageBroker(configurations))
 
     when:
-    subject.setConfiguration(new NatsConfiguration(configurations))
+    Mockito.doReturn(mock(Connection)).when(subject).connection()
 
     then:
     subject.dispatchers().size() == 3
@@ -155,7 +152,7 @@ class NatsMessageBrokerTest extends Specification {
   }
 
 
-  def "blows chunks when no configuration is given"() {
+  def "throws MessageError when no configuration is given"() {
     given:
     subject.setConfiguration(null)
     subject.setConnection(null)

@@ -1,12 +1,17 @@
 package com.mx.messaging.nats;
 
+import java.time.Duration;
+
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 
-import com.mx.common.collections.ObjectMap;
+import com.mx.common.configuration.ConfigurationField;
 
+@Data
 public class NatsConfiguration {
   private static final int DEFAULT_DISPATCHER_COUNT = 1;
-  private static final boolean DEFAULT_ENABLED = false;
+  private static final boolean DEFAULT_ENABLED = true;
   private static final String DEFAULT_SERVERS = "nats://127.0.0.1:4222";
   private static final int DEFAULT_TIMEOUT_IN_MILLISECONDS = 10000;
   private static final String DEFAULT_TLS_CA_CERT_PATH = null;
@@ -14,45 +19,51 @@ public class NatsConfiguration {
   private static final String DEFAULT_TLS_CLIENT_KEY_PATH = null;
   private static final boolean DEFAULT_TLS_DISABLED = false;
 
-  @Getter
-  private final ObjectMap configurations;
+  @ConfigurationField
+  private int dispatcherCount = DEFAULT_DISPATCHER_COUNT;
 
-  public NatsConfiguration(ObjectMap configurations) {
-    if (configurations == null) {
-      configurations = new ObjectMap();
+  @ConfigurationField
+  private boolean enabled = DEFAULT_ENABLED;
+
+  @ConfigurationField(required = true, placeholder = "nats://127.0.0.1:4222")
+  private String servers = DEFAULT_SERVERS;
+
+  /**
+   * @deprecated use timeout
+   */
+  @Deprecated
+  @ConfigurationField
+  @Getter(AccessLevel.PRIVATE)
+  private Integer timeoutInMilliseconds = null;
+
+  @ConfigurationField
+  private Duration timeout = null;
+
+  @ConfigurationField
+  private String tlsCaCertPath = DEFAULT_TLS_CA_CERT_PATH;
+
+  @ConfigurationField
+  private String tlsClientCertPath = DEFAULT_TLS_CLIENT_CERT_PATH;
+
+  @ConfigurationField
+  private String tlsClientKeyPath = DEFAULT_TLS_CLIENT_KEY_PATH;
+
+  @ConfigurationField
+  private boolean tlsDisabled = DEFAULT_TLS_DISABLED;
+
+  /**
+   * Maintain backward compatibility. Remove with timeoutInMilliseconds
+   * @return timeout as a Duration
+   */
+  public final Duration getTimeout() {
+    if (timeout == null) {
+      if (timeoutInMilliseconds != null) {
+        timeout = Duration.ofMillis(timeoutInMilliseconds);
+      } else {
+        timeout = Duration.ofMillis(DEFAULT_TIMEOUT_IN_MILLISECONDS);
+      }
     }
-    this.configurations = configurations;
-  }
 
-  public final int getDispatcherCount() {
-    return configurations.getAsInteger("dispatcherCount", DEFAULT_DISPATCHER_COUNT);
-  }
-
-  public final boolean isEnabled() {
-    return configurations.getAsBoolean("enabled", DEFAULT_ENABLED);
-  }
-
-  public final String getServers() {
-    return configurations.getAsString("servers", DEFAULT_SERVERS);
-  }
-
-  public final int getTimeoutInMilliseconds() {
-    return configurations.getAsInteger("timeoutInMilliseconds", DEFAULT_TIMEOUT_IN_MILLISECONDS);
-  }
-
-  public final String getTlsCaCertPath() {
-    return configurations.getAsString("tlsCaCertPath", DEFAULT_TLS_CA_CERT_PATH);
-  }
-
-  public final String getTlsClientCertPath() {
-    return configurations.getAsString("tlsClientCertPath", DEFAULT_TLS_CLIENT_CERT_PATH);
-  }
-
-  public final String getTlsClientKeyPath() {
-    return configurations.getAsString("tlsClientKeyPath", DEFAULT_TLS_CLIENT_KEY_PATH);
-  }
-
-  public final boolean getTlsDisabled() {
-    return configurations.getAsBoolean("tlsDisabled", DEFAULT_TLS_DISABLED);
+    return timeout;
   }
 }

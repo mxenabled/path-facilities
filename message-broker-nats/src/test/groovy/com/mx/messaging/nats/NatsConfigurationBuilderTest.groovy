@@ -6,17 +6,17 @@ import com.mx.common.messaging.MessageError
 import spock.lang.Specification
 
 class NatsConfigurationBuilderTest extends Specification {
-  ObjectMap configurations
+  NatsConfiguration configurations
   NatsConfigurationBuilder subject
 
   def setup() {
-    configurations = new ObjectMap().tap { put("enabled", true) }
-    subject = new NatsConfigurationBuilder(new NatsConfiguration(configurations))
+    configurations = new NatsConfiguration().tap { setEnabled(true) }
+    subject = new NatsConfigurationBuilder(configurations)
   }
 
   def "builds non ssl configuration"() {
     given:
-    configurations.put("servers", "nats://127.0.0.1:4222")
+    configurations.setServers("nats://127.0.0.1:4222")
 
     when:
     def options = subject.buildNATSConfiguration()
@@ -30,11 +30,11 @@ class NatsConfigurationBuilderTest extends Specification {
   def "builds ssl configuration"() {
     given:
     configurations.tap {
-      put("enabled", true)
-      put("servers", "nats://127.0.0.1:4222")
-      put("tlsCaCertPath", "./src/test/resources/ca.pem")
-      put("tlsClientCertPath", "./src/test/resources/cert.pem")
-      put("tlsClientKeyPath", "./src/test/resources/key.pem")
+      setEnabled(true)
+      setServers("nats://127.0.0.1:4222")
+      setTlsCaCertPath("./src/test/resources/ca.pem")
+      setTlsClientCertPath("./src/test/resources/cert.pem")
+      setTlsClientKeyPath("./src/test/resources/key.pem")
     }
 
     when:
@@ -47,12 +47,12 @@ class NatsConfigurationBuilderTest extends Specification {
   def "can disable tls through configuration"() {
     given:
     configurations.tap {
-      put("enabled", true)
-      put("servers", "nats://127.0.0.1:4222")
-      put("tlsCaCertPath", "./src/test/resources/ca.pem")
-      put("tlsClientCertPath", "./src/test/resources/cert.pem")
-      put("tlsClientKeyPath", "./src/test/resources/key.pem")
-      put("tlsDisabled", true)
+      setEnabled(true)
+      setServers("nats://127.0.0.1:4222")
+      setTlsCaCertPath("./src/test/resources/ca.pem")
+      setTlsClientCertPath("./src/test/resources/cert.pem")
+      setTlsClientKeyPath("./src/test/resources/key.pem")
+      setTlsDisabled(true)
     }
 
     when:
@@ -64,7 +64,7 @@ class NatsConfigurationBuilderTest extends Specification {
 
   def "fails when disabled"() {
     given:
-    configurations.put("enabled", false)
+    configurations.setEnabled(false)
 
     when:
     def options = subject.buildNATSConfiguration()
