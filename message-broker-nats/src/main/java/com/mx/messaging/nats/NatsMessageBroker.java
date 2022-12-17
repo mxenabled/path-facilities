@@ -2,11 +2,10 @@ package com.mx.messaging.nats;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mx.common.collections.ObjectMap;
+import com.mx.common.configuration.Configuration;
 import com.mx.common.messaging.EventListener;
 import com.mx.common.messaging.MessageBroker;
 import com.mx.common.messaging.MessageError;
@@ -28,8 +27,8 @@ public class NatsMessageBroker implements MessageBroker {
   private Connection connection;
   private List<Dispatcher> dispatchers = new ArrayList<>();
 
-  public NatsMessageBroker(ObjectMap configurations) {
-    this.configuration = new NatsConfiguration(configurations);
+  public NatsMessageBroker(@Configuration NatsConfiguration configurations) {
+    this.configuration = configurations;
   }
 
   @Override
@@ -54,7 +53,7 @@ public class NatsMessageBroker implements MessageBroker {
   @Override
   public final String request(String channel, String payload) {
     try {
-      Message msg = connection().request(channel, payload.getBytes(StandardCharsets.UTF_8), Duration.ofMillis(configuration.getTimeoutInMilliseconds()));
+      Message msg = connection().request(channel, payload.getBytes(StandardCharsets.UTF_8), configuration.getTimeout());
 
       // io.nats.client.Connection#request docs indicate that a null is returned if timeout is reached
       if (msg == null) {
@@ -75,8 +74,8 @@ public class NatsMessageBroker implements MessageBroker {
     this.configuration = configuration;
   }
 
-  public final ObjectMap getConfigurations() {
-    return configuration.getConfigurations();
+  public final NatsConfiguration getConfigurations() {
+    return configuration;
   }
 
   final void setConnection(Connection connection) {

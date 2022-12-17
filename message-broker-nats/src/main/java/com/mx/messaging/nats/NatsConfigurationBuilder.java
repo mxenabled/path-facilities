@@ -48,7 +48,7 @@ public class NatsConfigurationBuilder {
     }
 
     String[] natsServers = configuration.getServers().split(",");
-    if (!configuration.getTlsDisabled() && Strings.isNotBlank(configuration.getTlsCaCertPath()) && Strings.isNotBlank(configuration.getTlsClientCertPath()) && Strings.isNotBlank(configuration.getTlsClientKeyPath())) {
+    if (!configuration.isTlsDisabled() && Strings.isNotBlank(configuration.getTlsCaCertPath()) && Strings.isNotBlank(configuration.getTlsClientCertPath()) && Strings.isNotBlank(configuration.getTlsClientKeyPath())) {
       return new Options.Builder()
           .servers(natsServers)
           .sslContext(getSslContext())
