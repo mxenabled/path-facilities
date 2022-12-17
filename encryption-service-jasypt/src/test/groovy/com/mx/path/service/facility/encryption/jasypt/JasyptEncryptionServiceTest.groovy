@@ -14,15 +14,15 @@ import spock.lang.Unroll
 
 class JasyptEncryptionServiceTest extends Specification implements WithMockery {
 
-  ObjectMap configurations
+  JasyptEncryptionServiceConfiguration configurations
   JasyptEncryptionService subject
 
   def setup() {
-    configurations = new ObjectMap().tap {
-      put("enabled", true)
-      put("poolSize", 1)
-      put("currentKeyIndex", 0)
-      put("keys", new ObjectArray().tap {
+    configurations = new JasyptEncryptionServiceConfiguration().tap {
+      setEnabled(true)
+      setPoolSize(1)
+      setCurrentKeyIndex(0)
+      setKeys(new ObjectArray().tap {
         add("0123456789")
         add("abcdef")
       })
@@ -41,7 +41,7 @@ class JasyptEncryptionServiceTest extends Specification implements WithMockery {
 
   def "encrypt() does noting when not enabled"() {
     when:
-    configurations.put("enabled", false)
+    configurations.setEnabled(false)
     subject = new JasyptEncryptionService(configurations)
     def cyphertext = subject.encrypt("test")
 
@@ -51,7 +51,7 @@ class JasyptEncryptionServiceTest extends Specification implements WithMockery {
 
   def "encrypt() does nothing when blank"() {
     when:
-    configurations.put("enabled", false)
+    configurations.setEnabled(false)
     subject = new JasyptEncryptionService(configurations)
     def cyphertext = subject.encrypt(null)
 
@@ -95,7 +95,7 @@ class JasyptEncryptionServiceTest extends Specification implements WithMockery {
     subject = new JasyptEncryptionService(configurations)
 
     then:
-    subject.getConfigurations() == configurations
+    subject.getConfiguration() == configurations
   }
 
   def "decrypt() throws configuration exception when no suitable encryptor found"() {

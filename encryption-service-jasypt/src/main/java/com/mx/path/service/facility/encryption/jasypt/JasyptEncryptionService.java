@@ -1,6 +1,7 @@
 package com.mx.path.service.facility.encryption.jasypt;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -8,8 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.mx.common.collections.ObjectArray;
-import com.mx.common.collections.ObjectMap;
+import com.mx.common.configuration.Configuration;
 import com.mx.common.security.EncryptionService;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -45,18 +45,13 @@ import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
  * }
  *
  * <p>
- * To rotate keys, add to the keys list.
+ * To rotate keys, add to the top of the keys list.
  * Change the currentKeyIndex to the zero-based index of key to use for all encryption
  */
 public class JasyptEncryptionService implements EncryptionService {
 
-  private static final boolean DEFAULT_ENABLED = false;
-  private static final int DEFAULT_POOL_SIZE = 10;
-
-  // Fields
-
   @Getter
-  private final ObjectMap configurations;
+  private final JasyptEncryptionServiceConfiguration configuration;
   @Setter(AccessLevel.PACKAGE)
   private PooledPBEStringEncryptor currentEncryptor;
   private String currentKeyIdentifier;
@@ -65,13 +60,13 @@ public class JasyptEncryptionService implements EncryptionService {
 
   // Constructors
 
-  public JasyptEncryptionService(ObjectMap configurations) {
-    this.configurations = configurations;
+  public JasyptEncryptionService(@Configuration JasyptEncryptionServiceConfiguration configuration) {
+    this.configuration = configuration;
 
-    ObjectArray keys = this.configurations.getArray("keys");
+    List<String> keys = this.configuration.getKeys();
     keys.forEach(k -> addEncryptorForKey((String) k));
     if (keys.size() > 0) {
-      currentKeyIdentifier = DigestUtils.md5Hex(keys.getAsString(configurations.getAsInteger("currentKeyIndex")));
+      currentKeyIdentifier = DigestUtils.md5Hex(keys.get(configuration.getCurrentKeyIndex()));
       currentEncryptor = encryptors.get(currentKeyIdentifier);
     }
   }
@@ -103,7 +98,7 @@ public class JasyptEncryptionService implements EncryptionService {
   @Override
   public final String encrypt(String value) {
     try {
-      if (!configurations.getAsBoolean("enabled", DEFAULT_ENABLED)) {
+      if (!configuration.isEnabled()) {
         return value;
       }
 
@@ -118,7 +113,7 @@ public class JasyptEncryptionService implements EncryptionService {
 
   @Override
   public final boolean isEncrypted(String value) {
-    if (Objects.isNull(value) || !configurations.getAsBoolean("enabled", DEFAULT_ENABLED)) {
+    if (Objects.isNull(value) || !configuration.isEnabled()) {
       return false;
     }
 
@@ -132,7 +127,7 @@ public class JasyptEncryptionService implements EncryptionService {
     config.setPassword(key);
     config.setAlgorithm("PBEWithMD5AndTripleDES");
     config.setKeyObtentionIterations("1000");
-    config.setPoolSize(configurations.getAsInteger("poolSize", DEFAULT_POOL_SIZE));
+    config.setPoolSize(configuration.getPoolSize());
     config.setProviderName("SunJCE");
     config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
     config.setStringOutputType("base64");
