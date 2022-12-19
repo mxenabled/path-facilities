@@ -22,10 +22,6 @@ allprojects {
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
 
-  ext {
-    pathSDKVersion = "[1.4.0,2.0["
-  }
-
   repositories {
     mavenCentral()
     mavenLocal()
@@ -34,8 +30,26 @@ allprojects {
 }
 
 subprojects {
-  if (it.name != platformProject) {
+
+  if (it.name == platformProject) {
+    apply plugin: "java-platform"
+  } else {
     apply plugin: "java-library"
+  }
+
+  // Constraints for platform and all other projects
+  dependencies {
+    constraints {
+      api("com.mx.path-core:platform") {
+        version {
+          strictly "[1.4.0,2.0["
+          reject "1.4.0"
+        }
+      }
+    }
+  }
+
+  if (it.name != platformProject) {
     apply plugin: "maven-publish"
     apply plugin: "groovy"
     apply plugin: "com.github.mxenabled.hush"
@@ -49,7 +63,7 @@ subprojects {
         api "org.slf4j:slf4j-api:1.7.30"
       }
 
-      implementation platform("com.mx.path-core:platform:${project.ext.pathSDKVersion}")
+      implementation platform("com.mx.path-core:platform")
       implementation "com.mx.path-core:common"
     }
 
