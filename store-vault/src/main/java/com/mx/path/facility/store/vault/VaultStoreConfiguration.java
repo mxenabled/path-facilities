@@ -9,7 +9,7 @@ import com.mx.common.configuration.ConfigurationField;
 @Data
 public class VaultStoreConfiguration {
 
-  private static final String DEFAULT_AUTHENTICATION = "APPID";
+  private static final String DEFAULT_AUTHENTICATION = "APPROLE";
   private static final String DEFAULT_URI = "http://127.0.0.1:8200";
   private static final String PUT_IF_NOT_EXIST_UNSUPPORTED = "Put if not exist operations are not supported with Vault";
   private static final String SET_UNSUPPORTED = "Sets are not supported with Vault";
