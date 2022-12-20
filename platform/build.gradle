@@ -1,4 +1,5 @@
 plugins {
+  id "java-platform"
   id "maven-publish"
   id "signing"
 }
@@ -10,7 +11,7 @@ javaPlatform {
 // Dependency versions aren't resolved, by default. Check this out to resolve this issue:
 // https://github.com/gradle/gradle/issues/8887
 dependencies {
-  api platform("com.mx.path-core:platform")
+  api(platform("com.mx.path-core:platform:${project.ext.pathSDKVersion}"))
 
   constraints {
     api(project(":message-broker-nats"))
