@@ -34,13 +34,6 @@ public final class VaultStore implements Store {
   @Setter
   private volatile Vault driver;
 
-  enum AuthenticationType {
-    @Deprecated
-    APPID,
-    APPROLE,
-    TOKEN
-  }
-
   public VaultStore(@Configuration VaultStoreConfiguration configuration) {
     configuration.getRetryInterval(); // todo: remove this after retryIntervalMilliseconds has been removed.
     this.configuration = configuration;
@@ -83,22 +76,32 @@ public final class VaultStore implements Store {
   Vault authenticateDriver(Vault newDriver) {
     try {
       String token;
-      if (getAuthenticationType().equals(AuthenticationType.TOKEN)) {
-        token = getConfiguration().getToken();
+      AuthResponse resp;
 
-        if (token == null) {
-          throw new VaultStoreConfigurationException("Vault token required for TOKEN authentication");
-        }
-      } else if (getAuthenticationType().equals(AuthenticationType.APPROLE)) {
-        AuthResponse resp = newDriver.auth().loginByAppRole(getConfiguration().getAppRole(), getConfiguration().getSecretId());
-        validateVaultAuthenticationResponse(resp, "Unable to login via app-role");
+      switch (getConfiguration().getAuthentication()) {
+        case TOKEN:
+          token = getConfiguration().getToken();
+          if (token == null) {
+            throw new VaultStoreConfigurationException("Vault token required for TOKEN authentication");
+          }
+          break;
 
-        token = resp.getAuthClientToken();
-      } else {
-        AuthResponse resp = newDriver.auth().loginByAppID("app-id/login", getConfiguration().getAppId(), getConfiguration().getUserId());
-        validateVaultAuthenticationResponse(resp, "Unable to login via app-id");
+        case APPROLE:
+          resp = newDriver.auth().loginByAppRole(getConfiguration().getAppRole(), getConfiguration().getSecretId());
+          validateVaultAuthenticationResponse(resp, "Unable to login via app-role");
 
-        token = resp.getAuthClientToken();
+          token = resp.getAuthClientToken();
+          break;
+
+        case APPID:
+          resp = newDriver.auth().loginByAppID("app-id/login", getConfiguration().getAppId(), getConfiguration().getUserId());
+          validateVaultAuthenticationResponse(resp, "Unable to login via app-id");
+
+          token = resp.getAuthClientToken();
+          break;
+
+        default:
+          throw new VaultStoreConfigurationException("Unsupported authentication type: " + getConfiguration().getAuthentication());
       }
 
       return buildVaultDriver(token);
@@ -118,10 +121,6 @@ public final class VaultStore implements Store {
     }
 
     return driver;
-  }
-
-  private AuthenticationType getAuthenticationType() {
-    return AuthenticationType.valueOf(getConfiguration().getAuthentication());
   }
 
   @SuppressWarnings("checkstyle:MagicNumber")

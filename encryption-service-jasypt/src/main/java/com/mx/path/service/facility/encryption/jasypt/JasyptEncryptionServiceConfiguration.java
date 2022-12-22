@@ -20,7 +20,7 @@ public class JasyptEncryptionServiceConfiguration {
   @ConfigurationField(placeholder = "0")
   private int currentKeyIndex = DEFAULT_CURRENT_KEY_INDEX;
 
-  @ConfigurationField(required = true, elementType = String.class, placeholder = "9rXVaIYKFoEwZkY3eDPHneNVVLAAtNhDrF3ItjZDzNvYInSOROfg5WsWyf18AS6p0lNHzGqmGr1EeVWIKWKg3Xvr1f1wa9uVHHxUa3tcOUvZkaZYDyDX3pErXeXaMPyP")
+  @ConfigurationField(required = true, secret = true, elementType = String.class, placeholder = "9rXVaIYKFoEwZkY3eDPHneNVVLAAtNhDrF3ItjZDzNvYInSOROfg5WsWyf18AS6p0lNHzGqmGr1EeVWIKWKg3Xvr1f1wa9uVHHxUa3tcOUvZkaZYDyDX3pErXeXaMPyP")
   private List<String> keys = new ArrayList<>();
 
   @ConfigurationField(placeholder = "10")

@@ -8,12 +8,18 @@ import com.mx.common.configuration.ConfigurationField;
 
 @Data
 public class VaultEncryptionServiceConfiguration {
+  enum AuthenticationType {
+    @Deprecated
+    APPID,
+    APPROLE,
+    TOKEN
+  }
 
   private static final int DEFAULT_ENGINE_VERSION = 1;
   private static final String DEFAULT_URI = "http://127.0.0.1:8200";
   private static final int DEFAULT_MAX_RETRIES = 0;
   private static final int DEFAULT_RETRY_INTERVAL_MILLISECONDS = 200;
-  private static final String DEFAULT_AUTHENTICATION = "APPROLE";
+  private static final AuthenticationType DEFAULT_AUTHENTICATION = AuthenticationType.APPROLE;
   private static final String DEFAULT_KEY_NAME = "vault_session";
   private static final int DEFAULT_NUM_KEYS_TO_KEEP_COUNT = 1;
 
@@ -48,7 +54,7 @@ public class VaultEncryptionServiceConfiguration {
   @ConfigurationField("app-role")
   private String appRole;
 
-  @ConfigurationField
+  @ConfigurationField(secret = true)
   private String secretId;
 
   @ConfigurationField("app-id")
@@ -57,11 +63,11 @@ public class VaultEncryptionServiceConfiguration {
   @ConfigurationField("user-id")
   private String userId;
 
-  @ConfigurationField
+  @ConfigurationField(secret = true)
   private String token;
 
   @ConfigurationField
-  private String authentication = DEFAULT_AUTHENTICATION;
+  private AuthenticationType authentication = DEFAULT_AUTHENTICATION;
 
   /**
    * Maintaining backward compatibility. Remove when retryIntervalMilliseconds is removed.

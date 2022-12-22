@@ -5,7 +5,6 @@ import java.util.function.Function;
 
 import lombok.Getter;
 
-import com.google.gson.GsonBuilder;
 import com.mx.common.configuration.Configuration;
 import com.mx.common.store.Store;
 
@@ -35,8 +34,6 @@ public class RedisStore implements Store {
 
   public RedisStore(@Configuration RedisStoreConfiguration redisStoreConfiguration) {
     redisStoreConfiguration.getConnectionTimeout();
-    System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(redisStoreConfiguration));
-
     this.configuration = redisStoreConfiguration;
   }
 

@@ -39,7 +39,7 @@ class VaultEncryptionServiceTest extends Specification {
     return new VaultEncryptionServiceConfiguration().tap {
       setUri("http://localhost:8200")
       setEnabled(true)
-      setAuthentication("APPID")
+      setAuthentication(VaultEncryptionServiceConfiguration.AuthenticationType.APPID)
       setAppId("wedge")
       setKeyName("test-key")
       setUserId("1f2cef4b6fe846fd86a4f6730ab74106")
@@ -52,7 +52,7 @@ class VaultEncryptionServiceTest extends Specification {
     return new VaultEncryptionServiceConfiguration().tap {
       setUri("http://localhost:8200")
       setEnabled(true)
-      setAuthentication("TOKEN")
+      setAuthentication(VaultEncryptionServiceConfiguration.AuthenticationType.TOKEN)
       setToken("token12345")
       setKeyName("test-key")
       setMaxRetries(2)
@@ -64,7 +64,7 @@ class VaultEncryptionServiceTest extends Specification {
     return new VaultEncryptionServiceConfiguration().tap {
       setUri("http://localhost:8200")
       setEnabled(true)
-      setAuthentication("APPROLE")
+      setAuthentication(VaultEncryptionServiceConfiguration.AuthenticationType.APPROLE)
       setAppRole("role-k8s")
       setSecretId("secretId")
       setKeyName("test-key")

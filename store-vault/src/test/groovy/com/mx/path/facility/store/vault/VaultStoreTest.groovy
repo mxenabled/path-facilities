@@ -37,7 +37,7 @@ class VaultStoreTest extends Specification {
   def configWithAppId() {
     return new VaultStoreConfiguration().tap {
       setUri("http://localhost:8200")
-      setAuthentication("APPID")
+      setAuthentication(VaultStoreConfiguration.AuthenticationType.APPID)
       setAppId("wedge")
       setUserId("1f2cef4b6fe846fd86a4f6730ab74106")
       setMaxRetries(2)
@@ -47,7 +47,7 @@ class VaultStoreTest extends Specification {
   def configWithToken() {
     return new VaultStoreConfiguration().tap {
       setUri("http://localhost:8200")
-      setAuthentication("TOKEN")
+      setAuthentication(VaultStoreConfiguration.AuthenticationType.TOKEN)
       setToken("token12345")
       setMaxRetries(2)
     }
@@ -56,7 +56,7 @@ class VaultStoreTest extends Specification {
   def configWithAppRole() {
     return new VaultStoreConfiguration().tap {
       setUri("http://localhost:8200")
-      setAuthentication("APPROLE")
+      setAuthentication(VaultStoreConfiguration.AuthenticationType.APPROLE)
       setAppRole("role-k8s")
       setSecretId("secretId")
       setMaxRetries(2)
@@ -130,7 +130,7 @@ class VaultStoreTest extends Specification {
   def "authenticateDriver with missing token"() {
     given:
     def config = new VaultStoreConfiguration().tap {
-      setAuthentication("TOKEN")
+      setAuthentication(VaultStoreConfiguration.AuthenticationType.TOKEN)
       setToken(null)
     }
 
@@ -148,7 +148,7 @@ class VaultStoreTest extends Specification {
   def "authenticateDriver failed authentication app-role"() {
     given:
     def config = new VaultStoreConfiguration().tap {
-      setAuthentication("APPROLE")
+      setAuthentication(VaultStoreConfiguration.AuthenticationType.APPROLE)
       setSecretId("secret1")
       setAppRole("app-role1")
     }
