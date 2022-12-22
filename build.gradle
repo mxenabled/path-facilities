@@ -23,7 +23,7 @@ allprojects {
   targetCompatibility = 1.8
 
   ext {
-    pathSDKVersion = "[1.4.0,2.0["
+    pathSDKVersion = "[1.6.0,2.0["
   }
 
   repositories {

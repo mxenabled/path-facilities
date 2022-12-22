@@ -38,13 +38,6 @@ public class VaultEncryptionService implements EncryptionService {
   @Setter
   private volatile Vault driver;
 
-  enum AuthenticationType {
-    @Deprecated
-    APPID,
-    APPROLE,
-    TOKEN
-  }
-
   public VaultEncryptionService(@Configuration VaultEncryptionServiceConfiguration configuration) {
     configuration.getRetryInterval(); // todo: remove when retryIntervalMilliseconds is removed.
     this.configuration = configuration;
@@ -221,22 +214,33 @@ public class VaultEncryptionService implements EncryptionService {
   final Vault buildAuthenticatedDriver(Vault authenticationDriver) {
     try {
       String token;
-      if (getAuthenticationType().equals(AuthenticationType.TOKEN)) {
-        token = configuration.getToken();
+      AuthResponse resp;
 
-        if (token == null) {
-          throw new VaultEncryptionConfigurationException("Vault token required for TOKEN authentication");
-        }
-      } else if (getAuthenticationType().equals(AuthenticationType.APPROLE)) {
-        AuthResponse resp = authenticationDriver.auth().loginByAppRole(configuration.getAppRole(), configuration.getSecretId());
-        validateVaultAuthenticationResponse(resp, "Unable to login via jwt");
+      switch (getConfiguration().getAuthentication()) {
+        case TOKEN:
+          token = configuration.getToken();
 
-        token = resp.getAuthClientToken();
-      } else {
-        AuthResponse resp = authenticationDriver.auth().loginByAppID("app-id/login", configuration.getAppId(), configuration.getUserId());
-        validateVaultAuthenticationResponse(resp, "Unable to login via app-id");
+          if (token == null) {
+            throw new VaultEncryptionConfigurationException("Vault token required for TOKEN authentication");
+          }
+          break;
 
-        token = resp.getAuthClientToken();
+        case APPROLE:
+          resp = authenticationDriver.auth().loginByAppRole(configuration.getAppRole(), configuration.getSecretId());
+          validateVaultAuthenticationResponse(resp, "Unable to login via jwt");
+
+          token = resp.getAuthClientToken();
+          break;
+
+        case APPID:
+          resp = authenticationDriver.auth().loginByAppID("app-id/login", configuration.getAppId(), configuration.getUserId());
+          validateVaultAuthenticationResponse(resp, "Unable to login via app-id");
+
+          token = resp.getAuthClientToken();
+          break;
+
+        default:
+          throw new VaultEncryptionConfigurationException("Invalid authentication type: " + getConfiguration().getAuthentication());
       }
 
       return buildVaultDriver(token);
@@ -284,10 +288,6 @@ public class VaultEncryptionService implements EncryptionService {
     }
 
     return driver;
-  }
-
-  private AuthenticationType getAuthenticationType() {
-    return AuthenticationType.valueOf(configuration.getAuthentication());
   }
 
   @SuppressWarnings("checkstyle:MagicNumber")
