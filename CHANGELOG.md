@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.3.2-SNAPSHOT](https://github.com/mxenabled/path-facilities/compare/v1.3.2...v1.3.2-SNAPSHOT) (2023-01-10)
+
+
+### Features
+
+* improve redis store configuration ([895f201](https://github.com/mxenabled/path-facilities/commit/895f201cb48adfbfcfbe574039b80f03af6da258))
+* use configuration binding in encryption-service-vault ([61fd189](https://github.com/mxenabled/path-facilities/commit/61fd189e3ebf2fca6b5ada7dfaddd9fe5bed9721))
+* use configuration binding in jasypt-encryption-service ([fb9e23c](https://github.com/mxenabled/path-facilities/commit/fb9e23ca48739c1e80fdb345529bbd2d3f98855f))
+* use configuration binding in message-broker-nats ([8932273](https://github.com/mxenabled/path-facilities/commit/89322738d687647104603376f52450fdf42a4bfd))
+* use configuration binding in vault-store ([eb461c1](https://github.com/mxenabled/path-facilities/commit/eb461c16fff31436e9718fad29644c084c702429))
+* use Duration for encryption-service-vault retryInterval ([61fd189](https://github.com/mxenabled/path-facilities/commit/61fd189e3ebf2fca6b5ada7dfaddd9fe5bed9721))
+* use duration for store-vault retryInterval ([eb461c1](https://github.com/mxenabled/path-facilities/commit/eb461c16fff31436e9718fad29644c084c702429))
+
+
+### Bug Fixes
+
+* add core dependency constraints to exclude bad core version ([3de69be](https://github.com/mxenabled/path-facilities/commit/3de69be0461f83c3c3bd09f624f4daad6b8e816b))
+* change encryption-service-vault default authentication to APPROLE ([61fd189](https://github.com/mxenabled/path-facilities/commit/61fd189e3ebf2fca6b5ada7dfaddd9fe5bed9721))
+* change store-vault default authentication to APPROLE ([3b69af9](https://github.com/mxenabled/path-facilities/commit/3b69af93f4943156e0e3206ff219ce840b7f244d))
+* deprecate encryption-service-vault APPID authentication method ([61fd189](https://github.com/mxenabled/path-facilities/commit/61fd189e3ebf2fca6b5ada7dfaddd9fe5bed9721))
+* deprecate store-vault APPID authentication method ([3b69af9](https://github.com/mxenabled/path-facilities/commit/3b69af93f4943156e0e3206ff219ce840b7f244d))
+* utilize new configuration binding features ([a5ca597](https://github.com/mxenabled/path-facilities/commit/a5ca5979b7b0d411c235ddaf86fa922cb66e1379))
+
+
+### Reverts
+
+* remove global dependency constraints ([9b13319](https://github.com/mxenabled/path-facilities/commit/9b13319ab5775566c7e61c79229c4d3ba0512237))
+
+
+### Miscellaneous Chores
+
+* release 1.3.2-SNAPSHOT ([75df3f4](https://github.com/mxenabled/path-facilities/commit/75df3f49f6fb499e3f33f5e977cea66eb6134207))
+
 ## [1.3.2](https://github.com/mxenabled/path-facilities/compare/1.3.1...v1.3.2) (2022-12-13)
 
 
