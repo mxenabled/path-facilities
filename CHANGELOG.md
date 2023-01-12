@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0-SNAPSHOT](https://github.com/mxenabled/path-facilities/compare/v1.3.2-SNAPSHOT...v1.4.0-SNAPSHOT) (2023-01-12)
+
+
+### Miscellaneous Chores
+
+* release 1.4.0-SNAPSHOT ([0871507](https://github.com/mxenabled/path-facilities/commit/0871507b178fced504d26a20fd794470a2aa373d))
+
 ## [1.3.2-SNAPSHOT](https://github.com/mxenabled/path-facilities/compare/v1.3.2...v1.3.2-SNAPSHOT) (2023-01-10)
 
 
