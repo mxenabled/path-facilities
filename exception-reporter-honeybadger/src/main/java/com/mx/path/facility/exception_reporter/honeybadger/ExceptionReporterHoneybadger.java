@@ -10,8 +10,8 @@ import com.mx.common.collections.MultiValueMap;
 import com.mx.common.configuration.Configuration;
 import com.mx.common.exception.ExceptionContext;
 import com.mx.common.exception.ExceptionReporter;
-
 import com.mx.common.lang.Strings;
+
 import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.StandardConfigContext;
@@ -89,6 +89,7 @@ public class ExceptionReporterHoneybadger implements ExceptionReporter {
     addIdPresent(cxt, "feature", context.getFeature());
     addIdPresent(cxt, "session_trace_id", context.getSessionTraceId());
     addIdPresent(cxt, "trace_id", context.getTraceId());
+    addIdPresent(cxt, "user_id", context.getUserId());
 
     return cxt;
   }

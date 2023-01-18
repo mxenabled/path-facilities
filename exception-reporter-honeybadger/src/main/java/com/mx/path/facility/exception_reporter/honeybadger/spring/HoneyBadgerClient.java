@@ -1,4 +1,4 @@
-package com.mx.path.facility.exception_reporter.honeybadger.spring.honeybadger;
+package com.mx.path.facility.exception_reporter.honeybadger.spring;
 
 import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.config.StandardConfigContext;

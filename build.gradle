@@ -22,13 +22,18 @@ allprojects {
   targetCompatibility = 1.8
 
   ext {
-    pathSDKVersion = "1.6.2-SNAPSHOT"
+    pathSDKVersion = "1.7.0-SNAPSHOT"
   }
 
   repositories {
     mavenCentral()
     mavenLocal()
-    maven { url "https://jitpack.io" }
+    maven {
+      url "https://s01.oss.sonatype.org/content/repositories/snapshots"
+      mavenContent {
+        snapshotsOnly()
+      }
+    }
   }
 }
 
@@ -49,6 +54,7 @@ subprojects {
 
       implementation platform("com.mx.path-core:platform:${project.ext.pathSDKVersion}")
       implementation "com.mx.path-core:common"
+      testImplementation "com.mx.path-core:testing"
     }
 
     test { useJUnitPlatform() }

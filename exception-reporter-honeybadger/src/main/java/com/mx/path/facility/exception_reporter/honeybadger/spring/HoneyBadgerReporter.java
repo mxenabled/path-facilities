@@ -1,8 +1,17 @@
-package com.mx.path.facility.exception_reporter.honeybadger.spring.honeybadger;
+package com.mx.path.facility.exception_reporter.honeybadger.spring;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.mx.common.collections.MultiValueMap;
 import com.mx.common.exception.ExceptionContext;
 import com.mx.common.exception.ExceptionReporter;
+
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
+
 import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.dto.CgiData;
@@ -10,13 +19,6 @@ import io.honeybadger.reporter.dto.Context;
 import io.honeybadger.reporter.dto.Params;
 import io.honeybadger.reporter.dto.Request;
 import io.honeybadger.reporter.dto.Session;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Component
 @Deprecated
@@ -70,6 +72,8 @@ public class HoneyBadgerReporter implements ExceptionReporter {
     cxt.put("feature", context.getFeature());
     cxt.put("session_trace_id", context.getSessionTraceId());
     cxt.put("trace_id", context.getTraceId());
+    cxt.put("user_id", context.getUserId());
+
     return cxt;
   }
 

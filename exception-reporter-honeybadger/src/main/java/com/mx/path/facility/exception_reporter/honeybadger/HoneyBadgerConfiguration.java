@@ -3,9 +3,9 @@ package com.mx.path.facility.exception_reporter.honeybadger;
 import java.util.Arrays;
 import java.util.List;
 
-import com.mx.common.configuration.ConfigurationField;
-
 import lombok.Data;
+
+import com.mx.common.configuration.ConfigurationField;
 
 @Data
 public class HoneyBadgerConfiguration {
