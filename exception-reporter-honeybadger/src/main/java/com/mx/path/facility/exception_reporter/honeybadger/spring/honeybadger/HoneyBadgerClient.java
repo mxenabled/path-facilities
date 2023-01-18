@@ -1,4 +1,4 @@
-package com.mx.honeybadger;
+package com.mx.path.facility.exception_reporter.honeybadger.spring.honeybadger;
 
 import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.config.StandardConfigContext;
@@ -6,6 +6,7 @@ import io.honeybadger.reporter.config.StandardConfigContext;
 /**
  * Singleton manager for HoneybadgerReporter instance
  */
+@Deprecated
 final class HoneyBadgerClient {
   /**
    * Singleton

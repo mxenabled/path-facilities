@@ -1,17 +1,17 @@
-package com.mx.honeybadger;
-
-import java.util.Arrays;
-import java.util.List;
+package com.mx.path.facility.exception_reporter.honeybadger.spring.honeybadger;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 @SuppressFBWarnings
 @Component
+@Deprecated
 public class HoneyBadgerConfiguration {
   private static Environment environment;
   private static String apiKey;
@@ -31,7 +31,7 @@ public class HoneyBadgerConfiguration {
     return apiKey;
   }
 
-  @Value("${honey_badger.api_key}")
+  @Value("${honey_badger.api_key:invalid}")
   public final void setApiKey(String apiKey) {
     HoneyBadgerConfiguration.apiKey = apiKey;
   }
