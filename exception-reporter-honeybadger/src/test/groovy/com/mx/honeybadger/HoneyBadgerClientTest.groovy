@@ -1,5 +1,7 @@
 package com.mx.honeybadger
 
+import com.mx.path.facility.exception_reporter.honeybadger.HoneyBadgerClient
+import com.mx.path.facility.exception_reporter.honeybadger.HoneyBadgerConfiguration
 
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when

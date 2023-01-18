@@ -1,5 +1,9 @@
 package com.mx.honeybadger
 
+import com.mx.path.facility.exception_reporter.honeybadger.HoneyBadgerClient
+import com.mx.path.facility.exception_reporter.honeybadger.HoneyBadgerConfiguration
+import com.mx.path.facility.exception_reporter.honeybadger.ExceptionReporterHoneybadger
+
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.ArgumentMatchers.eq
 import static org.mockito.Mockito.*
@@ -17,7 +21,7 @@ import spock.lang.Specification
 
 class HoneyBadgerReporterTest extends Specification implements WithMockery {
   HoneybadgerReporter reporter
-  HoneyBadgerReporter subject
+  ExceptionReporterHoneybadger subject
 
   def setup() {
     def environment = mock(Environment.class)
@@ -36,7 +40,7 @@ class HoneyBadgerReporterTest extends Specification implements WithMockery {
     HoneyBadgerClient.setHoneybadgerReporter(reporter)
     when(reporter.getConfig()).thenReturn(new StandardConfigContext())
 
-    subject = new HoneyBadgerReporter()
+    subject = new ExceptionReporterHoneybadger()
   }
 
   def cleanup() {

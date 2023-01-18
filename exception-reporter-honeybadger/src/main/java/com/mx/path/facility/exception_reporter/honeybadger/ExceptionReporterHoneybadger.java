@@ -1,45 +1,63 @@
-package com.mx.honeybadger;
+package com.mx.path.facility.exception_reporter.honeybadger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.mx.common.collections.MultiValueMap;
+import com.mx.common.configuration.Configuration;
 import com.mx.common.exception.ExceptionContext;
 import com.mx.common.exception.ExceptionReporter;
 
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
-
+import com.mx.common.lang.Strings;
 import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.StandardConfigContext;
 import io.honeybadger.reporter.dto.CgiData;
 import io.honeybadger.reporter.dto.Context;
 import io.honeybadger.reporter.dto.Params;
 import io.honeybadger.reporter.dto.Request;
 import io.honeybadger.reporter.dto.Session;
 
-@Component
-public class HoneyBadgerReporter implements ExceptionReporter {
+public class ExceptionReporterHoneybadger implements ExceptionReporter {
+  /**
+   * HoneyBadger reporters, by environment
+   */
+  private final Map<String, HoneybadgerReporter> honeybadgerReporters = new HashMap<>();
+  private final HoneyBadgerConfiguration configuration;
 
-  // Public
+  public ExceptionReporterHoneybadger(@Configuration HoneyBadgerConfiguration configuration) {
+    this.configuration = configuration;
+  }
 
-  @Override
-  public final void report(@NonNull Throwable ex, @Nullable String message, @NonNull ExceptionContext context) {
-    String[] profileNames = HoneyBadgerConfiguration.getEnvironment().getActiveProfiles();
-    if (!HoneyBadgerConfiguration.getAllowedEnvironmentList().contains(profileNames[0])) {
-      return;
+  private HoneybadgerReporter getReporter(String environment) {
+    if (!honeybadgerReporters.containsKey(environment)) {
+      synchronized (ExceptionReporterHoneybadger.class) {
+        StandardConfigContext config = new StandardConfigContext();
+        config.setApiKey(configuration.getApiKey())
+            .setEnvironment(environment)
+            .setApplicationPackage(configuration.getPackagingPath());
+
+        honeybadgerReporters.put(environment, new HoneybadgerReporter(config));
+      }
     }
 
-    HoneybadgerReporter reporter = HoneyBadgerClient.getInstance();
+    return honeybadgerReporters.get(environment);
+  }
+
+  @Override
+  public final void report(Throwable ex, String message, ExceptionContext context) {
+    HoneybadgerReporter honeybadgerReporter = getReporter(context.getEnvironment());
+
     CgiData cgiData = createCgiData(context);
     Context cxt = createContext(context);
-    Params params = createParams(context, reporter.getConfig());
+    Params params = createParams(context, honeybadgerReporter.getConfig());
     Session session = createSession(context);
     Request request = new Request(cxt, getFullURL(context), params, session, cgiData);
 
-    reporter.reportError(ex, request, message);
+    honeybadgerReporter.reportError(ex, request, message);
   }
 
   // Private
@@ -65,10 +83,20 @@ public class HoneyBadgerReporter implements ExceptionReporter {
     return result;
   }
 
-  private Context createContext(@NonNull ExceptionContext context) {
+  private Context createContext(ExceptionContext context) {
     Context cxt = new Context();
-    cxt.put("trace_id", context.getTraceId());
+    addIdPresent(cxt, "client_id", context.getClientId());
+    addIdPresent(cxt, "feature", context.getFeature());
+    addIdPresent(cxt, "session_trace_id", context.getSessionTraceId());
+    addIdPresent(cxt, "trace_id", context.getTraceId());
+
     return cxt;
+  }
+
+  private void addIdPresent(Context context, String key, String value) {
+    if (Strings.isNotBlank(value)) {
+      context.put(key, value);
+    }
   }
 
   private Params createParams(ExceptionContext context, ConfigContext configContext) {
