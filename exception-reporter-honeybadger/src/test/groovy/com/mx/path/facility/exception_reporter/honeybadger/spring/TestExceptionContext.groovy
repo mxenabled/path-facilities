@@ -1,4 +1,4 @@
-package com.mx.honeybadger
+package com.mx.path.facility.exception_reporter.honeybadger.spring
 
 import com.mx.common.collections.MultiValueMap
 import com.mx.common.exception.ExceptionContext

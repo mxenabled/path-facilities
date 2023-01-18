@@ -1,10 +1,11 @@
-package com.mx.honeybadger
-
-import com.mx.path.facility.exception_reporter.honeybadger.HoneyBadgerClient
-import com.mx.path.facility.exception_reporter.honeybadger.HoneyBadgerConfiguration
+package com.mx.path.facility.exception_reporter.honeybadger.spring
 
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
+
+import com.mx.path.facility.exception_reporter.honeybadger.spring.HoneyBadgerClient
+import com.mx.path.facility.exception_reporter.honeybadger.spring.HoneyBadgerConfiguration
+import com.mx.path.testing.WithMockery
 
 import org.springframework.core.env.Environment
 
@@ -39,8 +40,6 @@ class HoneyBadgerClientTest extends Specification implements WithMockery {
   }
 
   def "builds new reporter if one does not exist"() {
-    given:
-
     when:
     def reporter = HoneyBadgerClient.getInstance()
 

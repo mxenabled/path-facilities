@@ -1,13 +1,14 @@
-package com.mx.path.facility.exception_reporter.honeybadger.spring.honeybadger;
+package com.mx.path.facility.exception_reporter.honeybadger.spring;
+
+import java.util.Arrays;
+import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 @SuppressFBWarnings
 @Component

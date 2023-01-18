@@ -19,7 +19,7 @@ public enum HoneybadgerEnvironment {
     return this.value;
   }
 
-  public HoneybadgerEnvironment ofValue(String value) {
-    return Enum.valueOf(HoneybadgerEnvironment.class, value.toUpperCase(Locale.ROOT));
+  public static HoneybadgerEnvironment resolve(String value) {
+    return HoneybadgerEnvironment.valueOf(value.toUpperCase(Locale.ROOT));
   }
 }

@@ -1,14 +1,15 @@
-package com.mx.honeybadger
+package com.mx.path.facility.exception_reporter.honeybadger.spring
 
-import com.mx.path.facility.exception_reporter.honeybadger.HoneyBadgerClient
-import com.mx.path.facility.exception_reporter.honeybadger.HoneyBadgerConfiguration
-import com.mx.path.facility.exception_reporter.honeybadger.ExceptionReporterHoneybadger
 
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.ArgumentMatchers.eq
-import static org.mockito.Mockito.*
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.never
+import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.when
 
 import com.mx.common.collections.MultiValueMap
+import com.mx.path.testing.WithMockery
 
 import org.mockito.ArgumentCaptor
 import org.springframework.core.env.Environment
@@ -21,7 +22,7 @@ import spock.lang.Specification
 
 class HoneyBadgerReporterTest extends Specification implements WithMockery {
   HoneybadgerReporter reporter
-  ExceptionReporterHoneybadger subject
+  HoneyBadgerReporter subject
 
   def setup() {
     def environment = mock(Environment.class)
@@ -40,7 +41,7 @@ class HoneyBadgerReporterTest extends Specification implements WithMockery {
     HoneyBadgerClient.setHoneybadgerReporter(reporter)
     when(reporter.getConfig()).thenReturn(new StandardConfigContext())
 
-    subject = new ExceptionReporterHoneybadger()
+    subject = new HoneyBadgerReporter()
   }
 
   def cleanup() {
