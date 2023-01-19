@@ -1,17 +1,17 @@
-package com.mx.path.facility.exception_reporter.honeybadger.spring
+package com.mx.path.facility.exception_reporter.honeybadger
 
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.ArgumentMatchers.eq
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.never
+import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
 import com.mx.common.collections.MultiValueMap
-import com.mx.path.facility.exception_reporter.honeybadger.TestExceptionContext
-import com.mx.path.testing.WithMockery
 
 import org.mockito.ArgumentCaptor
+import org.mockito.Mockito
 import org.springframework.core.env.Environment
 
 import io.honeybadger.reporter.HoneybadgerReporter
@@ -20,33 +20,26 @@ import io.honeybadger.reporter.dto.Request
 
 import spock.lang.Specification
 
-class HoneyBadgerReporterTest extends Specification implements WithMockery {
+class ExceptionReporterHoneybadgerTest extends Specification {
   HoneybadgerReporter reporter
-  HoneyBadgerReporter subject
+  ExceptionReporterHoneybadger subject
 
   def setup() {
-    def environment = mock(Environment.class)
-    String [] environments = ["development"]
-    when(environment.getActiveProfiles()).thenReturn(environments)
-
+    //    def environment = mock(Environment.class)
+    //    String [] environments = ["development"]
+    //    when(environment.getActiveProfiles()).thenReturn(environments)
     reporter = mock(HoneybadgerReporter.class)
 
-    new HoneyBadgerConfiguration().tap {
-      setEnvironment(environment)
+    def configuration = new HoneyBadgerConfiguration().tap {
       setApiKey("abcd")
-      setAllowedEnvironmentList(Arrays.asList("development"))
+      setAllowedEnvironments(Arrays.asList("development"))
       setPackagingPath("com.mx")
     }
 
-    HoneyBadgerClient.setHoneybadgerReporter(reporter)
     when(reporter.getConfig()).thenReturn(new StandardConfigContext())
 
-    subject = new HoneyBadgerReporter()
-  }
-
-  def cleanup() {
-    HoneyBadgerClient.setHoneybadgerReporter(null)
-    new HoneyBadgerConfiguration().setAllowedEnvironmentList(Arrays.asList("qa", "sandbox", "integration", "production"))
+    subject = spy(new ExceptionReporterHoneybadger(configuration))
+    Mockito.doReturn(reporter).when(subject).getReporter("development")
   }
 
   def "with empty context"() {
@@ -138,8 +131,9 @@ class HoneyBadgerReporterTest extends Specification implements WithMockery {
   def "not an allowed environment"() {
     given:
     def ex = new RuntimeException("something is broke")
-    def context = new TestExceptionContext()
-    new HoneyBadgerConfiguration().setAllowedEnvironmentList(Arrays.asList("some_other"))
+    def context = new TestExceptionContext().tap {
+      it.environment = HoneybadgerEnvironment.SANDBOX.value()
+    }
 
     when:
     subject.report(ex, "Holy ~!@#", context)
