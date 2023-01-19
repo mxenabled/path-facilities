@@ -1,4 +1,4 @@
-package com.mx.path.facility.exception_reporter.honeybadger.spring
+package com.mx.path.facility.exception_reporter.honeybadger
 
 import com.mx.common.collections.MultiValueMap
 import com.mx.common.exception.ExceptionContext
@@ -6,6 +6,7 @@ import com.mx.common.exception.ExceptionContext
 
 class TestExceptionContext implements ExceptionContext {
   Map<String, String> context
+  String environment = "development"
   MultiValueMap<String, String> headers
   MultiValueMap<String, String> parameters
   String method
@@ -21,10 +22,16 @@ class TestExceptionContext implements ExceptionContext {
   long sessionCreateTime
   String sessionId
   String traceId
+  String userId
 
   @Override
   Map<String, String> getContext() {
     return context
+  }
+
+  @Override
+  String getEnvironment() {
+    return environment
   }
 
   @Override
@@ -100,5 +107,10 @@ class TestExceptionContext implements ExceptionContext {
   @Override
   String getTraceId() {
     return traceId
+  }
+
+  @Override
+  String getUserId() {
+    return userId
   }
 }

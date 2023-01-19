@@ -32,7 +32,7 @@ public class ExceptionReporterHoneybadger implements ExceptionReporter {
     this.configuration = configuration;
   }
 
-  private HoneybadgerReporter getReporter(String environment) {
+  final HoneybadgerReporter getReporter(String environment) {
     if (!honeybadgerReporters.containsKey(environment)) {
       synchronized (ExceptionReporterHoneybadger.class) {
         StandardConfigContext config = new StandardConfigContext();
@@ -49,6 +49,10 @@ public class ExceptionReporterHoneybadger implements ExceptionReporter {
 
   @Override
   public final void report(Throwable ex, String message, ExceptionContext context) {
+    if (Strings.isBlank(context.getEnvironment()) || !configuration.getAllowedEnvironments().contains(context.getEnvironment())) {
+      return;
+    }
+
     HoneybadgerReporter honeybadgerReporter = getReporter(context.getEnvironment());
 
     CgiData cgiData = createCgiData(context);
