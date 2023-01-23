@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0-SNAPSHOT](https://github.com/mxenabled/path-facilities/compare/v1.4.0-SNAPSHOT...v1.5.0-SNAPSHOT) (2023-01-23)
+
+
+### Features
+
+* add honeybadger exception reporter facility ([cab99cd](https://github.com/mxenabled/path-facilities/commit/cab99cd38ec20bf99dbf109aec3cc4577c9ad443))
+
+
+### Miscellaneous Chores
+
+* release 1.4.0-SNAPSHOT ([f7355df](https://github.com/mxenabled/path-facilities/commit/f7355df3d6dfdcf0eb96f82187d1203da69a27c4))
+* release 1.5.0-SNAPSHOT ([0f7bbdf](https://github.com/mxenabled/path-facilities/commit/0f7bbdf72b991725a134a7707a18129d072f0826))
+
 ## [1.4.0-SNAPSHOT](https://github.com/mxenabled/path-facilities/compare/v1.4.0-SNAPSHOT...v1.4.0-SNAPSHOT) (2023-01-23)
 
 
