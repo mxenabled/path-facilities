@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/mxenabled/path-facilities/compare/v1.5.0-SNAPSHOT...v1.5.0) (2023-01-24)
+
+
+### Miscellaneous Chores
+
+* release 1.5.0 ([86b9d6c](https://github.com/mxenabled/path-facilities/commit/86b9d6c07cdc69e227da90a8cc05532d5b0e039d))
+
 ## [1.5.0-SNAPSHOT](https://github.com/mxenabled/path-facilities/compare/v1.4.0-SNAPSHOT...v1.5.0-SNAPSHOT) (2023-01-23)
 
 
