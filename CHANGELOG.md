@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/mxenabled/path-facilities/compare/v1.5.0...v1.5.1) (2023-01-24)
+
+
+### Bug Fixes
+
+* update dependencies and set upper bound for core ([8d69bae](https://github.com/mxenabled/path-facilities/commit/8d69bae0cfae1db65c35848534d99ae14989efdb))
+
 ## [1.5.0](https://github.com/mxenabled/path-facilities/compare/v1.5.0-SNAPSHOT...v1.5.0) (2023-01-24)
 
 
