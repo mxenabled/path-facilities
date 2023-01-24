@@ -22,18 +22,12 @@ allprojects {
   targetCompatibility = 1.8
 
   ext {
-    pathSDKVersion = "1.7.0-SNAPSHOT"
+    pathSDKVersion = "[1.7,2.0)"
   }
 
   repositories {
     mavenCentral()
     mavenLocal()
-    maven {
-      url "https://s01.oss.sonatype.org/content/repositories/snapshots"
-      mavenContent {
-        snapshotsOnly()
-      }
-    }
   }
 }
 
