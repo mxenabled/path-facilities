@@ -22,7 +22,7 @@ _Gradle_
 <!-- x-release-please-start-version -->
 ```groovy
 dependencies {
-  api platform("com.mx.path-facilities:platform:1.5.0-SNAPSHOT")
+  api platform("com.mx.path-facilities:platform:1.5.0")
 
   implementation "com.mx.path-facilities:store-redis"
   implementation "com.mx.path-facilities:store-vault"
@@ -41,13 +41,13 @@ _Gradle_
 <!-- x-release-please-start-version -->
 ```groovy
 dependencies {
-  implementation "com.mx.path-facilities:store-redis:1.5.0-SNAPSHOT"
-  implementation "com.mx.path-facilities:store-vault:1.5.0-SNAPSHOT"
-  implementation "com.mx.path-facilities:encryption-service-vault:1.5.0-SNAPSHOT"
-  implementation "com.mx.path-facilities:encryption-service-jasypt:1.5.0-SNAPSHOT"
-  implementation "com.mx.path-facilities:message-broker-nats:1.5.0-SNAPSHOT"
-  implementation "com.mx.path-facilities:fault-tolerant-executor-resilience4j:1.5.0-SNAPSHOT"
-  implementation "com.mx.path-facilities:exception-reporter-honeybadger:1.5.0-SNAPSHOT"
+  implementation "com.mx.path-facilities:store-redis:1.5.0"
+  implementation "com.mx.path-facilities:store-vault:1.5.0"
+  implementation "com.mx.path-facilities:encryption-service-vault:1.5.0"
+  implementation "com.mx.path-facilities:encryption-service-jasypt:1.5.0"
+  implementation "com.mx.path-facilities:message-broker-nats:1.5.0"
+  implementation "com.mx.path-facilities:fault-tolerant-executor-resilience4j:1.5.0"
+  implementation "com.mx.path-facilities:exception-reporter-honeybadger:1.5.0"
 }
 ```
 <!-- x-release-please-end -->
