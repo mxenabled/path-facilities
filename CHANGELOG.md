@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/mxenabled/path-facilities/compare/v1.5.1...v1.5.2) (2023-02-07)
+
+
+### Bug Fixes
+
+* raise path exceptions without wrapping in FaultTolerantExecutor ([cfca147](https://github.com/mxenabled/path-facilities/commit/cfca1477f3af299cff6dde927fef940b2ac1ab88))
+
 ## [1.5.1](https://github.com/mxenabled/path-facilities/compare/v1.5.0...v1.5.1) (2023-01-24)
 
 
