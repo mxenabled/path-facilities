@@ -12,6 +12,8 @@ import com.mx.common.configuration.Configuration;
 import com.mx.common.connect.ConnectException;
 import com.mx.common.connect.ServiceUnavailableException;
 import com.mx.common.connect.TooManyRequestsException;
+import com.mx.common.exception.PathRequestException;
+import com.mx.common.exception.PathSystemException;
 import com.mx.common.process.FaultTolerantExecutor;
 import com.mx.common.process.FaultTolerantTask;
 import com.mx.path.service.facility.fault_tolerant_executor.configuration.Configurations;
@@ -32,6 +34,7 @@ public final class Resilience4jFaultTolerantExecutor implements FaultTolerantExe
     this.scopedConfigurationRegistry.initializeFromConfigurations(configurations);
   }
 
+  @SuppressWarnings("PMD.CyclomaticComplexity")
   @Override
   public void submit(String scope, FaultTolerantTask task) {
     try {
@@ -48,6 +51,8 @@ public final class Resilience4jFaultTolerantExecutor implements FaultTolerantExe
       throw new com.mx.common.connect.TimeoutException(
           "Resilience4j triggered a timeout.",
           e);
+    } catch (PathRequestException | PathSystemException e) {
+      throw e; // rethrow Path exceptions
     } catch (Exception e) {
       throw new ConnectException(
           "An unknown error occurred",
