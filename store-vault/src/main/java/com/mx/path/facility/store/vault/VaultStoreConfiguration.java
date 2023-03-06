@@ -42,15 +42,8 @@ public class VaultStoreConfiguration {
   @ConfigurationField
   private int maxRetries = DEFAULT_MAX_RETRIES;
 
-  /**
-   * @deprecated use retryInterval
-   */
-  @Deprecated
   @ConfigurationField
-  private Integer retryIntervalMilliseconds = null;
-
-  @ConfigurationField
-  private Duration retryInterval = null;
+  private Duration retryInterval = Duration.ofMillis(DEFAULT_RETRY_INTERVAL_MILLISECONDS);
 
   @ConfigurationField(secret = true)
   private String secretId;
@@ -63,20 +56,4 @@ public class VaultStoreConfiguration {
 
   @ConfigurationField(value = "user-id")
   private String userId;
-
-  /**
-   * For backward compatibility. Remove after retryIntervalMilliseconds is removed.
-   * @return RetryInterval Duration
-   */
-  public final Duration getRetryInterval() {
-    if (retryInterval == null) {
-      if (retryIntervalMilliseconds != null) {
-        retryInterval = Duration.ofMillis(retryIntervalMilliseconds);
-      } else {
-        retryInterval = Duration.ofMillis(DEFAULT_RETRY_INTERVAL_MILLISECONDS);
-      }
-    }
-
-    return retryInterval;
-  }
 }

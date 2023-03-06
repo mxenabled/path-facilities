@@ -1,5 +1,7 @@
 package com.mx.path.service.facility.fault_tolerant_executor.configuration;
 
+import java.time.Duration;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,7 +54,7 @@ public final class CircuitBreakerConfigurations implements PopulatesDefaults<Cir
    * Configures the duration threshold above which calls are considered as slow and increase the rate of slow calls.
    */
   @ConfigurationField
-  private Integer slowCallDurationThresholdMillis;
+  private Duration slowCallDurationThreshold;
 
   /**
    * Configures the number of permitted calls when the CircuitBreaker is half open.
@@ -69,7 +71,7 @@ public final class CircuitBreakerConfigurations implements PopulatesDefaults<Cir
    * Value 0 means the CircuitBreaker would wait infinitely in HalfOpen State until all permitted calls have been completed.
    */
   @ConfigurationField
-  private Integer maxWaitDurationInHalfOpenStateMillis;
+  private Duration maxWaitDurationInHalfOpenState;
 
   /**
    * Configures the type of the sliding window which is used to record the outcome of calls when the CircuitBreaker is closed.
@@ -95,7 +97,7 @@ public final class CircuitBreakerConfigurations implements PopulatesDefaults<Cir
    * Must be provided when slidingWindowType == TIME_BASED
    */
   @ConfigurationField
-  private Integer slidingWindowDurationSeconds;
+  private Duration slidingWindowDuration;
 
   /**
    * Configures the minimum number of calls which are required (per sliding window period) before the CircuitBreaker can
@@ -111,7 +113,7 @@ public final class CircuitBreakerConfigurations implements PopulatesDefaults<Cir
    * The time that the CircuitBreaker should wait before transitioning from open to half-open.
    */
   @ConfigurationField
-  private Integer waitDurationInOpenStateMillis;
+  private Duration waitDurationInOpenState;
 
   /**
    * If set to true it means that the CircuitBreaker will automatically transition from open to half-open state and no call
@@ -129,14 +131,14 @@ public final class CircuitBreakerConfigurations implements PopulatesDefaults<Cir
   public CircuitBreakerConfigurations withDefaults() {
     failureRateThreshold = DEFAULT_FAILURE_RATE_THRESHOLD;
     slowCallRateThreshold = DEFAULT_SLOW_CALL_RATE_THRESHOLD;
-    slowCallDurationThresholdMillis = DEFAULT_SLOW_CALL_DURATION_THRESHOLD_MILLIS;
+    slowCallDurationThreshold = Duration.ofMillis(DEFAULT_SLOW_CALL_DURATION_THRESHOLD_MILLIS);
     permittedNumberOfCallsInHalfOpenState = DEFAULT_PERMITTED_NUMBER_OF_CALLS_IN_HALF_OPEN_STATE;
-    maxWaitDurationInHalfOpenStateMillis = DEFAULT_MAX_WAIT_DURATION_IN_HALF_OPEN_STATE_MILLIS;
+    maxWaitDurationInHalfOpenState = Duration.ofMillis(DEFAULT_MAX_WAIT_DURATION_IN_HALF_OPEN_STATE_MILLIS);
     slidingWindowType = DEFAULT_SLIDING_WINDOW_TYPE;
     slidingWindowTaskCount = DEFAULT_SLIDING_WINDOW_TASK_COUNT;
-    slidingWindowDurationSeconds = DEFAULT_SLIDING_WINDOW_DURATION_SECONDS;
+    slidingWindowDuration = Duration.ofSeconds(DEFAULT_SLIDING_WINDOW_DURATION_SECONDS);
     minimumNumberOfCalls = DEFAULT_MINIMUM_NUMBER_OF_CALLS;
-    waitDurationInOpenStateMillis = DEFAULT_WAIT_DURATION_IN_OPEN_STATE_MILLIS;
+    waitDurationInOpenState = Duration.ofMillis(DEFAULT_WAIT_DURATION_IN_OPEN_STATE_MILLIS);
     automaticTransitionFromOpenToHalfOpenEnabled = DEFAULT_AUTOMATIC_TRANSITION_FROM_OPEN_TO_HALF_OPEN_ENABLED;
 
     return this;

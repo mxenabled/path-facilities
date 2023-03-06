@@ -1,5 +1,7 @@
 package com.mx.path.service.facility.fault_tolerant_executor.configuration;
 
+import java.time.Duration;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,11 +26,11 @@ public final class TimeLimiterConfigurations implements PopulatesDefaults<TimeLi
    * The amount of time that must elapse before a task is timed out and cancelled.
    */
   @ConfigurationField
-  private Integer timeoutDurationMillis;
+  private Duration timeoutDuration;
 
   @Override
   public TimeLimiterConfigurations withDefaults() {
-    timeoutDurationMillis = DEFAULT_TIMEOUT_DURATION_MILLIS;
+    timeoutDuration = Duration.ofMillis(DEFAULT_TIMEOUT_DURATION_MILLIS);
 
     return this;
   }

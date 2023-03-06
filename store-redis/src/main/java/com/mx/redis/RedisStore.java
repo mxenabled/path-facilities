@@ -33,7 +33,6 @@ public class RedisStore implements Store {
   }
 
   public RedisStore(@Configuration RedisStoreConfiguration redisStoreConfiguration) {
-    redisStoreConfiguration.getConnectionTimeout();
     this.configuration = redisStoreConfiguration;
   }
 

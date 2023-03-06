@@ -1,5 +1,7 @@
 package com.mx.path.service.facility.fault_tolerant_executor.configuration;
 
+import java.time.Duration;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,14 +48,14 @@ public final class ThreadPoolBulkheadConfigurations implements PopulatesDefaults
    * for new tasks before terminating.
    */
   @ConfigurationField
-  private Integer keepAliveMillis;
+  private Duration keepAlive;
 
   @Override
   public ThreadPoolBulkheadConfigurations withDefaults() {
     maxThreadPoolSize = DEFAULT_MAX_THREAD_POOL_SIZE;
     coreThreadPoolSize = DEFAULT_CORE_THREAD_POOL_SIZE;
     queueCapacity = DEFAULT_QUEUE_CAPACITY;
-    keepAliveMillis = DEFAULT_KEEP_ALIVE_MILLIS;
+    keepAlive = Duration.ofMillis(DEFAULT_KEEP_ALIVE_MILLIS);
 
     return this;
   }

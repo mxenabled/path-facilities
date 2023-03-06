@@ -1,6 +1,5 @@
 package com.mx.path.service.facility.fault_tolerant_executor.configuration;
 
-import java.time.Duration;
 import java.util.Objects;
 
 import lombok.Data;
@@ -26,8 +25,8 @@ public class ScopedResilience4jConfigurations {
 
     if (configurations != null
         && Objects.equals(configurations.getTimeLimiterConfigurations().getEnabled(), Boolean.TRUE)
-        && configurations.getTimeLimiterConfigurations().getTimeoutDurationMillis() != null) {
-      faultTolerantScopeConfiguration.setTimeout(Duration.ofMillis(configurations.getTimeLimiterConfigurations().getTimeoutDurationMillis()));
+        && configurations.getTimeLimiterConfigurations().getTimeoutDuration() != null) {
+      faultTolerantScopeConfiguration.setTimeout(configurations.getTimeLimiterConfigurations().getTimeoutDuration());
     }
 
     return faultTolerantScopeConfiguration;

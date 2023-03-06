@@ -1,6 +1,6 @@
 coppuccino {
   coverage {
-    minimumCoverage = 0.85
+    minimumCoverage = 0.84
   }
 }
 

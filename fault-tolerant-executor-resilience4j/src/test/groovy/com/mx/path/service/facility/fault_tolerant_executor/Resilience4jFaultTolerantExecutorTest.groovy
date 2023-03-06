@@ -36,7 +36,7 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     doThrow(originalException).when(subject).executeDecoratorStack(any(String), any(FaultTolerantTask))
 
     when:
-    subject.submit("DEFAULT", { config ->  })
+    subject.submit("DEFAULT", { config -> })
 
     then:
     def exception = thrown(ConnectException)
@@ -45,9 +45,9 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
 
     where:
     originalException               || failureStatus
-    mock(BulkheadFullException)     || PathResponseStatus.TOO_MANY_REQUESTS
-    mock(CallNotPermittedException) || PathResponseStatus.UNAVAILABLE
-    new TimeoutException()          || PathResponseStatus.TIMEOUT
+    mock(BulkheadFullException)     || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    mock(CallNotPermittedException) || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    new TimeoutException()          || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
     new RuntimeException()          || PathResponseStatus.INTERNAL_ERROR
   }
 
@@ -63,7 +63,7 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     when: "a timeout is configured"
     new Resilience4jFaultTolerantExecutor(new Configurations().tap {
       defaults.timeLimiterConfigurations.enabled = true
-      defaults.timeLimiterConfigurations.timeoutDurationMillis = 10000
+      defaults.timeLimiterConfigurations.timeoutDuration = Duration.ofMillis(10000)
     }).submit("DEFAULT", { config ->
       assert config.timeout == Duration.ofMillis(10000)
     })
@@ -92,7 +92,7 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) })})
+    def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
 
     thread1.start()
     Thread.sleep(150)
@@ -102,7 +102,8 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
 
     then:
     def exception = thrown(TooManyRequestsException)
-    exception.status == PathResponseStatus.TOO_MANY_REQUESTS
+    exception.status == PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    exception.code == String.valueOf(PathResponseStatus.TOO_MANY_REQUESTS.value())
   }
 
   def "times out a task if it takes too long"() {
@@ -110,18 +111,18 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     def configurations = new Configurations().tap {
       defaults = Resilience4jConfigurations.builder()
           .timeLimiterConfigurations(TimeLimiterConfigurations.builder()
-          .timeoutDurationMillis(50)
+          .timeoutDuration(Duration.ofMillis(50))
           .build().tap { enabled = true })
           .build()
     }
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    subject.submit("DEFAULT", { config -> Thread.sleep(1000)})
+    subject.submit("DEFAULT", { config -> Thread.sleep(1000) })
 
     then:
     def exception = thrown(com.mx.common.connect.TimeoutException)
-    exception.status == PathResponseStatus.TIMEOUT
+    exception.status == PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
   }
 
   def "circuit breaker opens if there are too many failures in sliding window (COUNT_BASED)"() {
@@ -140,9 +141,9 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() })})
-    def thread2 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() })})
-    def thread3 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() })})
+    def thread1 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
+    def thread2 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
+    def thread3 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
 
     thread1.start()
     thread2.start()
@@ -157,7 +158,7 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
 
     then:
     def e = thrown(ServiceUnavailableException)
-    e.status == PathResponseStatus.UNAVAILABLE
+    e.status == PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
   }
 
   def "circuit breaker opens if there are too many failures in sliding window (TIME_BASED)"() {
@@ -166,7 +167,7 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
       defaults = Resilience4jConfigurations.builder()
           .circuitBreakerConfigurations(CircuitBreakerConfigurations.builder()
           .failureRateThreshold(100)
-          .slidingWindowDurationSeconds(1)
+          .slidingWindowDuration(Duration.ofSeconds(1))
           .slidingWindowType("TIME_BASED")
           .minimumNumberOfCalls(1)
           .build().tap { enabled = true })
@@ -176,9 +177,9 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() })})
-    def thread2 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() })})
-    def thread3 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() })})
+    def thread1 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
+    def thread2 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
+    def thread3 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
 
     thread1.start()
     thread2.start()
@@ -193,7 +194,7 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
 
     then:
     def e = thrown(ServiceUnavailableException)
-    e.status == PathResponseStatus.UNAVAILABLE
+    e.status == PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
   }
 
   def "rejects tasks if thread-pool bulkhead is full"() {
@@ -210,8 +211,8 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) })})
-    def thread2 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) })})
+    def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
+    def thread2 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
 
     thread1.start()
     thread2.start()
@@ -223,7 +224,8 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
 
     then:
     def exception = thrown(TooManyRequestsException)
-    exception.status == PathResponseStatus.TOO_MANY_REQUESTS
+    exception.status == PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    exception.code == String.valueOf(PathResponseStatus.TOO_MANY_REQUESTS.value())
   }
 
   def "thread-pool bulkhead queues tasks"() {
@@ -240,8 +242,8 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) })})
-    def thread2 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) })})
+    def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
+    def thread2 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
 
     thread1.start()
     thread2.start()

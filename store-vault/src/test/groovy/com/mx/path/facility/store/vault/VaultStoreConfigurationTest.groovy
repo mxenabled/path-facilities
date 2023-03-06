@@ -6,18 +6,8 @@ import spock.lang.Specification
 
 class VaultStoreConfigurationTest extends Specification {
   def "GetRetryInterval"() {
-    given:
+    when:
     def subject = new VaultStoreConfiguration()
-
-    when:
-    subject.setRetryIntervalMilliseconds(531)
-
-    then: "uses milliseconds"
-    subject.getRetryInterval() == Duration.ofMillis(531)
-
-    when:
-    subject.setRetryInterval(null)
-    subject.setRetryIntervalMilliseconds(null)
 
     then: "uses default"
     subject.getRetryInterval() == Duration.ofMillis(200)
