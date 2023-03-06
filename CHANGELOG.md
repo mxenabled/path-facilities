@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/mxenabled/path-facilities/compare/v1.5.2...v2.0.0) (2023-03-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* All facility configs will need to be converted to durations instead of millis Fixing tests
+
+### Features
+
+* Change configuration millis to durations ([ad0d56e](https://github.com/mxenabled/path-facilities/commit/ad0d56edbac2a6899945875860d13439040a47c0))
+
 ## [1.5.2](https://github.com/mxenabled/path-facilities/compare/v1.5.1...v1.5.2) (2023-02-07)
 
 
