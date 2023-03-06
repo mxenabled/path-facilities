@@ -38,15 +38,8 @@ public class VaultEncryptionServiceConfiguration {
   @ConfigurationField
   private int numKeysToKeep = DEFAULT_NUM_KEYS_TO_KEEP_COUNT;
 
-  /**
-   * @#deprecated use retryInterval
-   */
-  @Deprecated
   @ConfigurationField
-  private Integer retryIntervalMilliseconds = null;
-
-  @ConfigurationField
-  private Duration retryInterval;
+  private Duration retryInterval = Duration.ofMillis(DEFAULT_RETRY_INTERVAL_MILLISECONDS);
 
   @ConfigurationField
   private String uri = DEFAULT_URI;
@@ -68,20 +61,4 @@ public class VaultEncryptionServiceConfiguration {
 
   @ConfigurationField
   private AuthenticationType authentication = DEFAULT_AUTHENTICATION;
-
-  /**
-   * Maintaining backward compatibility. Remove when retryIntervalMilliseconds is removed.
-   * @return retryInterval as Duration
-   */
-  public final Duration getRetryInterval() {
-    if (retryInterval == null) {
-      if (retryIntervalMilliseconds != null) {
-        retryInterval = Duration.ofMillis(retryIntervalMilliseconds);
-      } else {
-        retryInterval = Duration.ofMillis(DEFAULT_RETRY_INTERVAL_MILLISECONDS);
-      }
-    }
-
-    return retryInterval;
-  }
 }

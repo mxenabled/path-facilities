@@ -21,13 +21,6 @@ public class RedisStoreConfiguration {
   @ConfigurationField
   private int computationThreadPoolSize = DEFAULT_COMPUTATION_THREAD_POOL_SIZE;
 
-  /**
-   * @deprecated Use connectionTimeout
-   */
-  @Deprecated
-  @ConfigurationField
-  private Integer connectionTimeoutSeconds = null;
-
   @ConfigurationField
   private Duration connectionTimeout = null;
 
@@ -36,20 +29,4 @@ public class RedisStoreConfiguration {
 
   @ConfigurationField
   private int port = DEFAULT_PORT;
-
-  /**
-   * Maintaining backward compatibility. Remove after connectionTimeoutSeconds is removed.
-   * @return connectionTimeout
-   */
-  public Duration getConnectionTimeout() {
-    if (connectionTimeout == null) {
-      if (connectionTimeoutSeconds != null) {
-        this.connectionTimeout = Duration.ofSeconds(connectionTimeoutSeconds);
-      } else {
-        this.connectionTimeout = Duration.ofSeconds(DEFAULT_CONNECTION_TIMEOUT_IN_SECONDS);
-      }
-    }
-
-    return connectionTimeout;
-  }
 }

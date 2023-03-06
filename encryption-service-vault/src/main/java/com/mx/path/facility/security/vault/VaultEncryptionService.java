@@ -39,7 +39,6 @@ public class VaultEncryptionService implements EncryptionService {
   private volatile Vault driver;
 
   public VaultEncryptionService(@Configuration VaultEncryptionServiceConfiguration configuration) {
-    configuration.getRetryInterval(); // todo: remove when retryIntervalMilliseconds is removed.
     this.configuration = configuration;
   }
 

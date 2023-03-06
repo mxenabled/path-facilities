@@ -1,5 +1,7 @@
 package com.mx.path.service.facility.fault_tolerant_executor.configuration;
 
+import java.time.Duration;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,14 +33,13 @@ public final class BulkheadConfigurations implements PopulatesDefaults<BulkheadC
    * Max amount of time a thread should be blocked for when attempting to enter a saturated bulkhead.
    */
   @ConfigurationField
-  private Integer maxWaitDurationMillis;
+  private Duration maxWaitDuration;
 
   @Override
   public BulkheadConfigurations withDefaults() {
     maxConcurrentCalls = DEFAULT_MAX_CONCURRENT_CALLS;
-    maxWaitDurationMillis = DEFAULT_MAX_WAIT_DURATION_MILLIS;
+    maxWaitDuration = Duration.ofMillis(DEFAULT_MAX_WAIT_DURATION_MILLIS);
 
     return this;
   }
-
 }

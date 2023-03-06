@@ -31,9 +31,9 @@ class ScopedConfigurationRegistryTest extends Specification {
     then:
     subject.defaultConfigurations.scope == "DEFAULT"
     subject.defaultConfigurations.configurations.bulkheadConfigurations.maxConcurrentCalls == 1
-    subject.defaultConfigurations.configurations.bulkheadConfigurations.maxWaitDurationMillis == 2
+    subject.defaultConfigurations.configurations.bulkheadConfigurations.maxWaitDuration == Duration.ofMillis(2)
     subject.defaultConfigurations.configurations.circuitBreakerConfigurations.failureRateThreshold == 3
-    subject.defaultConfigurations.configurations.timeLimiterConfigurations.timeoutDurationMillis == 4
+    subject.defaultConfigurations.configurations.timeLimiterConfigurations.timeoutDuration == Duration.ofMillis(4)
 
     subject.configurationRegistry
         .stream()
@@ -51,65 +51,65 @@ class ScopedConfigurationRegistryTest extends Specification {
     def nats = findConfigForScope(subject, "nats")
     nats.scope == "nats"
     nats.configurations.bulkheadConfigurations.maxConcurrentCalls == 21
-    nats.configurations.bulkheadConfigurations.maxWaitDurationMillis == 22
+    nats.configurations.bulkheadConfigurations.maxWaitDuration == Duration.ofMillis(22)
     nats.configurations.circuitBreakerConfigurations.failureRateThreshold == 23
     nats.configurations.circuitBreakerConfigurations.minimumNumberOfCalls == 17
-    nats.configurations.timeLimiterConfigurations.timeoutDurationMillis == 24
-    nats.configurations.threadPoolBulkheadConfigurations.keepAliveMillis == 24
+    nats.configurations.timeLimiterConfigurations.timeoutDuration == Duration.ofMillis(24)
+    nats.configurations.threadPoolBulkheadConfigurations.keepAlive == Duration.ofMillis(24)
 
     def http = findConfigForScope(subject, "http")
     http.scope == "http"
     http.configurations.bulkheadConfigurations.maxConcurrentCalls == 17
-    http.configurations.bulkheadConfigurations.maxWaitDurationMillis == 18
+    http.configurations.bulkheadConfigurations.maxWaitDuration == Duration.ofMillis(18)
     http.configurations.circuitBreakerConfigurations.failureRateThreshold == 19
     http.configurations.circuitBreakerConfigurations.minimumNumberOfCalls == 17
-    http.configurations.timeLimiterConfigurations.timeoutDurationMillis == 20
-    http.configurations.threadPoolBulkheadConfigurations.keepAliveMillis == 20
+    http.configurations.timeLimiterConfigurations.timeoutDuration == Duration.ofMillis(20)
+    http.configurations.threadPoolBulkheadConfigurations.keepAlive == Duration.ofMillis(20)
 
     def defaultScope = findConfigForScope(subject, "DEFAULT")
     defaultScope.scope == "DEFAULT"
     defaultScope.configurations.bulkheadConfigurations.maxConcurrentCalls == 1
-    defaultScope.configurations.bulkheadConfigurations.maxWaitDurationMillis == 2
+    defaultScope.configurations.bulkheadConfigurations.maxWaitDuration == Duration.ofMillis(2)
     defaultScope.configurations.circuitBreakerConfigurations.failureRateThreshold == 3
     defaultScope.configurations.circuitBreakerConfigurations.minimumNumberOfCalls == 17
-    defaultScope.configurations.timeLimiterConfigurations.timeoutDurationMillis == 4
-    defaultScope.configurations.threadPoolBulkheadConfigurations.keepAliveMillis == 4
+    defaultScope.configurations.timeLimiterConfigurations.timeoutDuration == Duration.ofMillis(4)
+    defaultScope.configurations.threadPoolBulkheadConfigurations.keepAlive == Duration.ofMillis(4)
 
     def httpIdentity = findConfigForScope(subject, "http.identity")
     httpIdentity.scope == "http.identity"
     httpIdentity.configurations.bulkheadConfigurations.maxConcurrentCalls == 25
-    httpIdentity.configurations.bulkheadConfigurations.maxWaitDurationMillis == 26
+    httpIdentity.configurations.bulkheadConfigurations.maxWaitDuration == Duration.ofMillis(26)
     httpIdentity.configurations.circuitBreakerConfigurations.failureRateThreshold == 27
     httpIdentity.configurations.circuitBreakerConfigurations.minimumNumberOfCalls == 1
-    httpIdentity.configurations.timeLimiterConfigurations.timeoutDurationMillis == 28
-    httpIdentity.configurations.threadPoolBulkheadConfigurations.keepAliveMillis == 28
+    httpIdentity.configurations.timeLimiterConfigurations.timeoutDuration == Duration.ofMillis(28)
+    httpIdentity.configurations.threadPoolBulkheadConfigurations.keepAlive == Duration.ofMillis(28)
 
     def httpProfileGet = findConfigForScope(subject, "http.profile.get")
     httpProfileGet.scope == "http.profile.get"
     httpProfileGet.configurations.bulkheadConfigurations.maxConcurrentCalls == 9
-    httpProfileGet.configurations.bulkheadConfigurations.maxWaitDurationMillis == 10
+    httpProfileGet.configurations.bulkheadConfigurations.maxWaitDuration == Duration.ofMillis(10)
     httpProfileGet.configurations.circuitBreakerConfigurations.failureRateThreshold == 11
     httpProfileGet.configurations.circuitBreakerConfigurations.minimumNumberOfCalls == 17
-    httpProfileGet.configurations.timeLimiterConfigurations.timeoutDurationMillis == 12
-    httpProfileGet.configurations.threadPoolBulkheadConfigurations.keepAliveMillis == 12
+    httpProfileGet.configurations.timeLimiterConfigurations.timeoutDuration == Duration.ofMillis(12)
+    httpProfileGet.configurations.threadPoolBulkheadConfigurations.keepAlive == Duration.ofMillis(12)
 
     def httpRemoteDeposit = findConfigForScope(subject, "http.remote_deposit")
     httpRemoteDeposit.scope == "http.remote_deposit"
     httpRemoteDeposit.configurations.bulkheadConfigurations.maxConcurrentCalls == 13
-    httpRemoteDeposit.configurations.bulkheadConfigurations.maxWaitDurationMillis == 14
+    httpRemoteDeposit.configurations.bulkheadConfigurations.maxWaitDuration == Duration.ofMillis(14)
     httpRemoteDeposit.configurations.circuitBreakerConfigurations.failureRateThreshold == 15
     httpRemoteDeposit.configurations.circuitBreakerConfigurations.minimumNumberOfCalls == 10
-    httpRemoteDeposit.configurations.timeLimiterConfigurations.timeoutDurationMillis == 16
-    httpRemoteDeposit.configurations.threadPoolBulkheadConfigurations.keepAliveMillis == 16
+    httpRemoteDeposit.configurations.timeLimiterConfigurations.timeoutDuration == Duration.ofMillis(16)
+    httpRemoteDeposit.configurations.threadPoolBulkheadConfigurations.keepAlive == Duration.ofMillis(16)
 
     def httpIdentityCreate = findConfigForScope(subject, "http.identity.create")
     httpIdentityCreate.scope == "http.identity.create"
     httpIdentityCreate.configurations.bulkheadConfigurations.maxConcurrentCalls == 5
-    httpIdentityCreate.configurations.bulkheadConfigurations.maxWaitDurationMillis == 6
+    httpIdentityCreate.configurations.bulkheadConfigurations.maxWaitDuration == Duration.ofMillis(6)
     httpIdentityCreate.configurations.circuitBreakerConfigurations.failureRateThreshold == 7
     httpIdentityCreate.configurations.circuitBreakerConfigurations.minimumNumberOfCalls == 17
-    httpIdentityCreate.configurations.timeLimiterConfigurations.timeoutDurationMillis == 8
-    httpIdentityCreate.configurations.threadPoolBulkheadConfigurations.keepAliveMillis == 8
+    httpIdentityCreate.configurations.timeLimiterConfigurations.timeoutDuration == Duration.ofMillis(8)
+    httpIdentityCreate.configurations.threadPoolBulkheadConfigurations.keepAlive == Duration.ofMillis(8)
   }
 
   def "getCircuitBreaker"() {
@@ -289,7 +289,7 @@ class ScopedConfigurationRegistryTest extends Specification {
         configurations = Resilience4jConfigurations.builder()
             .timeLimiterConfigurations(
             TimeLimiterConfigurations.builder().
-            timeoutDurationMillis(10000)
+            timeoutDuration(Duration.ofMillis(10000))
             .build().tap { enabled = true })
             .build()
       })
@@ -355,7 +355,7 @@ class ScopedConfigurationRegistryTest extends Specification {
         .bulkheadConfigurations(
         BulkheadConfigurations.builder()
         .maxConcurrentCalls(maxConcurrentCalls)
-        .maxWaitDurationMillis(maxWaitDurationMillis)
+        .maxWaitDuration(Duration.ofMillis(maxWaitDurationMillis))
         .build().tap { enabled = true })
         .circuitBreakerConfigurations(
         CircuitBreakerConfigurations.builder()
@@ -363,13 +363,13 @@ class ScopedConfigurationRegistryTest extends Specification {
         .build().tap { enabled = true })
         .timeLimiterConfigurations(
         TimeLimiterConfigurations.builder()
-        .timeoutDurationMillis(timeoutDurationMillis)
+        .timeoutDuration(Duration.ofMillis(timeoutDurationMillis))
         .build().tap { enabled = true })
         .threadPoolBulkheadConfigurations(ThreadPoolBulkheadConfigurations.builder()
         .maxThreadPoolSize(12)
         .coreThreadPoolSize(12)
         .queueCapacity(15)
-        .keepAliveMillis(timeoutDurationMillis)
+        .keepAlive(Duration.ofMillis(timeoutDurationMillis))
         .build().tap { enabled = true })
         .build()
   }

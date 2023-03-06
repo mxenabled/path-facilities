@@ -35,7 +35,6 @@ public final class VaultStore implements Store {
   private volatile Vault driver;
 
   public VaultStore(@Configuration VaultStoreConfiguration configuration) {
-    configuration.getRetryInterval(); // todo: remove this after retryIntervalMilliseconds has been removed.
     this.configuration = configuration;
   }
 

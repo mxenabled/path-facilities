@@ -1,6 +1,5 @@
 package com.mx.path.service.facility.fault_tolerant_executor;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -251,17 +250,17 @@ public final class ScopedConfigurationRegistry {
     CircuitBreakerConfig.Builder builder = CircuitBreakerConfig.custom()
         .failureRateThreshold(config.getFailureRateThreshold())
         .slowCallRateThreshold(config.getSlowCallRateThreshold())
-        .slowCallDurationThreshold(Duration.ofMillis(config.getSlowCallDurationThresholdMillis()))
+        .slowCallDurationThreshold(config.getSlowCallDurationThreshold())
         .permittedNumberOfCallsInHalfOpenState(config.getPermittedNumberOfCallsInHalfOpenState())
         .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.valueOf(config.getSlidingWindowType()))
         .minimumNumberOfCalls(config.getMinimumNumberOfCalls())
-        .waitDurationInOpenState(Duration.ofMillis(config.getWaitDurationInOpenStateMillis()))
+        .waitDurationInOpenState(config.getWaitDurationInOpenState())
         .automaticTransitionFromOpenToHalfOpenEnabled(config.getAutomaticTransitionFromOpenToHalfOpenEnabled());
 
     // The internal default for this value is 0; however, if we try to provide that to the `CircuitBreakerConfig.Builder`
     // an exception will be thrown.
-    if (config.getMaxWaitDurationInHalfOpenStateMillis() > 0) {
-      builder.maxWaitDurationInHalfOpenState(Duration.ofMillis(config.getMaxWaitDurationInHalfOpenStateMillis()));
+    if (config.getMaxWaitDurationInHalfOpenState().toMillis() > 0) {
+      builder.maxWaitDurationInHalfOpenState(config.getMaxWaitDurationInHalfOpenState());
     }
 
     if (config.getSlidingWindowType().equalsIgnoreCase("COUNT_BASED")) {
@@ -271,11 +270,11 @@ public final class ScopedConfigurationRegistry {
 
       builder.slidingWindowSize(config.getSlidingWindowTaskCount());
     } else if (config.getSlidingWindowType().equalsIgnoreCase("TIME_BASED")) {
-      if (config.getSlidingWindowDurationSeconds() == null) {
+      if (config.getSlidingWindowDuration() == null) {
         throw new ConfigurationException("slidingWindowDurationSeconds must be provided when slidingWindowType is TIME_BASED");
       }
 
-      builder.slidingWindowSize(config.getSlidingWindowDurationSeconds());
+      builder.slidingWindowSize((int) config.getSlidingWindowDuration().getSeconds());
     } else {
       throw new ConfigurationException("slidingWindowType must be COUNT_BASED or TIME_BASED");
     }
@@ -286,13 +285,13 @@ public final class ScopedConfigurationRegistry {
   private BulkheadConfig buildBulkheadConfig(BulkheadConfigurations config) {
     return BulkheadConfig.custom()
         .maxConcurrentCalls(config.getMaxConcurrentCalls())
-        .maxWaitDuration(Duration.ofMillis(config.getMaxWaitDurationMillis()))
+        .maxWaitDuration(config.getMaxWaitDuration())
         .build();
   }
 
   private TimeLimiterConfig buildTimeLimiterConfig(TimeLimiterConfigurations config) {
     return TimeLimiterConfig.custom()
-        .timeoutDuration(Duration.ofMillis(config.getTimeoutDurationMillis()))
+        .timeoutDuration(config.getTimeoutDuration())
         .build();
   }
 
@@ -301,7 +300,7 @@ public final class ScopedConfigurationRegistry {
         .maxThreadPoolSize(config.getMaxThreadPoolSize())
         .coreThreadPoolSize(config.getCoreThreadPoolSize())
         .queueCapacity(config.getQueueCapacity())
-        .keepAliveDuration(Duration.ofMillis(config.getKeepAliveMillis()))
+        .keepAliveDuration(config.getKeepAlive())
         .build();
   }
 }
