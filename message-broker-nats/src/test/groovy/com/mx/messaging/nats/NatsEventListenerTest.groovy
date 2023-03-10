@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when
 import java.nio.charset.StandardCharsets
 
 import com.mx.common.messaging.EventListener
+import com.mx.path.service.facility.messaging.nats.NatsEventListener
 
 import io.nats.client.Message
 

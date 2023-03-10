@@ -6,27 +6,24 @@ Vault encryption service implementation
 
 ```yaml
 encryptionService:
-  class: "com.mx.path.facility.security.vault.VaultEncryptionService"
+  class: com.mx.path.service.facility.encryption.jasypt.JasyptEncryptionService
   configurations:
     enabled: true
-    uri: http://127.0.0.1:8200
-    authentication: APPID
-    app-id: wedge
-    user-id: 1f2cef4b6fe846fd86a4f6730ab74106
-    numKeysToKeep: 5
+    poolSize: 10
+    currentKeyIndex: 0
+    keys:
+      - 9rXVaIYKFoEwZkY3eDPHneNVVL...
 ```
 
 ```json
 {
   "encryptionService": {
-    "class": "com.mx.path.facility.security.vault.VaultEncryptionService",
+    "class": "com.mx.path.service.facility.encryption.jasypt.JasyptEncryptionService",
     "configurations": {
       "enabled": true,
-      "uri": "http://127.0.0.1:8200",
-      "authentication":  "APPID",
-      "app-id": "wedge",
-      "user-id": "1f2cef4b6fe846fd86a4f6730ab74106",
-      "numKeysToKeep": 5
+      "poosSize": 10,
+      "currentKeyIndex": 0
+      "keys": ["9rXVaIYKFoEwZkY3eDPHneNVVL..."]
     }
   }
 }
