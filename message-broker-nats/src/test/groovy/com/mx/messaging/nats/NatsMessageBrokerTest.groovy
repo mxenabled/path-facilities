@@ -14,6 +14,8 @@ import com.mx.common.messaging.EventListener
 import com.mx.common.messaging.MessageError
 import com.mx.common.messaging.MessageResponder
 import com.mx.common.messaging.MessageStatus
+import com.mx.path.service.facility.messaging.nats.NatsConfiguration
+import com.mx.path.service.facility.messaging.nats.NatsMessageBroker
 
 import org.mockito.Mockito
 

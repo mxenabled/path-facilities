@@ -1,7 +1,8 @@
 package com.mx.messaging.nats
 
-import com.mx.common.collections.ObjectMap
-import com.mx.common.messaging.MessageError
+import com.mx.path.service.facility.messaging.nats.NatsConfiguration
+import com.mx.path.service.facility.messaging.nats.NatsConfigurationBuilder
+import com.mx.path.service.facility.messaging.nats.NatsMessageBrokerConfigurationException
 
 import spock.lang.Specification
 
