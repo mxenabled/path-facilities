@@ -2,7 +2,7 @@ on:
   # Automatically re-publish SNAPSHOT
   push:
     branches:
-      - v2
+      - v3
   workflow_dispatch:
     inputs:
       dry-run:
