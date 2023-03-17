@@ -18,7 +18,7 @@ public class VaultEncryptionServiceConfiguration {
   private static final int DEFAULT_ENGINE_VERSION = 1;
   private static final String DEFAULT_URI = "http://127.0.0.1:8200";
   private static final int DEFAULT_MAX_RETRIES = 0;
-  private static final int DEFAULT_RETRY_INTERVAL_MILLISECONDS = 200;
+  private static final Duration DEFAULT_RETRY_INTERVAL = Duration.ofMillis(200);
   private static final AuthenticationType DEFAULT_AUTHENTICATION = AuthenticationType.APPROLE;
   private static final String DEFAULT_KEY_NAME = "vault_session";
   private static final int DEFAULT_NUM_KEYS_TO_KEEP_COUNT = 1;
@@ -39,7 +39,7 @@ public class VaultEncryptionServiceConfiguration {
   private int numKeysToKeep = DEFAULT_NUM_KEYS_TO_KEEP_COUNT;
 
   @ConfigurationField
-  private Duration retryInterval = Duration.ofMillis(DEFAULT_RETRY_INTERVAL_MILLISECONDS);
+  private Duration retryInterval = DEFAULT_RETRY_INTERVAL;
 
   @ConfigurationField
   private String uri = DEFAULT_URI;
