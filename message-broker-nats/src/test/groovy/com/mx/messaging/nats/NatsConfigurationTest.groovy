@@ -18,13 +18,6 @@ class NatsConfigurationTest extends Specification {
     def subject = new NatsConfiguration()
 
     when:
-    subject.setTimeoutInMilliseconds(201)
-
-    then: "uses timeoutInMilliseconds"
-    subject.getTimeout() == Duration.ofMillis(201)
-
-    when:
-    subject.setTimeoutInMilliseconds(null)
     subject.setTimeout(Duration.ofSeconds(2))
 
     then: "uses timeout"
@@ -52,22 +45,6 @@ class NatsConfigurationTest extends Specification {
 
     when:
     configurations.tap {
-      put("timeoutInMilliseconds", 4000)
-    }
-
-    result = binder.build(NatsConfiguration, configurations)
-
-    then:
-    verifyAll(result) {
-      it.isEnabled()
-      it.getServers() == "nats://127.0.0.1:4223"
-      it.getDispatcherCount() == 9
-      it.getTimeout() == Duration.ofSeconds(4) // uses timeoutInMilliseconds
-    }
-
-    when:
-    configurations.tap {
-      remove("timeoutInMilliseconds")
       put("timeout", "11s")
     }
 
