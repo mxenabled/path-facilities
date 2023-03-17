@@ -11,7 +11,7 @@ public class RedisStoreConfiguration {
 
   private static final String DEFAULT_HOST = "localhost";
   private static final int DEFAULT_COMPUTATION_THREAD_POOL_SIZE = 5;
-  private static final Duration DEFAULT_CONNECTION_TIMEOUT = Duration.ofSeconds(10);
+  private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
   private static final int DEFAULT_PORT = 6379;
   private static final int DEFAULT_THREAD_POOL_SIZE = 5;
 
@@ -22,7 +22,7 @@ public class RedisStoreConfiguration {
   private int computationThreadPoolSize = DEFAULT_COMPUTATION_THREAD_POOL_SIZE;
 
   @ConfigurationField
-  private Duration connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
+  private Duration timeout = DEFAULT_TIMEOUT;
 
   @ConfigurationField
   private int ioThreadPoolSize = DEFAULT_THREAD_POOL_SIZE;

@@ -66,6 +66,7 @@ function process_file {
     "com.mx.path.service.facility.fault_tolerant_executor([^a-zA-Z])=com.mx.path.service.facility.fault_tolerant_executor.resilience4j\1"
     "com.mx.path.facility.exception_reporter.honeybadger([^a-zA-Z])=com.mx.path.service.facility.exception_reporter.honeybadger\1"
     "com.mx.path.facility.security.vault([^a-zA-Z])=com.mx.path.service.facility.security.vault\1"
+    "connectionTimeout([^a-zA-Z])=timeout\1"
   )
 
   local reported_file=false

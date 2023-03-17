@@ -127,7 +127,7 @@ public class RedisStore implements Store {
           .computationThreadPoolSize(configuration.getComputationThreadPoolSize())
           .build();
 
-      RedisClient redisClient = RedisClient.create(resources, new RedisURI(configuration.getHost(), configuration.getPort(), configuration.getConnectionTimeout()));
+      RedisClient redisClient = RedisClient.create(resources, new RedisURI(configuration.getHost(), configuration.getPort(), configuration.getTimeout()));
 
       // RESP3 executes a HELLO command to discover the protocol before executing any commands made by the client.
       // This can cause issues if we are communicating over a proxy and the proxy doesn't speak RESP3. For now, it is safer
