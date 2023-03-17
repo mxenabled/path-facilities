@@ -23,7 +23,7 @@ public class VaultStoreConfiguration {
   private static final String TTL_UNSUPPORTED = "TTL is not supported with Vault";
   private static final int DEFAULT_ENGINE_VERSION = 2;
   private static final int DEFAULT_MAX_RETRIES = 0;
-  private static final int DEFAULT_RETRY_INTERVAL_MILLISECONDS = 200;
+  private static final Duration DEFAULT_RETRY_INTERVAL = Duration.ofMillis(200);
   private static final int KEY_NOT_FOUND = 404;
   private static final int MAXIMUM_REAUTHENTICATION_RETRIES = 3;
 
@@ -43,7 +43,7 @@ public class VaultStoreConfiguration {
   private int maxRetries = DEFAULT_MAX_RETRIES;
 
   @ConfigurationField
-  private Duration retryInterval = Duration.ofMillis(DEFAULT_RETRY_INTERVAL_MILLISECONDS);
+  private Duration retryInterval = DEFAULT_RETRY_INTERVAL;
 
   @ConfigurationField(secret = true)
   private String secretId;
