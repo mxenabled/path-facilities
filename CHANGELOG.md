@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.0.0](https://github.com/mxenabled/path-facilities/compare/v2.0.0...v3.0.0) (2023-03-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename store redis connectionTimeout to timeout
+* remove spring integration of honeybadger facility
+* remove backward compatibility for durations - store-redis
+* remove backward compatibility for durations - store-vault
+* remove backward compatibility for durations - message-broker-nats
+* standardize package structures
+* standardize package structures
+
+### Bug Fixes
+
+* standardize package structures ([7d32dc0](https://github.com/mxenabled/path-facilities/commit/7d32dc0168098693cf4fad24342a296b069fc2e1))
+* standardize package structures ([e15c3ae](https://github.com/mxenabled/path-facilities/commit/e15c3ae8af831ee8a908144ef9c8dcb14744998a))
+
+
+### Code Refactoring
+
+* remove backward compatibility for durations - message-broker-nats ([b77a678](https://github.com/mxenabled/path-facilities/commit/b77a678dd697539bccca736ff019c936e2d9b427))
+* remove backward compatibility for durations - store-redis ([4900874](https://github.com/mxenabled/path-facilities/commit/49008748a453f931fe0370253ae154c8027f7a4b))
+* remove backward compatibility for durations - store-vault ([0b3e305](https://github.com/mxenabled/path-facilities/commit/0b3e305d17af976bde614156b06d1dd55135cea9))
+* remove spring integration of honeybadger facility ([80a5d62](https://github.com/mxenabled/path-facilities/commit/80a5d62a0675556b8ab6caed20352ddeabdbae9d))
+* rename store redis connectionTimeout to timeout ([a204f47](https://github.com/mxenabled/path-facilities/commit/a204f47bdcaf5d8df84180a0964cf695aadff226))
+
 ## [2.0.0](https://github.com/mxenabled/path-facilities/compare/v1.5.2...v2.0.0) (2023-03-06)
 
 
