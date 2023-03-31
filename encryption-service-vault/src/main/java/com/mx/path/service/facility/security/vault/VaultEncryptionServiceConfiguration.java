@@ -8,7 +8,7 @@ import com.mx.common.configuration.ConfigurationField;
 
 @Data
 public class VaultEncryptionServiceConfiguration {
-  enum AuthenticationType {
+  public enum AuthenticationType {
     @Deprecated
     APPID,
     APPROLE,
