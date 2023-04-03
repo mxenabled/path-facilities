@@ -63,7 +63,7 @@ function process_file {
     "com.mx.redis([^a-zA-Z])=com.mx.path.service.facility.store.redis\1"
     "com.mx.path.facility.store.vault([^a-zA-Z])=com.mx.path.service.facility.store.vault\1"
     "com.mx.messaging.nats([^a-zA-Z])=com.mx.path.service.facility.messaging.nats\1"
-    "com.mx.path.service.facility.fault_tolerant_executor([^a-zA-Z])=com.mx.path.service.facility.fault_tolerant_executor.resilience4j\1"
+    "com.mx.path.service.facility.fault_tolerant_executor.Resilience4jFaultTolerantExecutor=com.mx.path.service.facility.fault_tolerant_executor.resilience4j.Resilience4jFaultTolerantExecutor"
     "com.mx.path.facility.exception_reporter.honeybadger([^a-zA-Z])=com.mx.path.service.facility.exception_reporter.honeybadger\1"
     "com.mx.path.facility.security.vault([^a-zA-Z])=com.mx.path.service.facility.security.vault\1"
     "connectionTimeout([^a-zA-Z])=timeout\1"
