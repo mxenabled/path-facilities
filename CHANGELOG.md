@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/mxenabled/path-facilities/compare/v3.0.0...v3.0.1) (2023-04-03)
+
+
+### Bug Fixes
+
+* change visibility of vaule encryption service authentication type enum ([24c0a2a](https://github.com/mxenabled/path-facilities/commit/24c0a2ad479c27e2116775cfd48effd5ed1d3848))
+
 ## [3.0.0](https://github.com/mxenabled/path-facilities/compare/v2.0.0...v3.0.0) (2023-03-29)
 
 
