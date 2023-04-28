@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.mx.common.configuration.ConfigurationField;
+import com.mx.path.core.common.configuration.ConfigurationField;
 
 @AllArgsConstructor
 @Builder(toBuilder = true)

@@ -1,6 +1,6 @@
 package com.mx.path.service.facility.messaging.nats;
 
-import com.mx.common.facility.FacilityException;
+import com.mx.path.core.common.facility.FacilityException;
 
 public class NatsMessageBrokerConfigurationException extends FacilityException {
   public NatsMessageBrokerConfigurationException(String message) {

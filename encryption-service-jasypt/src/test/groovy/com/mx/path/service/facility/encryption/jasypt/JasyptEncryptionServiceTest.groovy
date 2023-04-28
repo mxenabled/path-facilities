@@ -3,8 +3,8 @@ package com.mx.path.service.facility.encryption.jasypt;
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
 
-import com.mx.common.collections.ObjectArray
-import com.mx.common.collections.ObjectMap
+import com.mx.path.core.common.collection.ObjectArray
+import com.mx.path.core.common.collection.ObjectMap
 
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor
 import org.jasypt.exceptions.EncryptionInitializationException

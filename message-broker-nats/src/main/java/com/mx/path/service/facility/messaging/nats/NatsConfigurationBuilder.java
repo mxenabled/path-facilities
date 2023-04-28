@@ -19,7 +19,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import com.mx.common.lang.Strings;
+import com.mx.path.core.common.lang.Strings;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;

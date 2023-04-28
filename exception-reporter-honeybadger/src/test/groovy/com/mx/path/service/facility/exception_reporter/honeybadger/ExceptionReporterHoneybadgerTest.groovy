@@ -9,7 +9,7 @@ import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
 
-import com.mx.common.collections.MultiValueMap
+import com.mx.path.core.common.collection.MultiValueMap
 
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito

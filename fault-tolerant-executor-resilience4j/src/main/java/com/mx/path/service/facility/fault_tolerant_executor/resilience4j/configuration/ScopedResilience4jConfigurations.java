@@ -4,8 +4,8 @@ import java.util.Objects;
 
 import lombok.Data;
 
-import com.mx.common.configuration.ConfigurationField;
-import com.mx.common.process.FaultTolerantScopeConfiguration;
+import com.mx.path.core.common.configuration.ConfigurationField;
+import com.mx.path.core.common.process.FaultTolerantScopeConfiguration;
 
 @Data
 public class ScopedResilience4jConfigurations {
@@ -16,7 +16,7 @@ public class ScopedResilience4jConfigurations {
   private Resilience4jConfigurations configurations;
 
   /**
-   * Produces a {@link FaultTolerantScopeConfiguration} that can be consumed by a {@link com.mx.common.process.FaultTolerantTask}
+   * Produces a {@link FaultTolerantScopeConfiguration} that can be consumed by a {@link com.mx.path.core.common.process.FaultTolerantTask}
    *
    * @return FaultTolerantScopeConfiguration
    */

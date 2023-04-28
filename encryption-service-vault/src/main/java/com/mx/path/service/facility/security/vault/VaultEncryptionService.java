@@ -18,9 +18,9 @@ import com.bettercloud.vault.json.JsonObject;
 import com.bettercloud.vault.response.AuthResponse;
 import com.bettercloud.vault.response.LogicalResponse;
 import com.bettercloud.vault.response.VaultResponse;
-import com.mx.common.configuration.Configuration;
-import com.mx.common.lang.Strings;
-import com.mx.common.security.EncryptionService;
+import com.mx.path.core.common.configuration.Configuration;
+import com.mx.path.core.common.lang.Strings;
+import com.mx.path.core.common.security.EncryptionService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

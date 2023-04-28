@@ -5,11 +5,11 @@ import static org.mockito.Mockito.*
 import java.time.Duration
 import java.util.concurrent.TimeoutException
 
-import com.mx.common.accessors.PathResponseStatus
-import com.mx.common.connect.ConnectException
-import com.mx.common.connect.ServiceUnavailableException
-import com.mx.common.connect.TooManyRequestsException
-import com.mx.common.process.FaultTolerantTask
+import com.mx.path.core.common.accessor.PathResponseStatus
+import com.mx.path.core.common.connect.ConnectException
+import com.mx.path.core.common.connect.ServiceUnavailableException
+import com.mx.path.core.common.connect.TooManyRequestsException
+import com.mx.path.core.common.process.FaultTolerantTask
 import com.mx.path.service.facility.fault_tolerant_executor.resilience4j.configuration.BulkheadConfigurations
 import com.mx.path.service.facility.fault_tolerant_executor.resilience4j.configuration.CircuitBreakerConfigurations
 import com.mx.path.service.facility.fault_tolerant_executor.resilience4j.configuration.Configurations
@@ -121,7 +121,7 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject.submit("DEFAULT", { config -> Thread.sleep(1000) })
 
     then:
-    def exception = thrown(com.mx.common.connect.TimeoutException)
+    def exception = thrown(com.mx.path.core.common.connect.TimeoutException)
     exception.status == PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
   }
 

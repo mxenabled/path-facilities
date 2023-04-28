@@ -18,7 +18,7 @@ import com.bettercloud.vault.api.Logical
 import com.bettercloud.vault.response.AuthResponse
 import com.bettercloud.vault.response.LogicalResponse
 import com.bettercloud.vault.rest.RestResponse
-import com.mx.common.collections.ObjectMap
+import com.mx.path.core.common.collection.ObjectMap
 
 import spock.lang.Specification
 import spock.lang.Unroll

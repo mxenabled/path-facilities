@@ -9,8 +9,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.mx.common.configuration.Configuration;
-import com.mx.common.security.EncryptionService;
+import com.mx.path.core.common.configuration.Configuration;
+import com.mx.path.core.common.security.EncryptionService;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
