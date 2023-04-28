@@ -5,8 +5,8 @@ import java.util.function.Function;
 
 import lombok.Getter;
 
-import com.mx.common.configuration.Configuration;
-import com.mx.common.store.Store;
+import com.mx.path.core.common.configuration.Configuration;
+import com.mx.path.core.common.store.Store;
 
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisClient;

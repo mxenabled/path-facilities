@@ -1,7 +1,7 @@
 package com.mx.path.service.facility.exception_reporter.honeybadger
 
-import com.mx.common.collections.MultiValueMap
-import com.mx.common.exception.ExceptionContext
+import com.mx.path.core.common.collection.MultiValueMap
+import com.mx.path.core.common.exception.ExceptionContext
 
 
 class TestExceptionContext implements ExceptionContext {

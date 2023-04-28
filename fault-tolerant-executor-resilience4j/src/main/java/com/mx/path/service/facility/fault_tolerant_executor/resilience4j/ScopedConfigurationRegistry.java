@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import com.mx.common.process.FaultTolerantScopeConfiguration;
+import com.mx.path.core.common.process.FaultTolerantScopeConfiguration;
 import com.mx.path.service.facility.fault_tolerant_executor.resilience4j.configuration.BulkheadConfigurations;
 import com.mx.path.service.facility.fault_tolerant_executor.resilience4j.configuration.CircuitBreakerConfigurations;
 import com.mx.path.service.facility.fault_tolerant_executor.resilience4j.configuration.ConfigurationException;

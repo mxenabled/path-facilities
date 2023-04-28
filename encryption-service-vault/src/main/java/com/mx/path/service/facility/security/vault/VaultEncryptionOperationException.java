@@ -1,6 +1,6 @@
 package com.mx.path.service.facility.security.vault;
 
-import com.mx.common.facility.FacilityException;
+import com.mx.path.core.common.facility.FacilityException;
 
 public class VaultEncryptionOperationException extends FacilityException {
   public VaultEncryptionOperationException(String message) {

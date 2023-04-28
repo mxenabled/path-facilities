@@ -2,7 +2,7 @@ package com.mx.path.service.facility.store.vault;
 
 import lombok.Getter;
 
-import com.mx.common.facility.FacilityException;
+import com.mx.path.core.common.facility.FacilityException;
 
 public class VaultStoreOperationException extends FacilityException {
   @Getter

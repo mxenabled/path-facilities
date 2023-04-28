@@ -7,15 +7,15 @@ import java.util.concurrent.TimeoutException;
 import lombok.AccessLevel;
 import lombok.Setter;
 
-import com.mx.common.accessors.PathResponseStatus;
-import com.mx.common.configuration.Configuration;
-import com.mx.common.connect.ConnectException;
-import com.mx.common.connect.ServiceUnavailableException;
-import com.mx.common.connect.TooManyRequestsException;
-import com.mx.common.exception.PathRequestException;
-import com.mx.common.exception.PathSystemException;
-import com.mx.common.process.FaultTolerantExecutor;
-import com.mx.common.process.FaultTolerantTask;
+import com.mx.path.core.common.accessor.PathResponseStatus;
+import com.mx.path.core.common.configuration.Configuration;
+import com.mx.path.core.common.connect.ConnectException;
+import com.mx.path.core.common.connect.ServiceUnavailableException;
+import com.mx.path.core.common.connect.TooManyRequestsException;
+import com.mx.path.core.common.exception.PathRequestException;
+import com.mx.path.core.common.exception.PathSystemException;
+import com.mx.path.core.common.process.FaultTolerantExecutor;
+import com.mx.path.core.common.process.FaultTolerantTask;
 import com.mx.path.service.facility.fault_tolerant_executor.resilience4j.configuration.Configurations;
 
 import io.github.resilience4j.bulkhead.Bulkhead;
@@ -48,7 +48,7 @@ public final class Resilience4jFaultTolerantExecutor implements FaultTolerantExe
           "Resilience4j circuit breaker is open. Rejecting task.",
           e);
     } catch (TimeoutException e) {
-      throw new com.mx.common.connect.TimeoutException(
+      throw new com.mx.path.core.common.connect.TimeoutException(
           "Resilience4j triggered a timeout.",
           e);
     } catch (PathRequestException | PathSystemException e) {

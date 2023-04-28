@@ -10,10 +10,10 @@ import static org.mockito.Mockito.when
 import java.nio.charset.StandardCharsets
 import java.time.Duration
 
-import com.mx.common.messaging.EventListener
-import com.mx.common.messaging.MessageError
-import com.mx.common.messaging.MessageResponder
-import com.mx.common.messaging.MessageStatus
+import com.mx.path.core.common.messaging.EventListener
+import com.mx.path.core.common.messaging.MessageError
+import com.mx.path.core.common.messaging.MessageResponder
+import com.mx.path.core.common.messaging.MessageStatus
 import com.mx.path.service.facility.messaging.nats.NatsConfiguration
 import com.mx.path.service.facility.messaging.nats.NatsMessageBroker
 

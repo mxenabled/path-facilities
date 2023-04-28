@@ -2,7 +2,7 @@ package com.mx.messaging.nats
 
 import java.time.Duration
 
-import com.mx.common.collections.ObjectMap
+import com.mx.path.core.common.collection.ObjectMap
 import com.mx.path.gateway.configuration.ConfigurationBinder
 import com.mx.path.gateway.configuration.ConfigurationState
 import com.mx.path.service.facility.messaging.nats.NatsConfiguration

@@ -5,11 +5,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mx.common.configuration.Configuration;
-import com.mx.common.messaging.EventListener;
-import com.mx.common.messaging.MessageBroker;
-import com.mx.common.messaging.MessageError;
-import com.mx.common.messaging.MessageResponder;
+import com.mx.path.core.common.configuration.Configuration;
+import com.mx.path.core.common.messaging.EventListener;
+import com.mx.path.core.common.messaging.MessageBroker;
+import com.mx.path.core.common.messaging.MessageError;
+import com.mx.path.core.common.messaging.MessageResponder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

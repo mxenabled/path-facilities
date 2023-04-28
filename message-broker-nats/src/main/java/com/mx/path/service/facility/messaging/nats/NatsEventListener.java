@@ -2,7 +2,7 @@ package com.mx.path.service.facility.messaging.nats;
 
 import java.nio.charset.StandardCharsets;
 
-import com.mx.common.messaging.EventListener;
+import com.mx.path.core.common.messaging.EventListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

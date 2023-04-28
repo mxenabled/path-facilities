@@ -2,8 +2,8 @@ package com.mx.path.service.facility.messaging.nats;
 
 import java.nio.charset.StandardCharsets;
 
-import com.mx.common.lang.Strings;
-import com.mx.common.messaging.MessageResponder;
+import com.mx.path.core.common.lang.Strings;
+import com.mx.path.core.common.messaging.MessageResponder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

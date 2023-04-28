@@ -17,9 +17,9 @@ import com.bettercloud.vault.VaultException;
 import com.bettercloud.vault.response.AuthResponse;
 import com.bettercloud.vault.response.LogicalResponse;
 import com.bettercloud.vault.response.VaultResponse;
-import com.mx.common.configuration.Configuration;
-import com.mx.common.lang.Strings;
-import com.mx.common.store.Store;
+import com.mx.path.core.common.configuration.Configuration;
+import com.mx.path.core.common.lang.Strings;
+import com.mx.path.core.common.store.Store;
 
 public final class VaultStore implements Store {
   private static final int KEY_NOT_FOUND = 404;
