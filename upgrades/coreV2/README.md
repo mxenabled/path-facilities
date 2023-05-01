@@ -1,6 +1,7 @@
 ## Package Structure Update
 
-* Upgrades to path-core version 2.0+ compatibility
+* Upgrades to support path-core 2.0.+
+  * See [README](https://github.com/mxenabled/path-core/tree/v2/upgrades/v2)
 
 ### Update package names
 
