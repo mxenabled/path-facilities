@@ -1,5 +1,12 @@
 ext { resilience4jVersion = "1.7.1" }
 
+
+coppuccino {
+  dependencies {
+    excludePreReleaseVersions = false
+  }
+}
+
 dependencies {
   implementation "io.github.resilience4j:resilience4j-circuitbreaker:${resilience4jVersion}"
   implementation "io.github.resilience4j:resilience4j-ratelimiter:${resilience4jVersion}"
