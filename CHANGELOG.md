@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/mxenabled/path-facilities/compare/v3.0.1...v4.0.0) (2023-05-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* apply v2 upgrade script
+
+### Code Refactoring
+
+* apply v2 upgrade script ([3c2de8c](https://github.com/mxenabled/path-facilities/commit/3c2de8c05230d76a56e32ec99d3091f5f7a24a1a))
+
 ## [3.0.1](https://github.com/mxenabled/path-facilities/compare/v3.0.0...v3.0.1) (2023-04-03)
 
 
