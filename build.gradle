@@ -59,6 +59,7 @@ subprojects {
       implementation platform("com.mx.path-core:platform:${project.ext.pathSDKVersion}")
       implementation "com.mx.path-core:common"
       testImplementation "com.mx.path-core:testing"
+      testImplementation"org.junit.jupiter:junit-jupiter-api:[5.9.0,5.10.0)"
     }
 
     test { useJUnitPlatform() }
