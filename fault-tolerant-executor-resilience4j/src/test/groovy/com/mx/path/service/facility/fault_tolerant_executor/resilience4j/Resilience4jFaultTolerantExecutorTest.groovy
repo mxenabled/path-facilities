@@ -6,6 +6,7 @@ import java.time.Duration
 import java.util.concurrent.TimeoutException
 
 import com.mx.path.core.common.accessor.PathResponseStatus
+import com.mx.path.core.common.accessor.UpstreamSystemMaintenance
 import com.mx.path.core.common.connect.ConnectException
 import com.mx.path.core.common.connect.ServiceUnavailableException
 import com.mx.path.core.common.connect.TooManyRequestsException
@@ -39,16 +40,19 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject.submit("DEFAULT", { config -> })
 
     then:
-    def exception = thrown(ConnectException)
-    exception.status == failureStatus
-    exception.cause == originalException
+    def exception = thrown(expectedType)
+    failureStatus == null ? !exception.hasProperty("status") : exception.status == failureStatus
+    !wrapsOriginalException || exception.cause == originalException
+    wrapsOriginalException || exception.cause == null
 
     where:
-    originalException               || failureStatus
-    mock(BulkheadFullException)     || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
-    mock(CallNotPermittedException) || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
-    new TimeoutException()          || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
-    new RuntimeException()          || PathResponseStatus.INTERNAL_ERROR
+    originalException                                             || wrapsOriginalException || expectedType                                     || failureStatus
+    mock(BulkheadFullException)                                   || true                   || TooManyRequestsException                         || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    mock(CallNotPermittedException)                               || true                   || ServiceUnavailableException                      || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    new TimeoutException()                                        || true                   || com.mx.path.core.common.connect.TimeoutException || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    new UpstreamSystemMaintenance("upstream is being maintained") || false                  || UpstreamSystemMaintenance                        || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    new RuntimeException()                                        || false                  || RuntimeException                                 || null
+    new NullPointerException()                                    || false                  || NullPointerException                             || null
   }
 
   def "runs a submitted task"() {

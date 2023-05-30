@@ -7,13 +7,9 @@ import java.util.concurrent.TimeoutException;
 import lombok.AccessLevel;
 import lombok.Setter;
 
-import com.mx.path.core.common.accessor.PathResponseStatus;
 import com.mx.path.core.common.configuration.Configuration;
-import com.mx.path.core.common.connect.ConnectException;
 import com.mx.path.core.common.connect.ServiceUnavailableException;
 import com.mx.path.core.common.connect.TooManyRequestsException;
-import com.mx.path.core.common.exception.PathRequestException;
-import com.mx.path.core.common.exception.PathSystemException;
 import com.mx.path.core.common.process.FaultTolerantExecutor;
 import com.mx.path.core.common.process.FaultTolerantTask;
 import com.mx.path.service.facility.fault_tolerant_executor.resilience4j.configuration.Configurations;
@@ -36,7 +32,7 @@ public final class Resilience4jFaultTolerantExecutor implements FaultTolerantExe
 
   @SuppressWarnings("PMD.CyclomaticComplexity")
   @Override
-  public void submit(String scope, FaultTolerantTask task) {
+  public void submit(String scope, FaultTolerantTask task) throws Exception {
     try {
       executeDecoratorStack(scope, task);
     } catch (BulkheadFullException e) {
@@ -50,13 +46,6 @@ public final class Resilience4jFaultTolerantExecutor implements FaultTolerantExe
     } catch (TimeoutException e) {
       throw new com.mx.path.core.common.connect.TimeoutException(
           "Resilience4j triggered a timeout.",
-          e);
-    } catch (PathRequestException | PathSystemException e) {
-      throw e; // rethrow Path exceptions
-    } catch (Exception e) {
-      throw new ConnectException(
-          "An unknown error occurred",
-          PathResponseStatus.INTERNAL_ERROR,
           e);
     }
   }
