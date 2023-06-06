@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/mxenabled/path-facilities/compare/v4.0.0...4.0.1) (2023-06-06)
+
+
+### Bug Fixes
+
+* semantic release ([f5a986f](https://github.com/mxenabled/path-facilities/commit/f5a986ff1814df147a1f07eebadbd6b36c02a28f))
+
 # Changelog
 
 ## [4.0.0](https://github.com/mxenabled/path-facilities/compare/v3.0.1...v4.0.0) (2023-05-16)
