@@ -21,7 +21,7 @@ Issues: https://github.com/mxenabled/path-core/issues
 _Gradle_
 ```groovy
 dependencies {
-  api platform("com.mx.path-facilities:platform:4.0.1") // x-release-version
+  api platform("com.mx.path-facilities:platform:5.0.0") // x-release-version
 
   implementation "com.mx.path-facilities:store-redis"
   implementation "com.mx.path-facilities:store-vault"

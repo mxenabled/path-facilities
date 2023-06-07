@@ -1,3 +1,19 @@
+## [5.0.0](https://github.com/mxenabled/path-facilities/compare/v4.0.0...5.0.0) (2023-06-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade to core:3.0.0
+
+### Bug Fixes
+
+* semantic release ([f5a986f](https://github.com/mxenabled/path-facilities/commit/f5a986ff1814df147a1f07eebadbd6b36c02a28f))
+
+
+### Build System
+
+* upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
+
 ## [4.0.1](https://github.com/mxenabled/path-facilities/compare/v4.0.0...4.0.1) (2023-06-06)
 
 
