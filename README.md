@@ -19,9 +19,10 @@ Issues: https://github.com/mxenabled/path-core/issues
 ### Using platform (preferred)
 
 _Gradle_
+<!-- x-release-please-start-version -->
 ```groovy
 dependencies {
-  api platform("com.mx.path-facilities:platform:5.0.0") // x-release-version
+  api platform("com.mx.path-facilities:platform:5.0.0")
 
   implementation "com.mx.path-facilities:store-redis"
   implementation "com.mx.path-facilities:store-vault"
@@ -32,6 +33,24 @@ dependencies {
   implementation "com.mx.path-facilities:exception-reporter-honeybadger"
 }
 ```
+<!-- x-release-please-end -->
+
+### Using without platform
+
+_Gradle_
+<!-- x-release-please-start-version -->
+```groovy
+dependencies {
+  implementation "com.mx.path-facilities:store-redis:5.0.0"
+  implementation "com.mx.path-facilities:store-vault:5.0.0"
+  implementation "com.mx.path-facilities:encryption-service-vault:5.0.0"
+  implementation "com.mx.path-facilities:encryption-service-jasypt:5.0.0"
+  implementation "com.mx.path-facilities:message-broker-nats:5.0.0"
+  implementation "com.mx.path-facilities:fault-tolerant-executor-resilience4j:5.0.0"
+  implementation "com.mx.path-facilities:exception-reporter-honeybadger:5.0.0"
+}
+```
+<!-- x-release-please-end -->
 
 ## Releases
 

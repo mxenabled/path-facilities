@@ -1,0 +1,13 @@
+{
+  "bootstrap-sha": "101b9976977e65747a19919783562df35c9402c4",
+  "prerelease": false,
+  "release-type": "simple",
+  "packages": {
+    ".": {
+      "extra-files": [
+        "build.gradle",
+        "README.md"
+      ]
+    }
+  }
+}
