@@ -287,7 +287,7 @@ class VaultEncryptionServiceTest extends Specification {
 
     then:
     def ex = thrown(VaultEncryptionAuthenticationException)
-    ex.getMessage() == "Permission denied and unable to reauthenticate"
+    ex.getMessage() == "Permission denied and unable to reauthenticate vault write"
     verify(subject, times(3)).resetDriver() || true
   }
 
@@ -305,7 +305,7 @@ class VaultEncryptionServiceTest extends Specification {
 
     then:
     def ex = thrown(VaultEncryptionOperationException)
-    ex.getMessage() == "Logical write failed"
+    ex.getMessage() == "Vault logical write failed"
     verify(subject, never()).resetDriver() || true
   }
 
@@ -366,7 +366,7 @@ class VaultEncryptionServiceTest extends Specification {
 
     then:
     def ex = thrown(VaultEncryptionAuthenticationException)
-    ex.getMessage() == "Permission denied and unable to reauthenticate"
+    ex.getMessage() == "Permission denied and unable to reauthenticate vault write"
     verify(subject, times(3)).resetDriver() || true
   }
 
@@ -384,7 +384,7 @@ class VaultEncryptionServiceTest extends Specification {
 
     then:
     def ex = thrown(VaultEncryptionOperationException)
-    ex.getMessage() == "Logical write failed"
+    ex.getMessage() == "Vault logical write failed"
     verify(subject, never()).resetDriver() || true
   }
 
