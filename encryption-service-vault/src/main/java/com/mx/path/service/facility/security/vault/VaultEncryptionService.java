@@ -226,20 +226,20 @@ public class VaultEncryptionService implements EncryptionService {
 
         case APPROLE:
           resp = authenticationDriver.auth().loginByAppRole(configuration.getAppRole(), configuration.getSecretId());
-          validateVaultAuthenticationResponse(resp, "Unable to login via jwt");
+          validateVaultAuthenticationResponse(resp, "Unable to login via vault app-role");
 
           token = resp.getAuthClientToken();
           break;
 
         case APPID:
           resp = authenticationDriver.auth().loginByAppID("app-id/login", configuration.getAppId(), configuration.getUserId());
-          validateVaultAuthenticationResponse(resp, "Unable to login via app-id");
+          validateVaultAuthenticationResponse(resp, "Unable to login via vault app-id");
 
           token = resp.getAuthClientToken();
           break;
 
         default:
-          throw new VaultEncryptionConfigurationException("Invalid authentication type: " + getConfiguration().getAuthentication());
+          throw new VaultEncryptionConfigurationException("Invalid vault authentication type: " + getConfiguration().getAuthentication());
       }
 
       return buildVaultDriver(token);
@@ -260,7 +260,7 @@ public class VaultEncryptionService implements EncryptionService {
     String path = "transit/encrypt/" + configuration.getKeyName();
 
     LogicalResponse response = logicalWriteWithReauthentication(path, Collections.singletonMap("plaintext", encodedValue));
-    validateVaultOperationResponse(response, "Encrypt failed");
+    validateVaultOperationResponse(response, "Vault encrypt failed");
 
     return response.getData().get("ciphertext");
   }
@@ -269,7 +269,7 @@ public class VaultEncryptionService implements EncryptionService {
     LogicalResponse response = logicalWriteWithReauthentication(
         "transit/decrypt/" + configuration.getKeyName(),
         Collections.singletonMap("ciphertext", ciphertext));
-    validateVaultOperationResponse(response, "Decrypt failed");
+    validateVaultOperationResponse(response, "Vault decrypt failed");
 
     String plaintext = response.getData().get("plaintext");
 
@@ -336,7 +336,7 @@ public class VaultEncryptionService implements EncryptionService {
         resetDriver();
         continue;
       } catch (VaultException e) {
-        throw new VaultEncryptionOperationException("Logical read failed", e);
+        throw new VaultEncryptionOperationException("Vault logical read failed", e);
       }
 
       // If the response is permission denied
@@ -347,7 +347,7 @@ public class VaultEncryptionService implements EncryptionService {
       }
     }
 
-    throw new VaultEncryptionAuthenticationException("Permission denied and unable to reauthenticate");
+    throw new VaultEncryptionAuthenticationException("Permission denied and unable to reauthenticate vault read");
   }
 
   private LogicalResponse logicalWriteWithReauthentication(final String path, final Map<String, Object> nameValuePairs) {
@@ -359,7 +359,7 @@ public class VaultEncryptionService implements EncryptionService {
         resetDriver();
         continue;
       } catch (VaultException e) {
-        throw new VaultEncryptionOperationException("Logical write failed", e);
+        throw new VaultEncryptionOperationException("Vault logical write failed", e);
       }
 
       // If the response is permission denied
@@ -370,6 +370,6 @@ public class VaultEncryptionService implements EncryptionService {
       }
     }
 
-    throw new VaultEncryptionAuthenticationException("Permission denied and unable to reauthenticate");
+    throw new VaultEncryptionAuthenticationException("Permission denied and unable to reauthenticate vault write");
   }
 }
