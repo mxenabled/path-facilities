@@ -1,8 +1,6 @@
 package com.mx.path.service.facility.security.vault;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
@@ -10,11 +8,9 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.bettercloud.vault.SslConfig;
 import com.bettercloud.vault.Vault;
 import com.bettercloud.vault.VaultConfig;
 import com.bettercloud.vault.VaultException;
@@ -22,6 +18,7 @@ import com.bettercloud.vault.json.JsonObject;
 import com.bettercloud.vault.response.AuthResponse;
 import com.bettercloud.vault.response.LogicalResponse;
 import com.bettercloud.vault.response.VaultResponse;
+import com.google.common.collect.ImmutableMap;
 import com.mx.path.core.common.configuration.Configuration;
 import com.mx.path.core.common.lang.Strings;
 import com.mx.path.core.common.security.EncryptionService;
@@ -144,7 +141,7 @@ public class VaultEncryptionService implements EncryptionService {
           .token(authToken)
           .engineVersion(configuration.getEngineVersion())
           .address(configuration.getUri())
-//          .sslConfig(new SslConfig().verify(false).build())
+          //          .sslConfig(new SslConfig().verify(false).build())
           .build();
 
       Vault newDriver = new Vault(vaultConfig);
@@ -205,14 +202,12 @@ public class VaultEncryptionService implements EncryptionService {
    */
   final void setMinDecryptionVersion(int minDecryptionVersion) {
     try {
-      //FIXME this is not setting `min_encryption_version` or `min_available_version`
       //FIXME should `min_available_version` and `min_decyprtion_version` always be the same and `min_encryption_version` be ahead?
-//      VaultResponse response = logicalWriteWithReauthentication("transit/keys/" + configuration.getKeyName(), Collections.singletonMap("min_decryption_version", minDecryptionVersion));
+      //            VaultResponse response = logicalWriteWithReauthentication("transit/keys/" + configuration.getKeyName(), Collections.singletonMap("min_decryption_version", minDecryptionVersion));
       VaultResponse response = logicalWriteWithReauthentication("transit/keys/" + configuration.getKeyName(), ImmutableMap.of(
-             "min_decryption_version", minDecryptionVersion,
-             "min_encryption_version", minDecryptionVersion,
-              "min_available_version", minDecryptionVersion
-      ));
+          "min_decryption_version", minDecryptionVersion,
+          "min_encryption_version", minDecryptionVersion,
+          "min_available_version", minDecryptionVersion));
       validateVaultOperationResponse(response, "Unable to update vault key");
     } catch (RuntimeException e) {
       LOGGER.warn("Unable to update vault key", e);
