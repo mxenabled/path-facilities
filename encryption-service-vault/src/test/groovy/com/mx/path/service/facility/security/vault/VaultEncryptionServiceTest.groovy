@@ -18,6 +18,7 @@ import com.bettercloud.vault.api.Logical
 import com.bettercloud.vault.response.AuthResponse
 import com.bettercloud.vault.response.LogicalResponse
 import com.bettercloud.vault.rest.RestResponse
+import com.google.common.collect.ImmutableMap
 import com.mx.path.core.common.collection.ObjectMap
 
 import spock.lang.Specification
@@ -458,7 +459,10 @@ class VaultEncryptionServiceTest extends Specification {
     when:
     subject.rotateKeys()
     verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/rotate", null)
-    verify(logicalDriver).write("transit/keys/" + config.getKeyName(), Collections.singletonMap("min_decryption_version", 2))
+    verify(logicalDriver).write("transit/keys/" + config.getKeyName(), ImmutableMap.of(
+        "min_decryption_version", 2,
+        "min_encryption_version", 2,
+        "min_available_version", 2))
 
     then:
     true
@@ -503,7 +507,10 @@ class VaultEncryptionServiceTest extends Specification {
     subject.setDriver(vaultDriver)
 
     subject.setMinDecryptionVersion(12)
-    verify(logicalDriver).write("transit/keys/" + config.getKeyName(), Collections.singletonMap("min_decryption_version", 12))
+    verify(logicalDriver).write("transit/keys/" + config.getKeyName(), ImmutableMap.of(
+        "min_decryption_version", 12,
+        "min_encryption_version", 12,
+        "min_available_version", 12))
 
     then:
     true
