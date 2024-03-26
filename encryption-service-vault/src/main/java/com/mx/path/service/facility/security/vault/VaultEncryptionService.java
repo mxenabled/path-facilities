@@ -18,6 +18,7 @@ import com.bettercloud.vault.json.JsonObject;
 import com.bettercloud.vault.response.AuthResponse;
 import com.bettercloud.vault.response.LogicalResponse;
 import com.bettercloud.vault.response.VaultResponse;
+import com.google.common.collect.ImmutableMap;
 import com.mx.path.core.common.configuration.Configuration;
 import com.mx.path.core.common.lang.Strings;
 import com.mx.path.core.common.security.EncryptionService;
@@ -116,13 +117,13 @@ public class VaultEncryptionService implements EncryptionService {
       return;
     }
 
-    int minDecryptVersion = key.currentKeyVersion() - configuration.getNumKeysToKeep();
+    int minVersion = key.currentKeyVersion() - configuration.getNumKeysToKeep() + 1;
 
-    if (minDecryptVersion < 1) {
-      minDecryptVersion = 1;
+    if (minVersion < 1) {
+      minVersion = 1;
     }
 
-    setMinDecryptionVersion(minDecryptVersion);
+    setMinVersion(minVersion);
   }
 
   /**
@@ -189,15 +190,18 @@ public class VaultEncryptionService implements EncryptionService {
   }
 
   /**
-   * Set the minimum decryption key
+   * Set the minimum decryption key, minimum encryption key and minimum available version
    *
    * <p>Does not raise exception on failure.
    *
-   * @param minDecryptionVersion
+   * @param minVersion
    */
-  final void setMinDecryptionVersion(int minDecryptionVersion) {
+  final void setMinVersion(int minVersion) {
     try {
-      VaultResponse response = logicalWriteWithReauthentication("transit/keys/" + configuration.getKeyName(), Collections.singletonMap("min_decryption_version", minDecryptionVersion));
+      VaultResponse response = logicalWriteWithReauthentication("transit/keys/" + configuration.getKeyName() + "/config", ImmutableMap.of(
+          "min_decryption_version", minVersion,
+          "min_encryption_version", minVersion,
+          "min_available_version", minVersion));
       validateVaultOperationResponse(response, "Unable to update vault key");
     } catch (RuntimeException e) {
       LOGGER.warn("Unable to update vault key", e);
