@@ -458,7 +458,6 @@ class VaultEncryptionServiceTest extends Specification {
     subject.rotateKeys()
     verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/rotate", null)
     verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/config", ImmutableMap.of(
-        "min_available_version", 3,
         "min_decryption_version", 3,
         "min_encryption_version", 3))
 
@@ -506,7 +505,6 @@ class VaultEncryptionServiceTest extends Specification {
 
     subject.setMinVersion(12)
     verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/config", ImmutableMap.of(
-        "min_available_version", 12,
         "min_decryption_version", 12,
         "min_encryption_version", 12))
 
