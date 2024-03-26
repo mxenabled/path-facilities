@@ -18,13 +18,12 @@ import com.bettercloud.vault.api.Logical
 import com.bettercloud.vault.response.AuthResponse
 import com.bettercloud.vault.response.LogicalResponse
 import com.bettercloud.vault.rest.RestResponse
-import com.mx.path.core.common.collection.ObjectMap
+import com.google.common.collect.ImmutableMap
 
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class VaultEncryptionServiceTest extends Specification {
-  ObjectMap configuration
   Logical logicalDriver
   VaultEncryptionService subject
   Vault vaultDriver
@@ -458,7 +457,10 @@ class VaultEncryptionServiceTest extends Specification {
     when:
     subject.rotateKeys()
     verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/rotate", null)
-    verify(logicalDriver).write("transit/keys/" + config.getKeyName(), Collections.singletonMap("min_decryption_version", 2))
+    verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/config", ImmutableMap.of(
+        "min_available_version", 3,
+        "min_decryption_version", 3,
+        "min_encryption_version", 3))
 
     then:
     true
@@ -497,13 +499,16 @@ class VaultEncryptionServiceTest extends Specification {
   }
 
   @Unroll
-  def "setMinDecryptionVersion() interacts with driver"() {
+  def "setMinVersion() interacts with driver"() {
     when:
     subject = new VaultEncryptionService(config)
     subject.setDriver(vaultDriver)
 
-    subject.setMinDecryptionVersion(12)
-    verify(logicalDriver).write("transit/keys/" + config.getKeyName(), Collections.singletonMap("min_decryption_version", 12))
+    subject.setMinVersion(12)
+    verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/config", ImmutableMap.of(
+        "min_available_version", 12,
+        "min_decryption_version", 12,
+        "min_encryption_version", 12))
 
     then:
     true
