@@ -190,7 +190,7 @@ public class VaultEncryptionService implements EncryptionService {
   }
 
   /**
-   * Set the minimum decryption key, minimum encryption key and minimum available version
+   * Set the minimum decryption key and minimum encryption key
    *
    * <p>Does not raise exception on failure.
    *
@@ -200,8 +200,7 @@ public class VaultEncryptionService implements EncryptionService {
     try {
       VaultResponse response = logicalWriteWithReauthentication("transit/keys/" + configuration.getKeyName() + "/config", ImmutableMap.of(
           "min_decryption_version", minVersion,
-          "min_encryption_version", minVersion,
-          "min_available_version", minVersion));
+          "min_encryption_version", minVersion));
       validateVaultOperationResponse(response, "Unable to update vault key");
     } catch (RuntimeException e) {
       LOGGER.warn("Unable to update vault key", e);
