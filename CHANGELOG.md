@@ -14,6 +14,15 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [5.0.1](https://github.com/mxenabled/path-facilities/compare/5.0.0...v5.0.1) (2024-03-26)
+
+
+### Bug Fixes
+
+* clarify vault error messages ([d3e9d7f](https://github.com/mxenabled/path-facilities/commit/d3e9d7f3ee4b94671994bba5606d6ade76032121))
+* drop setting min_available_version ([b75bf8e](https://github.com/mxenabled/path-facilities/commit/b75bf8e4514e6a4da9ad77fd59f1e351899e5bcb))
+* update minVersion on /config endpoint ([ed83f9a](https://github.com/mxenabled/path-facilities/commit/ed83f9ab78120b34a6e9ff0dc695f1cd9f63b460))
+
 ## [4.0.1](https://github.com/mxenabled/path-facilities/compare/v4.0.0...4.0.1) (2023-06-06)
 
 
