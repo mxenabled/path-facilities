@@ -1,9 +1,9 @@
 plugins {
   id "idea"
+  id "com.github.mxenabled.coppuccino" version "4.+" apply false
   id "com.github.mxenabled.vogue" version "1.+"
-  id "com.github.mxenabled.coppuccino" version "3.+" apply false
-  id "io.freefair.lombok" version "6.5.1" apply false
-  id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
+  id "io.freefair.lombok" version "8.+" apply false
+  id "io.github.gradle-nexus.publish-plugin" version "1.1.+"
 }
 
 version "5.0.1" // x-release-please-version
@@ -21,10 +21,6 @@ allprojects {
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
 
-  ext {
-    pathSDKVersion = "[3.0,4.0)"
-  }
-
   repositories {
     mavenCentral()
     mavenLocal()
@@ -39,17 +35,21 @@ allprojects {
   configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
   }
+
+  ext {
+    pathSDKVersion = "[4.0,5.0)"
+  }
 }
 
 subprojects {
   if (it.name != platformProject) {
     apply plugin: "java-library"
-    apply plugin: "maven-publish"
     apply plugin: "groovy"
+    apply plugin: "maven-publish"
+    apply plugin: "signing"
     apply plugin: "com.github.mxenabled.coppuccino"
     apply plugin: "com.github.mxenabled.vogue"
     apply plugin: "io.freefair.lombok"
-    apply plugin: "signing"
 
     dependencies {
       constraints {
@@ -59,7 +59,7 @@ subprojects {
       implementation platform("com.mx.path-core:platform:${project.ext.pathSDKVersion}")
       implementation "com.mx.path-core:common"
       testImplementation "com.mx.path-core:testing"
-      testImplementation"org.junit.jupiter:junit-jupiter-api:[5.9.0,5.10.0)"
+      testImplementation "org.junit.jupiter:junit-jupiter-api:[5.9.0,5.10.0)"
     }
 
     test { useJUnitPlatform() }
@@ -74,7 +74,6 @@ subprojects {
     }
 
     javadoc {
-      source = sourceSets.main.allJava
       classpath = configurations.compileClasspath
       options {
         setMemberLevel JavadocMemberLevel.PUBLIC
@@ -99,7 +98,7 @@ subprojects {
     }
 
     task packageJavadoc(type: Jar) {
-      classifier = 'javadoc'
+      classifier = "javadoc"
       from javadoc
     }
 

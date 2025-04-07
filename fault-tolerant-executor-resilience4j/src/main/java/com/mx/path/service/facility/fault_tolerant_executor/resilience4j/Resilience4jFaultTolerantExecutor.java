@@ -72,7 +72,8 @@ public final class Resilience4jFaultTolerantExecutor implements FaultTolerantExe
     withBulkhead(scope,
         withThreadPoolBulkhead(scope,
             withCircuitBreaker(scope,
-                withTimeLimiter(scope, task)))).call();
+                withTimeLimiter(scope, task))))
+        .call();
   }
 
   private Callable<?> withBulkhead(String scope, Callable<?> callable) {

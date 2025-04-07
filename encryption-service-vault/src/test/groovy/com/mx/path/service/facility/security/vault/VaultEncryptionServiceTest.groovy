@@ -551,7 +551,7 @@ class VaultEncryptionServiceTest extends Specification {
 
     def restResponse = new RestResponse(200, "application/json", responseBody.getBytes("UTF-8"))
     def logicalResponse = new LogicalResponse(restResponse, 0, Logical.logicalOperations.readV1)
-    when(logicalDriver.read("transit/keys/" + config.getKeyName())).thenReturn(logicalResponse);
+    when(logicalDriver.read("transit/keys/" + config.getKeyName())).thenReturn(logicalResponse)
 
     when:
     def key = subject.loadKey()
