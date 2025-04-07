@@ -74,7 +74,7 @@ class ExceptionReporterHoneybadgerTest extends Specification {
     subject.report(ex, "Holy ~!@#", context)
 
     and:
-    def requestCaptor = ArgumentCaptor.forClass(Request.class);
+    def requestCaptor = ArgumentCaptor.forClass(Request.class)
     verify(reporter).reportError(eq(ex), requestCaptor.capture(), eq("Holy ~!@#"))
     def cgiData = requestCaptor.getValue().getCgiData()
 
@@ -108,7 +108,7 @@ class ExceptionReporterHoneybadgerTest extends Specification {
     subject.report(ex, "Holy ~!@#", context)
 
     and:
-    def requestCaptor = ArgumentCaptor.forClass(Request.class);
+    def requestCaptor = ArgumentCaptor.forClass(Request.class)
     verify(reporter).reportError(eq(ex), requestCaptor.capture(), eq("Holy ~!@#"))
 
     def capturedRequest = requestCaptor.getValue()
@@ -152,7 +152,7 @@ class ExceptionReporterHoneybadgerTest extends Specification {
     subject.report(ex, "Holy ~!@#", context)
 
     and:
-    def requestCaptor = ArgumentCaptor.forClass(Request.class);
+    def requestCaptor = ArgumentCaptor.forClass(Request.class)
     verify(reporter).reportError(eq(ex), requestCaptor.capture(), eq("Holy ~!@#"))
 
     def capturedRequest = requestCaptor.getValue()
@@ -174,7 +174,7 @@ class ExceptionReporterHoneybadgerTest extends Specification {
     subject.report(ex, "Holy ~!@#", context)
 
     and:
-    def requestCaptor = ArgumentCaptor.forClass(Request.class);
+    def requestCaptor = ArgumentCaptor.forClass(Request.class)
     verify(reporter).reportError(eq(ex), requestCaptor.capture(), eq("Holy ~!@#"))
 
     def capturedRequest = requestCaptor.getValue()
@@ -198,7 +198,7 @@ class ExceptionReporterHoneybadgerTest extends Specification {
     subject.report(ex, "Holy ~!@#", context)
 
     and:
-    def requestCaptor = ArgumentCaptor.forClass(Request.class);
+    def requestCaptor = ArgumentCaptor.forClass(Request.class)
     verify(reporter).reportError(eq(ex), requestCaptor.capture(), eq("Holy ~!@#"))
 
     def capturedRequest = requestCaptor.getValue()

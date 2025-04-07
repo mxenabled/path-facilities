@@ -1,4 +1,4 @@
-package com.mx.path.service.facility.encryption.jasypt;
+package com.mx.path.service.facility.encryption.jasypt
 
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when

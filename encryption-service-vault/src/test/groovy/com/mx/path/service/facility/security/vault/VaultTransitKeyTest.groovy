@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 class VaultTransitKeyTest extends Specification {
   def buildJsonObject(String body) {
-    body = body.replace('\'', '\"');
+    body = body.replace('\'', '\"')
     def restResponse = new RestResponse(200, "application/json", body.getBytes())
     def response = new LogicalResponse(restResponse, 0, Logical.logicalOperations.readV1)
 

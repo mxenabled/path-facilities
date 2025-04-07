@@ -8,7 +8,7 @@ class ConfigurationUtilsTest extends Specification {
   ConfigurationUtils subject
 
   def setup() {
-    subject = new ConfigurationUtils();
+    subject = new ConfigurationUtils()
   }
 
   def "merges bulkhead configurations and ignores null values"() {
