@@ -14,6 +14,13 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [5.0.2](https://github.com/mxenabled/path-facilities/compare/v5.0.1...v5.0.2) (2025-04-11)
+
+
+### Build System
+
+* upgrade coppuccino and other dependencies ([1e5717f](https://github.com/mxenabled/path-facilities/commit/1e5717f8d067885dd1cab0fce0cd07c33d70b00d))
+
 ## [5.0.1](https://github.com/mxenabled/path-facilities/compare/5.0.0...v5.0.1) (2024-03-26)
 
 
