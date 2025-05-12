@@ -14,6 +14,13 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [5.2.0](https://github.com/mxenabled/path-facilities/compare/v5.1.0...v5.2.0) (2025-05-12)
+
+
+### Features
+
+* 🎸 Redis TLS ([f51a2ea](https://github.com/mxenabled/path-facilities/commit/f51a2eacc29065b23ceb30e148b627eead47ad8b))
+
 ## [5.1.0](https://github.com/mxenabled/path-facilities/compare/v5.0.2...v5.1.0) (2025-05-12)
 
 
