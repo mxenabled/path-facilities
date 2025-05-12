@@ -62,6 +62,17 @@ class VaultStoreTest extends Specification {
     }
   }
 
+  def configWithAppRoleSSL() {
+    return new VaultStoreConfiguration().tap {
+      setUri("http://localhost:8200")
+      setAuthentication(VaultStoreConfiguration.AuthenticationType.APPROLE)
+      setAppRole("role-k8s")
+      setSecretId("secretId")
+      setMaxRetries(2)
+      setSsl(true)
+    }
+  }
+
   def "on first use, creates and authenticates driver once"() {
     given:
     def config = configWithAppId()
@@ -103,10 +114,11 @@ class VaultStoreTest extends Specification {
     driver.getClass() == Vault
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
-    configWithAppRole() | _
+    config                  | _
+    configWithAppId()       | _
+    configWithToken()       | _
+    configWithAppRole()     | _
+    configWithAppRoleSSL()  | _
   }
 
   def "buildVaultDriver with invalid configuration"() {

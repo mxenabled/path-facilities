@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.bettercloud.vault.SslConfig;
 import com.bettercloud.vault.Vault;
 import com.bettercloud.vault.VaultConfig;
 import com.bettercloud.vault.VaultException;
@@ -46,21 +47,42 @@ public final class VaultStore implements Store {
    */
   Vault buildVaultDriver(@Nullable String authToken) {
     try {
-      VaultConfig vaultConfig = new VaultConfig()
-          .token(authToken)
-          .engineVersion(getConfiguration().getEngineVersion())
-          .address(getConfiguration().getUri())
-          .build();
+      if (configuration.isSsl()) { // If SSL is enabled, set up the SSL configuration
+        SslConfig sslConfig = new SslConfig();
+        sslConfig.verify(false);
+        VaultConfig vaultConfig = new VaultConfig()
+            .sslConfig(sslConfig)
+            .token(authToken)
+            .engineVersion(configuration.getEngineVersion())
+            .address(configuration.getUri())
+            .build();
 
-      Vault newDriver = new Vault(vaultConfig);
+        Vault newDriver = new Vault(vaultConfig);
 
-      if (getConfiguration().getMaxRetries() > 0) {
-        newDriver.withRetries(
-            getConfiguration().getMaxRetries(),
-            Math.toIntExact(getConfiguration().getRetryInterval().toMillis()));
+        if (configuration.getMaxRetries() > 0) {
+          newDriver.withRetries(
+              configuration.getMaxRetries(),
+              Math.toIntExact(configuration.getRetryInterval().toMillis()));
+        }
+
+        return newDriver;
+      } else {
+        VaultConfig vaultConfig = new VaultConfig()
+            .token(authToken)
+            .engineVersion(getConfiguration().getEngineVersion())
+            .address(getConfiguration().getUri())
+            .build();
+
+        Vault newDriver = new Vault(vaultConfig);
+
+        if (getConfiguration().getMaxRetries() > 0) {
+          newDriver.withRetries(
+              getConfiguration().getMaxRetries(),
+              Math.toIntExact(getConfiguration().getRetryInterval().toMillis()));
+        }
+
+        return newDriver;
       }
-
-      return newDriver;
     } catch (Exception e) {
       throw new VaultStoreConfigurationException("Unable to build Vault Configuration", e);
     }
