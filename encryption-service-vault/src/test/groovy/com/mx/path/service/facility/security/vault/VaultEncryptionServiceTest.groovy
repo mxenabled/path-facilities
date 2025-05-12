@@ -72,6 +72,20 @@ class VaultEncryptionServiceTest extends Specification {
     }
   }
 
+  def configWithAppRoleSSL() {
+    return new VaultEncryptionServiceConfiguration().tap {
+      setUri("http://localhost:8200")
+      setEnabled(true)
+      setAuthentication(VaultEncryptionServiceConfiguration.AuthenticationType.APPROLE)
+      setAppRole("role-k8s")
+      setSecretId("secretId")
+      setKeyName("test-key")
+      setMaxRetries(2)
+      setNumKeysToKeep(3)
+      setSsl(true)
+    }
+  }
+
   def "on first use, creates and authenticates driver once"() {
     given:
     def config = configWithAppId()
@@ -113,10 +127,11 @@ class VaultEncryptionServiceTest extends Specification {
     driver.getClass() == Vault
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
-    configWithAppRole() | _
+    config                  | _
+    configWithAppId()       | _
+    configWithToken()       | _
+    configWithAppRole()     | _
+    configWithAppRoleSSL()  | _
   }
 
   @Unroll

@@ -22,6 +22,7 @@ public class VaultEncryptionServiceConfiguration {
   private static final AuthenticationType DEFAULT_AUTHENTICATION = AuthenticationType.APPROLE;
   private static final String DEFAULT_KEY_NAME = "vault_session";
   private static final int DEFAULT_NUM_KEYS_TO_KEEP_COUNT = 1;
+  private static final boolean DEFAULT_SSL_ENABLED = false;
 
   @ConfigurationField
   private boolean enabled = true;
@@ -58,6 +59,9 @@ public class VaultEncryptionServiceConfiguration {
 
   @ConfigurationField(secret = true)
   private String token;
+
+  @ConfigurationField(value = "ssl-enabled")
+  private boolean ssl = DEFAULT_SSL_ENABLED;
 
   @ConfigurationField
   private AuthenticationType authentication = DEFAULT_AUTHENTICATION;

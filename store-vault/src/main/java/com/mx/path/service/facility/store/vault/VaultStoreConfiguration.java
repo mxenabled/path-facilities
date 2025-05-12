@@ -26,6 +26,7 @@ public class VaultStoreConfiguration {
   private static final Duration DEFAULT_RETRY_INTERVAL = Duration.ofMillis(200);
   private static final int KEY_NOT_FOUND = 404;
   private static final int MAXIMUM_REAUTHENTICATION_RETRIES = 3;
+  private static final boolean DEFAULT_SSL_ENABLED = false;
 
   @ConfigurationField(value = "app-id")
   private String appId;
@@ -47,6 +48,9 @@ public class VaultStoreConfiguration {
 
   @ConfigurationField(secret = true)
   private String secretId;
+
+  @ConfigurationField(value = "ssl-enabled")
+  private boolean ssl = DEFAULT_SSL_ENABLED;
 
   @ConfigurationField(secret = true)
   private String token;
