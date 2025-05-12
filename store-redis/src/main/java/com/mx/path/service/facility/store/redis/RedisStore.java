@@ -1,5 +1,6 @@
 package com.mx.path.service.facility.store.redis;
 
+import java.io.File;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -12,7 +13,11 @@ import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisException;
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.SslOptions;
 import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.cluster.ClusterClientOptions;
+import io.lettuce.core.cluster.RedisClusterClient;
+import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.protocol.ProtocolVersion;
 import io.lettuce.core.resource.ClientResources;
 
@@ -27,9 +32,15 @@ public class RedisStore implements Store {
   private final RedisStoreConfiguration configuration;
   @Getter
   private StatefulRedisConnection<String, String> connection;
+  @Getter
+  private StatefulRedisClusterConnection<String, String> redisClusterConnection;
 
   public final void setConnection(StatefulRedisConnection<String, String> connection) {
     this.connection = connection;
+  }
+
+  public final void setRedisClusterConnection(StatefulRedisClusterConnection<String, String> redisClusterConnection) {
+    this.redisClusterConnection = redisClusterConnection;
   }
 
   public RedisStore(@Configuration RedisStoreConfiguration redisStoreConfiguration) {
@@ -38,48 +49,88 @@ public class RedisStore implements Store {
 
   @Override
   public final void delete(String key) {
-    safeCall("delete", (conn) -> {
-      conn.sync().del(key);
-      return Void.TYPE;
-    });
+    if (configuration.isCluster()) {
+      safeClusterCall("delete", (conn) -> {
+        conn.sync().del(key);
+        return Void.TYPE;
+      });
+    } else {
+      safeCall("delete", (conn) -> {
+        conn.sync().del(key);
+        return Void.TYPE;
+      });
+    }
   }
 
   @Override
   public final void deleteSet(String key, String value) {
-    safeCall("deleteSet", (conn) -> {
-      conn.sync().srem(key, value);
-      return Void.TYPE;
-    });
+    if (configuration.isCluster()) {
+      safeClusterCall("deleteSet", (conn) -> {
+        conn.sync().srem(key, value);
+        return Void.TYPE;
+      });
+    } else {
+      safeCall("deleteSet", (conn) -> {
+        conn.sync().srem(key, value);
+        return Void.TYPE;
+      });
+    }
   }
 
   @Override
   public final String get(String key) {
-    return safeCall("get", (conn) -> {
-      return conn.sync().get(key);
-    });
+    if (configuration.isCluster()) {
+      return safeClusterCall("get", (conn) -> {
+        return conn.sync().get(key);
+      });
+    } else {
+      return safeCall("get", (conn) -> {
+        return conn.sync().get(key);
+      });
+    }
   }
 
   @Override
   public final Set<String> getSet(String key) {
-    return safeCall("getSet", (conn) -> {
-      return conn.sync().smembers(key);
-    });
+    if (configuration.isCluster()) {
+      return safeClusterCall("getSet", (conn) -> {
+        return conn.sync().smembers(key);
+      });
+    } else {
+      return safeCall("getSet", (conn) -> {
+        return conn.sync().smembers(key);
+      });
+    }
   }
 
   @Override
   public final boolean inSet(String key, String value) {
-    return safeCall("inSet", (conn) -> {
-      return conn.sync().sismember(key, value);
-    });
+    if (configuration.isCluster()) {
+      return safeClusterCall("inSet", (conn) -> {
+        return conn.sync().sismember(key, value);
+      });
+    } else {
+      return safeCall("inSet", (conn) -> {
+        return conn.sync().sismember(key, value);
+      });
+    }
   }
 
   @Override
   public final void put(String key, String value, long expirySeconds) {
-    safeCall("put", (conn) -> {
-      conn.sync().set(key, value);
-      conn.sync().expire(key, expirySeconds);
-      return Void.TYPE;
-    });
+    if (configuration.isCluster()) {
+      safeClusterCall("put", (conn) -> {
+        conn.sync().set(key, value);
+        conn.sync().expire(key, expirySeconds);
+        return Void.TYPE;
+      });
+    } else {
+      safeCall("put", (conn) -> {
+        conn.sync().set(key, value);
+        conn.sync().expire(key, expirySeconds);
+        return Void.TYPE;
+      });
+    }
   }
 
   @Override
@@ -89,11 +140,19 @@ public class RedisStore implements Store {
 
   @Override
   public final void putSet(String key, String value, long expirySeconds) {
-    safeCall("putSet", (conn) -> {
-      conn.sync().sadd(key, value);
-      conn.sync().expire(key, expirySeconds);
-      return Void.TYPE;
-    });
+    if (configuration.isCluster()) {
+      safeClusterCall("putSet", (conn) -> {
+        conn.sync().sadd(key, value);
+        conn.sync().expire(key, expirySeconds);
+        return Void.TYPE;
+      });
+    } else {
+      safeCall("putSet", (conn) -> {
+        conn.sync().sadd(key, value);
+        conn.sync().expire(key, expirySeconds);
+        return Void.TYPE;
+      });
+    }
   }
 
   @Override
@@ -103,14 +162,24 @@ public class RedisStore implements Store {
 
   @Override
   public final boolean putIfNotExist(String key, String value, long expirySeconds) {
-    return safeCall("putIfNotExist", (conn) -> {
-      boolean result = conn.sync().setnx(key, value);
-      if (result) {
-        conn.sync().expire(key, expirySeconds);
-      }
+    if (configuration.isCluster()) {
+      return safeClusterCall("putIfNotExist", (conn) -> {
+        boolean result = conn.sync().setnx(key, value);
+        if (result) {
+          conn.sync().expire(key, expirySeconds);
+        }
+        return result;
+      });
+    } else {
+      return safeCall("putIfNotExist", (conn) -> {
+        boolean result = conn.sync().setnx(key, value);
+        if (result) {
+          conn.sync().expire(key, expirySeconds);
+        }
 
-      return result;
-    });
+        return result;
+      });
+    }
   }
 
   @Override
@@ -141,9 +210,47 @@ public class RedisStore implements Store {
     }
   }
 
+  final synchronized StatefulRedisClusterConnection<String, String> buildClusterConnection() {
+    try {
+      ClientResources resources = ClientResources.builder()
+          .ioThreadPoolSize(configuration.getIoThreadPoolSize())
+          .computationThreadPoolSize(configuration.getComputationThreadPoolSize())
+          .build();
+
+      RedisURI redisUri = RedisURI.Builder.redis(configuration.getHost(), configuration.getPort())
+          .withSsl(configuration.isSsl())
+          .withVerifyPeer(false)
+          .build();
+
+      RedisClusterClient redisClusterClient = RedisClusterClient.create(resources, redisUri);
+      SslOptions sslOptions = SslOptions.builder()
+          .keyManager(new File(configuration.getCertFile()), new File(configuration.getKeyFile()), configuration.getPasswordFile().toCharArray())
+          .build();
+      ClusterClientOptions clusterClientOptions = ClusterClientOptions.builder()
+          .sslOptions(sslOptions).build();
+      redisClusterClient.setOptions(clusterClientOptions);
+
+      return redisClusterClient.connect();
+    } catch (RedisException e) {
+      throw new RedisStoreConnectionException("An error occurred connecting to redis", e);
+    }
+  }
+
   private <T> T safeCall(String operation, Function<StatefulRedisConnection<String, String>, T> runnable) {
     try {
       return runnable.apply(connection());
+    } catch (RedisStoreConnectionException e) {
+      throw e;
+    } catch (RedisException e) {
+      throw new RedisStoreOperationException("Redis error occurred on " + operation, e);
+    } catch (RuntimeException e) {
+      throw new RedisStoreOperationException("Unknown exception thrown by redis on " + operation, e);
+    }
+  }
+
+  private <T> T safeClusterCall(String operation, Function<StatefulRedisClusterConnection<String, String>, T> runnable) {
+    try {
+      return (T) runnable.apply(clusterConnection());
     } catch (RedisStoreConnectionException e) {
       throw e;
     } catch (RedisException e) {
@@ -159,5 +266,12 @@ public class RedisStore implements Store {
     }
 
     return connection;
+  }
+
+  private StatefulRedisClusterConnection clusterConnection() {
+    if (redisClusterConnection == null) {
+      redisClusterConnection = buildClusterConnection();
+    }
+    return redisClusterConnection;
   }
 }
