@@ -324,6 +324,10 @@ public class VaultEncryptionService implements EncryptionService {
   @SuppressWarnings("checkstyle:MagicNumber")
   private void validateVaultOperationResponse(VaultResponse response, String errorMessage) {
     if (response != null && response.getRestResponse() != null && (response.getRestResponse().getStatus() < 200 || response.getRestResponse().getStatus() >= 300)) {
+      byte[] body = response.getRestResponse().getBody();
+      if (body != null) {
+        throw new VaultEncryptionOperationException(errorMessage + " (" + response.getRestResponse().getStatus() + "): " + new String(body, StandardCharsets.UTF_8));
+      }
       throw new VaultEncryptionOperationException(errorMessage + " (" + response.getRestResponse().getStatus() + ")");
     }
   }

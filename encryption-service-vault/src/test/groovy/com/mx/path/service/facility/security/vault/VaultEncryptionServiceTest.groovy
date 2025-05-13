@@ -17,8 +17,10 @@ import com.bettercloud.vault.api.Auth
 import com.bettercloud.vault.api.Logical
 import com.bettercloud.vault.response.AuthResponse
 import com.bettercloud.vault.response.LogicalResponse
+import com.bettercloud.vault.response.VaultResponse
 import com.bettercloud.vault.rest.RestResponse
 import com.google.common.collect.ImmutableMap
+import com.mx.path.core.common.accessor.PathResponseStatus
 
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -658,5 +660,22 @@ class VaultEncryptionServiceTest extends Specification {
 
     then:
     subject.getConfiguration() == config
+  }
+
+  def "validateVaultOperationResponse throws exception"() {
+    given:
+    subject = new VaultEncryptionService(configWithAppId())
+    subject.setDriver(vaultDriver)
+
+    def decryptResponse = new LogicalResponse(new RestResponse(400, "mimeType", "bad response".getBytes()), 2, null)
+    when(logicalDriver.write(eq("transit/decrypt/test-key"), any())).thenReturn(decryptResponse)
+
+    when:
+    subject.decrypt("vault-12345")
+
+    then:
+    def ex = thrown(VaultEncryptionOperationException)
+    ex.status == PathResponseStatus.INTERNAL_ERROR
+    ex.message == "Vault decrypt failed (400): bad response"
   }
 }
