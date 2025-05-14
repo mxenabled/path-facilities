@@ -14,6 +14,13 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [5.3.0](https://github.com/mxenabled/path-facilities/compare/v5.2.0...v5.3.0) (2025-05-14)
+
+
+### Features
+
+* improve vault error message ([70e58e4](https://github.com/mxenabled/path-facilities/commit/70e58e4c206bdfd273f03bb4dc2b611d94e2504a))
+
 ## [5.2.0](https://github.com/mxenabled/path-facilities/compare/v5.1.0...v5.2.0) (2025-05-12)
 
 
