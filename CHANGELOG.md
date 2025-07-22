@@ -14,6 +14,14 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [5.3.1](https://github.com/mxenabled/path-facilities/compare/v5.3.0...v5.3.1) (2025-07-22)
+
+
+### Bug Fixes
+
+* update lombok dependency lock ([4a8a591](https://github.com/mxenabled/path-facilities/commit/4a8a591ba9fd5b4257b74b6be766e3fb2ff64a28))
+* update publish away from OSSHR ([768e7d7](https://github.com/mxenabled/path-facilities/commit/768e7d72d843206ce24c8c3c7313df2104e2bafa))
+
 ## [5.3.0](https://github.com/mxenabled/path-facilities/compare/v5.2.0...v5.3.0) (2025-05-14)
 
 
