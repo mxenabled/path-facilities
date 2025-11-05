@@ -1,9 +1,12 @@
 package com.mx.path.service.facility.store.redis;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import lombok.Getter;
 
 import com.mx.path.core.common.configuration.Configuration;
@@ -223,10 +226,15 @@ public class RedisStore implements Store {
           .build();
 
       RedisClusterClient redisClusterClient = RedisClusterClient.create(resources, redisUri);
+      ClusterTopologyRefreshOptions topologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
+          .enablePeriodicRefresh(Duration.ofMinutes(3))
+          .enableAllAdaptiveRefreshTriggers()
+          .build();
       SslOptions sslOptions = SslOptions.builder()
           .keyManager(new File(configuration.getCertFile()), new File(configuration.getKeyFile()), configuration.getPasswordFile().toCharArray())
           .build();
       ClusterClientOptions clusterClientOptions = ClusterClientOptions.builder()
+          .topologyRefreshOptions(topologyRefreshOptions)
           .sslOptions(sslOptions).build();
       redisClusterClient.setOptions(clusterClientOptions);
 
