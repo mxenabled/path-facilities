@@ -62,6 +62,8 @@ subprojects {
       implementation "com.mx.path-core:common"
       testImplementation "com.mx.path-core:testing"
       testImplementation "org.junit.jupiter:junit-jupiter-api:[5.9.0,5.10.0)"
+      testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
     }
 
     test { useJUnitPlatform() }
