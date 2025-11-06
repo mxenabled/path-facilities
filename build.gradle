@@ -1,7 +1,7 @@
 plugins {
   id "idea"
-  id "com.github.mxenabled.coppuccino" version "4.+" apply false
-  id "com.github.mxenabled.vogue" version "1.+"
+  id "com.github.mxenabled.coppuccino" version "4.4.2" apply false
+  id "com.github.mxenabled.vogue" version "1.1.0"
   id "io.freefair.lombok" version "8.+" apply false
   id "io.github.gradle-nexus.publish-plugin" version "1.1.+"
   id "com.netflix.nebula.maven-resolved-dependencies" version "21.2.0" apply false
@@ -19,18 +19,12 @@ allprojects {
   group "com.mx.path-facilities"
   description "MX Path Facilities"
   version rootProject.version
-  sourceCompatibility = 1.8
-  targetCompatibility = 1.8
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
 
   repositories {
     mavenCentral()
     mavenLocal()
-    // maven {
-    //   url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-    //   mavenContent {
-    //     snapshotsOnly()
-    //   }
-    // }
   }
 
   configurations.all {
@@ -38,7 +32,7 @@ allprojects {
   }
 
   ext {
-    pathSDKVersion = "[4.0,5.0)"
+    pathSDKVersion = "4.7.0"
   }
 }
 
@@ -61,9 +55,6 @@ subprojects {
       implementation platform("com.mx.path-core:platform:${project.ext.pathSDKVersion}")
       implementation "com.mx.path-core:common"
       testImplementation "com.mx.path-core:testing"
-      testImplementation "org.junit.jupiter:junit-jupiter-api:[5.9.0,5.10.0)"
-      testRuntimeOnly "org.junit.platform:junit-platform-launcher"
-
     }
 
     test { useJUnitPlatform() }

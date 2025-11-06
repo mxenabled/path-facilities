@@ -1,9 +1,9 @@
 coppuccino {
   coverage {
-    minimumCoverage = 0.84
+    minimumCoverage = 0.85
   }
   dependencies {
-    excludePreReleaseVersions = false
+    excludePreReleaseVersions = true
   }
 }
 

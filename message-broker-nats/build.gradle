@@ -3,17 +3,17 @@ coppuccino {
     minimumCoverage = 0.86
   }
   dependencies {
-    excludePreReleaseVersions = false
+    excludePreReleaseVersions = true
   }
 }
 
 dependencies {
-  implementation "io.nats:jnats:[2.8.0,2.9.0)"
+  implementation "io.nats:jnats:[2.22.0,2.23.0)"
   implementation "org.bouncycastle:bcpkix-jdk15on:[1.0,2.0)"
   implementation "org.slf4j:slf4j-api"
 
   //testing dependencies
   testImplementation "com.mx.path-core:gateway"
   testImplementation "org.mockito:mockito-inline:[4.0,5.0)"
-  testImplementation "org.spockframework:spock-core:[2.0,3.0)"
+  testImplementation "org.spockframework:spock-core:2.4-M6-groovy-3.0"
 }
