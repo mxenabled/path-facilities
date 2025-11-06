@@ -3,10 +3,8 @@ package com.mx.path.service.facility.store.redis;
 import java.io.File;
 import java.time.Duration;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import lombok.Getter;
 
 import com.mx.path.core.common.configuration.Configuration;
@@ -19,6 +17,7 @@ import io.lettuce.core.RedisURI;
 import io.lettuce.core.SslOptions;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.cluster.ClusterClientOptions;
+import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import io.lettuce.core.cluster.RedisClusterClient;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.protocol.ProtocolVersion;
@@ -30,6 +29,8 @@ import io.lettuce.core.resource.ClientResources;
 public class RedisStore implements Store {
 
   private static final String PUT_UNSUPPORTED_OPERATION = "Put operations must have an expiration";
+
+  private static final long REDIS_REFRESH_INTERVAL = 3;
 
   @Getter
   private final RedisStoreConfiguration configuration;
@@ -227,7 +228,7 @@ public class RedisStore implements Store {
 
       RedisClusterClient redisClusterClient = RedisClusterClient.create(resources, redisUri);
       ClusterTopologyRefreshOptions topologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
-          .enablePeriodicRefresh(Duration.ofMinutes(3))
+          .enablePeriodicRefresh(Duration.ofMinutes(REDIS_REFRESH_INTERVAL))
           .enableAllAdaptiveRefreshTriggers()
           .build();
       SslOptions sslOptions = SslOptions.builder()
