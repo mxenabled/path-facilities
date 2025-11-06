@@ -90,7 +90,7 @@ class NatsMessageBrokerTest extends Specification {
   def "request interacts with connection"() {
     given:
     def message = mock(Message)
-    when(connection.request(eq("fake.channel"), eq("request body".getBytes(StandardCharsets.UTF_8)), any())).thenReturn(message)
+    when(connection.request("fake.channel", "request body".getBytes(StandardCharsets.UTF_8), Duration.ofMillis(1000))).thenReturn(message)
 
     when(message.getData()).thenReturn("response body".getBytes(StandardCharsets.UTF_8))
 
@@ -98,14 +98,13 @@ class NatsMessageBrokerTest extends Specification {
     def responseStr = subject.request("fake.channel", "request body")
 
     then:
-    verify(connection).request(eq("fake.channel"), any(), any(Duration)) || true
+    verify(connection).request("fake.channel", "request body".getBytes(StandardCharsets.UTF_8), Duration.ofMillis(1000)) || true
     responseStr == "response body"
   }
 
   def "request raises MessageError on nats failure"() {
     given:
-    def message = mock(Message)
-    when(connection.request(eq("fake.channel"), any(), any())).thenThrow(InterruptedException.class)
+    when(connection.request("fake.channel", "requestPayload".getBytes(StandardCharsets.UTF_8), Duration.ofMillis(1000))).thenThrow(InterruptedException.class)
 
     when:
     subject.request("fake.channel", "requestPayload")
@@ -117,8 +116,7 @@ class NatsMessageBrokerTest extends Specification {
 
   def "request raises MessageError on null (timeout) response"() {
     given:
-    def message = mock(Message)
-    when(connection.request(eq("fake.channel"), any(), any())).thenReturn(null)
+    when(connection.request("fake.channel", "request body".getBytes(StandardCharsets.UTF_8), Duration.ofMillis(1000))).thenReturn(null)
 
     when:
     subject.request("fake.channel", "request body")
@@ -132,19 +130,18 @@ class NatsMessageBrokerTest extends Specification {
   def "publish interacts with connection"() {
     given:
     def message = mock(Message)
-    when(connection.request(eq("fake.channel"), any(), any())).thenReturn(message)
+    when(connection.request("fake.channel", "request body".getBytes(StandardCharsets.UTF_8), Duration.ofMillis(1000))).thenReturn(message)
 
     when:
     subject.publish("fake.channel", "request body")
 
     then:
-    verify(connection).publish(eq("fake.channel"), eq("request body".getBytes(StandardCharsets.UTF_8))) || true
+    verify(connection).publish("fake.channel", "request body".getBytes(StandardCharsets.UTF_8)) || true
   }
 
   def "publish raises MessageError on nats failure"() {
     given:
-    def message = mock(Message)
-    when(connection.request(eq("fake.channel"), any(), any())).thenThrow(InterruptedException.class)
+    when(connection.request("fake.channel", "request body".getBytes(StandardCharsets.UTF_8), Duration.ofMillis(1000))).thenThrow(InterruptedException.class)
 
     when:
     subject.request("fake.channel", "request body")
