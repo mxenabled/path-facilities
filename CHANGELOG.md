@@ -14,6 +14,23 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [6.0.0](https://github.com/mxenabled/path-facilities/compare/v5.3.1...v6.0.0) (2025-11-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* bump vulnerable dependencies
+
+### Features
+
+* bump vulnerable dependencies ([4bec7b0](https://github.com/mxenabled/path-facilities/commit/4bec7b04ca24eb79a3af6993bf8c34e12b35fd87))
+
+
+### Bug Fixes
+
+* 🐛 Redis Cluster Refresh ([6baa3db](https://github.com/mxenabled/path-facilities/commit/6baa3dbf3fe4b9c8257574bd5cfa2b1aee72c62b))
+* 🐛 Redis Cluster Refresh ([c70a3d9](https://github.com/mxenabled/path-facilities/commit/c70a3d93a2ccd8411d5721226ae98504a117ae5d))
+
 ## [5.3.1](https://github.com/mxenabled/path-facilities/compare/v5.3.0...v5.3.1) (2025-07-22)
 
 
