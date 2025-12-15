@@ -14,6 +14,17 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [7.0.0](https://github.com/mxenabled/path-facilities/compare/v6.0.0...v7.0.0) (2025-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* bump gradle, quality plugin
+
+### Features
+
+* bump gradle, quality plugin ([5f36c45](https://github.com/mxenabled/path-facilities/commit/5f36c45f499212bebb55e7c8f15a23420e945cbd))
+
 ## [6.0.0](https://github.com/mxenabled/path-facilities/compare/v5.3.1...v6.0.0) (2025-11-21)
 
 
