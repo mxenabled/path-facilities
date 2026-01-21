@@ -1,7 +1,7 @@
 plugins {
   id "idea"
-  id "com.github.mxenabled.coppuccino" version "5.+" apply false
-  id "com.github.mxenabled.vogue" version "2.+"
+  id "com.github.mxenabled.coppuccino" version "6.+" apply false
+  id "com.github.mxenabled.vogue" version "3.+"
   id "io.freefair.lombok" version "8.+" apply false
   id "io.github.gradle-nexus.publish-plugin" version "1.1.+"
   id "com.netflix.nebula.maven-resolved-dependencies" version "21.2.0" apply false
@@ -19,8 +19,12 @@ allprojects {
   group "com.mx.path-facilities"
   description "MX Path Facilities"
   version rootProject.version
-  sourceCompatibility = JavaVersion.VERSION_17
-  targetCompatibility = JavaVersion.VERSION_17
+
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(21)
+    }
+  }
 
   repositories {
     mavenCentral()
@@ -28,11 +32,16 @@ allprojects {
   }
 
   configurations.all {
+    resolutionStrategy.eachDependency { details ->
+      if (details.requested.group == "org.apache.commons" && details.requested.name == "commons-lang3") {
+        details.useVersion "3.18.0"
+      }
+    }
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
   }
 
   ext {
-    pathSDKVersion = "[5.0,6.0)"
+    pathSDKVersion = "[6.0,7.0)"
   }
 }
 
@@ -82,12 +91,12 @@ subprojects {
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
-      classifier = "sources"
+      archiveClassifier = "sources"
       from sourceSets.main.allSource
     }
 
     task packageJavadoc(type: Jar) {
-      classifier = "javadoc"
+      archiveClassifier = "javadoc"
       from javadoc
     }
 

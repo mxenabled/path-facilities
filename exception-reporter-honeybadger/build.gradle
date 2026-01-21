@@ -3,6 +3,12 @@ dependencies {
   implementation "net.logstash.logback:logstash-logback-encoder:[6.0,7.0)"
 
   //testing dependencies
-  testImplementation "org.mockito:mockito-inline:[5.0,6.0)"
+  testImplementation "org.mockito:mockito-core:5.21.0"
   testImplementation "org.spockframework:spock-core:2.4-M6-groovy-3.0"
+}
+
+configurations.all {
+  resolutionStrategy {
+    force "com.fasterxml.jackson.core:jackson-core:2.15.0-rc1"
+  }
 }
