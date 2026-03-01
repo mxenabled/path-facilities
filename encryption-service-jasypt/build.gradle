@@ -2,18 +2,12 @@ coppuccino {
   coverage {
     minimumCoverage = 1.00
   }
-  dependencies {
-    excludePreReleaseVersions = true
-  }
 }
 
 dependencies {
   implementation "org.jasypt:jasypt:1.9.3"
-  implementation "commons-codec:commons-codec:1.15"
+  implementation "commons-codec:commons-codec"
   compileOnly "org.slf4j:slf4j-api"
 
-  //testing dependencies
-  testImplementation "org.mockito:mockito-inline:[5.0,6.0)"
-  testImplementation "org.slf4j:slf4j-simple:1.7.30"
-  testImplementation "org.spockframework:spock-core:2.4-M6-groovy-3.0"
+  testImplementation "org.slf4j:slf4j-simple"
 }

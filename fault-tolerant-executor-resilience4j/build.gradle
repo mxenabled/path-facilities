@@ -1,24 +1,17 @@
-ext { resilience4jVersion = "1.7.1" }
-
-
 coppuccino {
   coverage {
     minimumCoverage = 0.91
   }
-  dependencies {
-    excludePreReleaseVersions = true
-  }
 }
 
-dependencies {
-  implementation "io.github.resilience4j:resilience4j-circuitbreaker:${resilience4jVersion}"
-  implementation "io.github.resilience4j:resilience4j-ratelimiter:${resilience4jVersion}"
-  implementation "io.github.resilience4j:resilience4j-retry:${resilience4jVersion}"
-  implementation "io.github.resilience4j:resilience4j-bulkhead:${resilience4jVersion}"
-  implementation "io.github.resilience4j:resilience4j-timelimiter:${resilience4jVersion}"
+ext { resilience4jVersion = "1.7.1" }
 
-  //testing dependencies
-  testImplementation "org.mockito:mockito-inline:[5.0,6.0)"
-  testImplementation "org.slf4j:slf4j-simple:1.7.30"
-  testImplementation "org.spockframework:spock-core:2.4-M6-groovy-3.0"
+dependencies {
+  implementation "io.github.resilience4j:resilience4j-circuitbreaker:${project.ext.resilience4jVersion}"
+  implementation "io.github.resilience4j:resilience4j-ratelimiter:${project.ext.resilience4jVersion}"
+  implementation "io.github.resilience4j:resilience4j-retry:${project.ext.resilience4jVersion}"
+  implementation "io.github.resilience4j:resilience4j-bulkhead:${project.ext.resilience4jVersion}"
+  implementation "io.github.resilience4j:resilience4j-timelimiter:${project.ext.resilience4jVersion}"
+
+  testImplementation "org.slf4j:slf4j-simple"
 }

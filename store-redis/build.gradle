@@ -2,19 +2,8 @@ coppuccino {
   coverage {
     minimumCoverage = 0.77
   }
-  dependencies {
-    excludePreReleaseVersions = true
-  }
 }
 
 dependencies {
-  implementation "io.lettuce:lettuce-core:6.2.0.RELEASE"
-
-  // Fix for CVE-2022-41915, remove once the above io.lettuce dependency uses netty 4.1.86.Final or above
-  // io.lettuce pom is here: https://github.com/lettuce-io/lettuce-core/blob/main/pom.xml
-  implementation "io.netty:netty-handler:[4.1.86.Final,4.2)"
-
-  //testing dependencies
-  testImplementation "org.mockito:mockito-inline:[5.0,6.0)"
-  testImplementation "org.spockframework:spock-core:2.4-M6-groovy-3.0"
+  implementation "io.lettuce:lettuce-core:6.8.2.RELEASE"
 }
