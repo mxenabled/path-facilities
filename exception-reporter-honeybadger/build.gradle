@@ -1,8 +1,18 @@
+coppuccino {
+  coverage {
+    minimumCoverage = 0.88
+  }
+}
+
 dependencies {
   implementation "io.honeybadger:honeybadger-java:[2.0,3.0)"
   implementation "net.logstash.logback:logstash-logback-encoder:[6.0,7.0)"
 
-  //testing dependencies
-  testImplementation "org.mockito:mockito-inline:[5.0,6.0)"
-  testImplementation "org.spockframework:spock-core:2.4-M6-groovy-3.0"
+  constraints {
+    // Transitive dependency of io.honeybadger:honeybadger-java:2.1.2
+    api("com.fasterxml.jackson.core:jackson-core:2.21.1") {
+      because "Fixes High Severity vulnerabilities: SNYK-JAVA-COMFASTERXMLJACKSONCORE-10500754, " +
+          "SNYK-JAVA-COMFASTERXMLJACKSONCORE-15365924, and SNYK-JAVA-COMFASTERXMLJACKSONCORE-7569538"
+    }
+  }
 }
