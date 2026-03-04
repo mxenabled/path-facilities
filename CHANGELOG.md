@@ -14,6 +14,13 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [7.0.1](https://github.com/mxenabled/path-facilities/compare/v7.0.0...v7.0.1) (2026-03-04)
+
+
+### Bug Fixes
+
+* resolve snyk vulnerabilities ([a28731c](https://github.com/mxenabled/path-facilities/commit/a28731c40711f28d19b7ba1bad4e90f096b1a91b))
+
 ## [7.0.0](https://github.com/mxenabled/path-facilities/compare/v6.0.0...v7.0.0) (2025-12-15)
 
 
