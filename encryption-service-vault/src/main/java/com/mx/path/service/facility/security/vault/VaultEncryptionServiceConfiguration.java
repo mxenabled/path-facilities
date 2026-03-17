@@ -20,8 +20,8 @@ public class VaultEncryptionServiceConfiguration {
   private static final int DEFAULT_MAX_RETRIES = 0;
   private static final Duration DEFAULT_RETRY_INTERVAL = Duration.ofMillis(200);
   private static final AuthenticationType DEFAULT_AUTHENTICATION = AuthenticationType.APPROLE;
-  private static final String DEFAULT_KEY_NAME = "vault_session";
-  private static final int DEFAULT_NUM_KEYS_TO_KEEP_COUNT = 1;
+  private static final String DEFAULT_KEY_NAME = "middleware_session";
+  private static final int DEFAULT_NUM_KEYS_TO_KEEP_COUNT = 6;
   private static final boolean DEFAULT_SSL_ENABLED = false;
 
   @ConfigurationField
