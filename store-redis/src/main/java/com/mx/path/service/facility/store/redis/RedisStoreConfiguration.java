@@ -16,6 +16,7 @@ public class RedisStoreConfiguration {
   private static final int DEFAULT_THREAD_POOL_SIZE = 5;
   private static final boolean DEFAULT_SSL = false;
   private static final boolean DEFAULT_CLUSTER = false;
+  private static final String DEFAULT_PASSWORD_FILE = "";
 
   @ConfigurationField
   private String host = DEFAULT_HOST;
@@ -45,5 +46,5 @@ public class RedisStoreConfiguration {
   private String keyFile;
 
   @ConfigurationField
-  private String passwordFile;
+  private String passwordFile = DEFAULT_PASSWORD_FILE;
 }
