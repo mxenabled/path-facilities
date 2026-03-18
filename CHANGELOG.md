@@ -14,6 +14,13 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [7.0.2](https://github.com/mxenabled/path-facilities/compare/v7.0.1...v7.0.2) (2026-03-18)
+
+
+### Bug Fixes
+
+* update redis and vault configuration defaults ([3edcf45](https://github.com/mxenabled/path-facilities/commit/3edcf4513f2310121406aa472e3e1a2674e04fc4))
+
 ## [7.0.1](https://github.com/mxenabled/path-facilities/compare/v7.0.0...v7.0.1) (2026-03-04)
 
 
