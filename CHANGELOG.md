@@ -14,6 +14,13 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [7.0.3](https://github.com/mxenabled/path-facilities/compare/v7.0.2...v7.0.3) (2026-05-04)
+
+
+### Build System
+
+* minor gradle formatting changes ([9ca3c45](https://github.com/mxenabled/path-facilities/commit/9ca3c45bd11bdd1ee36c7135f24bd8a7fea6655d))
+
 ## [7.0.2](https://github.com/mxenabled/path-facilities/compare/v7.0.1...v7.0.2) (2026-03-18)
 
 
