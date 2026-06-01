@@ -14,6 +14,17 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [8.0.0](https://github.com/mxenabled/path-facilities/compare/v7.0.3...v8.0.0) (2026-06-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* bump to gradle 8 and java 21
+
+### Features
+
+* bump to gradle 8 and java 21 ([b6f7989](https://github.com/mxenabled/path-facilities/commit/b6f79899c97678b2aa181a4435638ae30aa9beb3))
+
 ## [7.0.3](https://github.com/mxenabled/path-facilities/compare/v7.0.2...v7.0.3) (2026-05-04)
 
 
