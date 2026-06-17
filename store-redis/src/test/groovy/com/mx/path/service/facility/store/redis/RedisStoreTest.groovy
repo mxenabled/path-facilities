@@ -1,12 +1,13 @@
 package com.mx.path.service.facility.store.redis
 
-
 import static org.mockito.Mockito.doThrow
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.never
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
+
+import java.time.Duration
 
 import org.mockito.Mockito
 
@@ -213,5 +214,19 @@ class RedisStoreTest extends Specification implements WithMockery {
     then:
     def ex = thrown(RedisStoreOperationException)
     ex.getMessage() == "Unknown exception thrown by redis on get"
+  }
+
+  def "buildConnection wraps connection failure as RedisStoreConnectionException"() {
+    given:
+    def config = new RedisStoreConfiguration()
+    config.port = 1
+    config.timeout = Duration.ofMillis(500)
+    def store = new RedisStore(config)
+
+    when:
+    store.buildConnection()
+
+    then:
+    thrown(RedisStoreConnectionException)
   }
 }
