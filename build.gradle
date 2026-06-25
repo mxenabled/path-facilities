@@ -1,15 +1,15 @@
 plugins {
-  id "com.github.mxenabled.coppuccino" version "7.+" apply false
-  id "com.github.mxenabled.vogue" version "4.+" apply false
+  id "com.github.mxenabled.coppuccino" version "7.0.2-SNAPSHOT" apply false
+  id "com.github.mxenabled.vogue" version "4.0.2-SNAPSHOT" apply false
   id "idea"
   id "io.freefair.lombok" version "8.+" apply false
-  id "io.github.gradle-nexus.publish-plugin" version "1.1.+"
+  id "io.github.gradle-nexus.publish-plugin" version "2.+"
   id "com.netflix.nebula.maven-resolved-dependencies" version "21.2.0" apply false
 }
 
 group "com.mx.path-facilities"
 description "MX Path Facilities"
-version "8.0.0" // x-release-please-version
+version "8.0.1-SNAPSHOT" // x-release-please-version
 
 def platformProject = "platform"
 
@@ -19,7 +19,7 @@ subprojects {
   version rootProject.version
 
   ext {
-    pathCoreVersion = "[7.0,8.0)"
+    pathCoreVersion = "7.0.2-SNAPSHOT"
   }
 
   if (it.name != platformProject) {
@@ -40,9 +40,6 @@ subprojects {
 
     coppuccino {
       rootDir = "${projectDir}/"
-      dependencies {
-        excludePreReleaseVersions = true
-      }
     }
 
     vogue {
@@ -59,6 +56,7 @@ subprojects {
       implementation "com.mx.path-core:common"
 
       testImplementation "com.mx.path-core:testing"
+      testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     }
 
     compileJava { options.compilerArgs << "-parameters" }
@@ -161,6 +159,6 @@ tasks.named("dependencies") {
 }
 
 wrapper {
-  gradleVersion = "8.14.3"
+  gradleVersion = "9.5.1"
   distributionType = Wrapper.DistributionType.ALL
 }

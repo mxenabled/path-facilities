@@ -12,7 +12,7 @@ dependencies {
     // Transitive dependency of io.honeybadger:honeybadger-java:2.1.2
     api("com.fasterxml.jackson.core:jackson-core:2.21.1") {
       because "Fixes High Severity vulnerabilities: SNYK-JAVA-COMFASTERXMLJACKSONCORE-10500754, " +
-          "SNYK-JAVA-COMFASTERXMLJACKSONCORE-15365924, and SNYK-JAVA-COMFASTERXMLJACKSONCORE-7569538"
+      "SNYK-JAVA-COMFASTERXMLJACKSONCORE-15365924, and SNYK-JAVA-COMFASTERXMLJACKSONCORE-7569538"
     }
   }
 }
