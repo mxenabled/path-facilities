@@ -84,10 +84,10 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     given:
     def configurations = new Configurations().tap {
       defaults = Resilience4jConfigurations.builder()
-          .bulkheadConfigurations(BulkheadConfigurations.builder()
-          .maxConcurrentCalls(1)
-          .build().tap { enabled = true })
-          .build()
+      .bulkheadConfigurations(BulkheadConfigurations.builder()
+      .maxConcurrentCalls(1)
+      .build().tap { enabled = true })
+      .build()
     }
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
@@ -110,10 +110,10 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     given:
     def configurations = new Configurations().tap {
       defaults = Resilience4jConfigurations.builder()
-          .timeLimiterConfigurations(TimeLimiterConfigurations.builder()
-          .timeoutDuration(Duration.ofMillis(50))
-          .build().tap { enabled = true })
-          .build()
+      .timeLimiterConfigurations(TimeLimiterConfigurations.builder()
+      .timeoutDuration(Duration.ofMillis(50))
+      .build().tap { enabled = true })
+      .build()
     }
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
@@ -129,13 +129,13 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     given:
     def configurations = new Configurations().tap {
       defaults = Resilience4jConfigurations.builder()
-          .circuitBreakerConfigurations(CircuitBreakerConfigurations.builder()
-          .failureRateThreshold(50)
-          .slidingWindowTaskCount(2)
-          .slidingWindowType("COUNT_BASED")
-          .minimumNumberOfCalls(1)
-          .build().tap { enabled = true })
-          .build()
+      .circuitBreakerConfigurations(CircuitBreakerConfigurations.builder()
+      .failureRateThreshold(50)
+      .slidingWindowTaskCount(2)
+      .slidingWindowType("COUNT_BASED")
+      .minimumNumberOfCalls(1)
+      .build().tap { enabled = true })
+      .build()
     }
 
     subject = new Resilience4jFaultTolerantExecutor(configurations)
@@ -165,13 +165,13 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     given:
     def configurations = new Configurations().tap {
       defaults = Resilience4jConfigurations.builder()
-          .circuitBreakerConfigurations(CircuitBreakerConfigurations.builder()
-          .failureRateThreshold(100)
-          .slidingWindowDuration(Duration.ofSeconds(1))
-          .slidingWindowType("TIME_BASED")
-          .minimumNumberOfCalls(1)
-          .build().tap { enabled = true })
-          .build()
+      .circuitBreakerConfigurations(CircuitBreakerConfigurations.builder()
+      .failureRateThreshold(100)
+      .slidingWindowDuration(Duration.ofSeconds(1))
+      .slidingWindowType("TIME_BASED")
+      .minimumNumberOfCalls(1)
+      .build().tap { enabled = true })
+      .build()
     }
 
     subject = new Resilience4jFaultTolerantExecutor(configurations)
@@ -201,12 +201,12 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     given:
     def configurations = new Configurations().tap {
       defaults = Resilience4jConfigurations.builder()
-          .threadPoolBulkheadConfigurations(ThreadPoolBulkheadConfigurations.builder()
-          .maxThreadPoolSize(1)
-          .coreThreadPoolSize(1)
-          .queueCapacity(1)
-          .build().tap { enabled = true })
-          .build()
+      .threadPoolBulkheadConfigurations(ThreadPoolBulkheadConfigurations.builder()
+      .maxThreadPoolSize(1)
+      .coreThreadPoolSize(1)
+      .queueCapacity(1)
+      .build().tap { enabled = true })
+      .build()
     }
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
@@ -232,12 +232,12 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     given:
     def configurations = new Configurations().tap {
       defaults = Resilience4jConfigurations.builder()
-          .threadPoolBulkheadConfigurations(ThreadPoolBulkheadConfigurations.builder()
-          .maxThreadPoolSize(1)
-          .coreThreadPoolSize(1)
-          .queueCapacity(2)
-          .build().tap { enabled = true })
-          .build()
+      .threadPoolBulkheadConfigurations(ThreadPoolBulkheadConfigurations.builder()
+      .maxThreadPoolSize(1)
+      .coreThreadPoolSize(1)
+      .queueCapacity(2)
+      .build().tap { enabled = true })
+      .build()
     }
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
