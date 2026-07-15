@@ -14,6 +14,17 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [9.0.0](https://github.com/mxenabled/path-facilities/compare/v8.0.0...v9.0.0) (2026-07-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* bump to Gradle 9.5.1 and Spring Boot 4.1.0
+
+### Features
+
+* bump to Gradle 9.5.1 and Spring Boot 4.1.0 ([0960337](https://github.com/mxenabled/path-facilities/commit/09603374f6ea88b27144f26227e5ed3bdc2e4bb5))
+
 ## [8.0.0](https://github.com/mxenabled/path-facilities/compare/v7.0.3...v8.0.0) (2026-06-01)
 
 
