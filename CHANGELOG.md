@@ -14,6 +14,13 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [9.0.1](https://github.com/mxenabled/path-facilities/compare/v9.0.0...v9.0.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* bump transitive jackson deps and spring to resolve CVEs ([db29445](https://github.com/mxenabled/path-facilities/commit/db29445f3c7ad63bfc2197a4d8bd1e4c8bf8d545))
+
 ## [9.0.0](https://github.com/mxenabled/path-facilities/compare/v8.0.0...v9.0.0) (2026-07-15)
 
 
