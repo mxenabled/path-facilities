@@ -146,7 +146,9 @@ class ExceptionReporterHoneybadgerTest extends Specification {
   def "request_url is built correctly without query string"() {
     given:
     def ex = new RuntimeException("something is broke")
-    def context = new TestExceptionContext().tap() { setRequestURL("http://localhost") }
+    def context = new TestExceptionContext().tap() {
+      setRequestURL("http://localhost")
+    }
 
     when:
     subject.report(ex, "Holy ~!@#", context)

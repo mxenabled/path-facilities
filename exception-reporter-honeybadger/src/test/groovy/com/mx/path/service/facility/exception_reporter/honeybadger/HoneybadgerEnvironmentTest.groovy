@@ -14,12 +14,12 @@ class HoneybadgerEnvironmentTest extends Specification {
     value == expectedValue
 
     where:
-    environment                        | expectedValue
+    environment | expectedValue
     HoneybadgerEnvironment.DEVELOPMENT | "development"
-    HoneybadgerEnvironment.SANDBOX     |  "sandbox"
-    HoneybadgerEnvironment.QA          |  "qa"
-    HoneybadgerEnvironment.INTEGRATION |  "integration"
-    HoneybadgerEnvironment.PRODUCTION  |  "production"
+    HoneybadgerEnvironment.SANDBOX | "sandbox"
+    HoneybadgerEnvironment.QA | "qa"
+    HoneybadgerEnvironment.INTEGRATION | "integration"
+    HoneybadgerEnvironment.PRODUCTION | "production"
   }
 
   @Rollup
@@ -33,10 +33,10 @@ class HoneybadgerEnvironmentTest extends Specification {
     where:
     value | expectedEnvironment
     "DEVELOPMENT" | HoneybadgerEnvironment.DEVELOPMENT
-    "SANDBOX"     | HoneybadgerEnvironment.SANDBOX
-    "QA"          | HoneybadgerEnvironment.QA
+    "SANDBOX" | HoneybadgerEnvironment.SANDBOX
+    "QA" | HoneybadgerEnvironment.QA
     "INTEGRATION" | HoneybadgerEnvironment.INTEGRATION
-    "PRODUCTION"  | HoneybadgerEnvironment.PRODUCTION
+    "PRODUCTION" | HoneybadgerEnvironment.PRODUCTION
   }
 
   @Rollup
@@ -50,9 +50,9 @@ class HoneybadgerEnvironmentTest extends Specification {
     where:
     value | expectedEnvironment
     "development" | HoneybadgerEnvironment.DEVELOPMENT
-    "sandbox"     | HoneybadgerEnvironment.SANDBOX
-    "qa"          | HoneybadgerEnvironment.QA
+    "sandbox" | HoneybadgerEnvironment.SANDBOX
+    "qa" | HoneybadgerEnvironment.QA
     "integration" | HoneybadgerEnvironment.INTEGRATION
-    "production"  | HoneybadgerEnvironment.PRODUCTION
+    "production" | HoneybadgerEnvironment.PRODUCTION
   }
 }

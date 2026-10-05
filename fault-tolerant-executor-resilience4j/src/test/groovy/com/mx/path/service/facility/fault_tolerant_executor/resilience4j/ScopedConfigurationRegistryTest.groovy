@@ -254,22 +254,26 @@ class ScopedConfigurationRegistryTest extends Specification {
     subject.isValidScopeSyntax(scope) == valid
 
     where:
-    scope                      || valid
-    "http"                     || true
-    "http."                    || false
-    "http.profile"             || true
-    "http-identity"            || false
-    "http.identity.get"        || true
-    ".nats"                    || false
-    "nats"                     || true
+    scope || valid
+    "http" || true
+    "http." || false
+    "http.profile" || true
+    "http-identity" || false
+    "http.identity.get" || true
+    ".nats" || false
+    "nats" || true
     "nats.remote_deposits.get" || true
   }
 
   def "findBestConfigurations"() {
     given:
     def registry = new ArrayList<ScopedResilience4jConfigurations>().tap {
-      add(new ScopedResilience4jConfigurations().tap { scope = "one.two.three" })
-      add(new ScopedResilience4jConfigurations().tap { scope = "one.two.thre3" })
+      add(new ScopedResilience4jConfigurations().tap {
+        scope = "one.two.three"
+      })
+      add(new ScopedResilience4jConfigurations().tap {
+        scope = "one.two.thre3"
+      })
     }
 
     subject.setConfigurationRegistry(registry)
@@ -288,12 +292,14 @@ class ScopedConfigurationRegistryTest extends Specification {
         scope = "one.two.three"
         configurations = Resilience4jConfigurations.builder()
             .timeLimiterConfigurations(
-            TimeLimiterConfigurations.builder().
-            timeoutDuration(Duration.ofMillis(10000))
-            .build().tap { enabled = true })
+                TimeLimiterConfigurations.builder().
+                timeoutDuration(Duration.ofMillis(10000))
+                .build().tap { enabled = true })
             .build()
       })
-      add(new ScopedResilience4jConfigurations().tap { scope = "one.two.thre3" })
+      add(new ScopedResilience4jConfigurations().tap {
+        scope = "one.two.thre3"
+      })
     }
 
     subject.setConfigurationRegistry(registry)
@@ -321,7 +327,9 @@ class ScopedConfigurationRegistryTest extends Specification {
   private Configurations buildConfigurations() {
     return new Configurations().tap {
       scopes = new ArrayList<>().tap {
-        defaults = buildResilience4jConfigurations(1,2,3,4).tap { circuitBreakerConfigurations.minimumNumberOfCalls = 17 }
+        defaults = buildResilience4jConfigurations(1,2,3,4).tap {
+          circuitBreakerConfigurations.minimumNumberOfCalls = 17
+        }
         add(new ScopedResilience4jConfigurations().tap {
           scope = "http.identity.create"
           configurations = buildResilience4jConfigurations(5,6,7,8)
@@ -332,7 +340,9 @@ class ScopedConfigurationRegistryTest extends Specification {
         })
         add(new ScopedResilience4jConfigurations().tap {
           scope = "http.remote_deposit"
-          configurations = buildResilience4jConfigurations(13,14,15,16).tap { circuitBreakerConfigurations.minimumNumberOfCalls = 10 }
+          configurations = buildResilience4jConfigurations(13,14,15,16).tap {
+            circuitBreakerConfigurations.minimumNumberOfCalls = 10
+          }
         })
         add(new ScopedResilience4jConfigurations().tap {
           scope = "http"
@@ -344,14 +354,16 @@ class ScopedConfigurationRegistryTest extends Specification {
         })
         add(new ScopedResilience4jConfigurations().tap {
           scope = "http.identity"
-          configurations = buildResilience4jConfigurations(25,26,27,28).tap { circuitBreakerConfigurations.minimumNumberOfCalls = 1 }
+          configurations = buildResilience4jConfigurations(25,26,27,28).tap {
+            circuitBreakerConfigurations.minimumNumberOfCalls = 1
+          }
         })
       }
     }
   }
 
   private buildResilience4jConfigurations(int maxConcurrentCalls, int maxWaitDurationMillis, int failureRateThreshold, int timeoutDurationMillis) {
-    return  Resilience4jConfigurations.builder()
+    return Resilience4jConfigurations.builder()
         .bulkheadConfigurations(
         BulkheadConfigurations.builder()
         .maxConcurrentCalls(maxConcurrentCalls)

@@ -84,9 +84,9 @@ class JasyptEncryptionServiceTest extends Specification implements WithMockery {
     plaintext == value
 
     where:
-    value                   | _
-    null                    | _
-    ""                      | _
+    value | _
+    null | _
+    "" | _
     "some unencrypted junk" | _
   }
 

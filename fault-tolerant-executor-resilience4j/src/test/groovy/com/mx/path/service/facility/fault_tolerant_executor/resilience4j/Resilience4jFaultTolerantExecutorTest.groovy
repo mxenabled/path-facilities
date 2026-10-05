@@ -44,11 +44,11 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     exception.cause == originalException
 
     where:
-    originalException               || failureStatus
-    mock(BulkheadFullException)     || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    originalException || failureStatus
+    mock(BulkheadFullException) || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
     mock(CallNotPermittedException) || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
-    new TimeoutException()          || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
-    new RuntimeException()          || PathResponseStatus.INTERNAL_ERROR
+    new TimeoutException() || PathResponseStatus.UPSTREAM_SERVICE_UNAVAILABLE
+    new RuntimeException() || PathResponseStatus.INTERNAL_ERROR
   }
 
   def "runs a submitted task"() {
@@ -92,7 +92,11 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
+    def thread1 = new Thread({
+      -> subject.submit("DEFAULT", { config ->
+        Thread.sleep(500)
+      })
+    })
 
     thread1.start()
     Thread.sleep(150)
@@ -141,9 +145,21 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
-    def thread2 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
-    def thread3 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
+    def thread1 = new Thread({ config ->
+      subject.submit("DEFAULT", {
+        -> throw new RuntimeException()
+      })
+    })
+    def thread2 = new Thread({ config ->
+      subject.submit("DEFAULT", {
+        -> throw new RuntimeException()
+      })
+    })
+    def thread3 = new Thread({ config ->
+      subject.submit("DEFAULT", {
+        -> throw new RuntimeException()
+      })
+    })
 
     thread1.start()
     thread2.start()
@@ -177,9 +193,21 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
-    def thread2 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
-    def thread3 = new Thread({ config -> subject.submit("DEFAULT", { -> throw new RuntimeException() }) })
+    def thread1 = new Thread({ config ->
+      subject.submit("DEFAULT", {
+        -> throw new RuntimeException()
+      })
+    })
+    def thread2 = new Thread({ config ->
+      subject.submit("DEFAULT", {
+        -> throw new RuntimeException()
+      })
+    })
+    def thread3 = new Thread({ config ->
+      subject.submit("DEFAULT", {
+        -> throw new RuntimeException()
+      })
+    })
 
     thread1.start()
     thread2.start()
@@ -211,8 +239,16 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
-    def thread2 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
+    def thread1 = new Thread({
+      -> subject.submit("DEFAULT", { config ->
+        Thread.sleep(500)
+      })
+    })
+    def thread2 = new Thread({
+      -> subject.submit("DEFAULT", { config ->
+        Thread.sleep(500)
+      })
+    })
 
     thread1.start()
     thread2.start()
@@ -242,8 +278,16 @@ class Resilience4jFaultTolerantExecutorTest extends Specification {
     subject = new Resilience4jFaultTolerantExecutor(configurations)
 
     when:
-    def thread1 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
-    def thread2 = new Thread({ -> subject.submit("DEFAULT", { config -> Thread.sleep(500) }) })
+    def thread1 = new Thread({
+      -> subject.submit("DEFAULT", { config ->
+        Thread.sleep(500)
+      })
+    })
+    def thread2 = new Thread({
+      -> subject.submit("DEFAULT", { config ->
+        Thread.sleep(500)
+      })
+    })
 
     thread1.start()
     thread2.start()

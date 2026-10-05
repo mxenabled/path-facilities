@@ -17,7 +17,7 @@ class VaultTransitKeyTest extends Specification {
 
   def "fromJsonObject sets all properties"() {
     given:
-    def body  = "{" +
+    def body = "{" +
         "'data' : {" +
         "'type' : 'aes256-gcm96'," +
         "'deletion_allowed' : false," +
@@ -61,7 +61,7 @@ class VaultTransitKeyTest extends Specification {
 
   def "fromJsonObject works with blanks"() {
     given:
-    String body  = "" +
+    String body = "" +
         "{" +
         "'data' : {" +
         "'keys' : {" +

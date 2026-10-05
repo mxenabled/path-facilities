@@ -64,7 +64,9 @@ class ConfigurationUtilsTest extends Specification {
     given:
     def defaultConfig = TimeLimiterConfigurations.builder().build()
 
-    def overrideConfig = TimeLimiterConfigurations.builder().build().tap { timeoutDuration = Duration.ofMillis(10101) }
+    def overrideConfig = TimeLimiterConfigurations.builder().build().tap {
+      timeoutDuration = Duration.ofMillis(10101)
+    }
 
     when:
     subject.mergeNonNullProperties(defaultConfig, overrideConfig)

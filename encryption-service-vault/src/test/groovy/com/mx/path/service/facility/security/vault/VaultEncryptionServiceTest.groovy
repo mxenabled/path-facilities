@@ -129,11 +129,11 @@ class VaultEncryptionServiceTest extends Specification {
     driver.getClass() == Vault
 
     where:
-    config                  | _
-    configWithAppId()       | _
-    configWithToken()       | _
-    configWithAppRole()     | _
-    configWithAppRoleSSL()  | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
+    configWithAppRole() | _
+    configWithAppRoleSSL() | _
   }
 
   @Unroll
@@ -166,15 +166,17 @@ class VaultEncryptionServiceTest extends Specification {
     plaintext == null
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
   def "decrypt() returns input when not enabled"() {
     given:
-    subject = new VaultEncryptionService(new VaultEncryptionServiceConfiguration().tap { setEnabled(false) })
+    subject = new VaultEncryptionService(new VaultEncryptionServiceConfiguration().tap {
+      setEnabled(false)
+    })
 
     when:
     def plaintext = subject.decrypt("vault-12345")
@@ -212,15 +214,17 @@ class VaultEncryptionServiceTest extends Specification {
     plaintext == null
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
   def "encrypt() returns input when not enabled"() {
     given:
-    subject = new VaultEncryptionService(new VaultEncryptionServiceConfiguration().tap { setEnabled(false) })
+    subject = new VaultEncryptionService(new VaultEncryptionServiceConfiguration().tap {
+      setEnabled(false)
+    })
 
     when:
     def ciphertext = subject.encrypt("plaintext")
@@ -240,9 +244,9 @@ class VaultEncryptionServiceTest extends Specification {
     subject.isEncrypted("vault-1231827361")
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
@@ -265,9 +269,9 @@ class VaultEncryptionServiceTest extends Specification {
     verify(subject).resetDriver() || true
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
@@ -344,9 +348,9 @@ class VaultEncryptionServiceTest extends Specification {
     verify(subject).resetDriver() || true
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
@@ -417,9 +421,9 @@ class VaultEncryptionServiceTest extends Specification {
     true
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
@@ -439,9 +443,9 @@ class VaultEncryptionServiceTest extends Specification {
     noExceptionThrown()
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
@@ -461,11 +465,11 @@ class VaultEncryptionServiceTest extends Specification {
     when(authResponse.getAuthClientToken()).thenReturn("token12345")
 
     def key = VaultTransitKey.builder().keys([
-      "1":  123,
-      "2":  456,
-      "3":  789,
-      "4":  1123,
-      "5":  1456
+      "1": 123,
+      "2": 456,
+      "3": 789,
+      "4": 1123,
+      "5": 1456
     ]).build()
 
     doReturn(vaultDriver).when(subject).buildVaultDriver(any())
@@ -475,16 +479,16 @@ class VaultEncryptionServiceTest extends Specification {
     subject.rotateKeys()
     verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/rotate", null)
     verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/config", ImmutableMap.of(
-        "min_decryption_version", 3,
-        "min_encryption_version", 3))
+            "min_decryption_version", 3,
+            "min_encryption_version", 3))
 
     then:
     true
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
@@ -522,16 +526,16 @@ class VaultEncryptionServiceTest extends Specification {
 
     subject.setMinVersion(12)
     verify(logicalDriver).write("transit/keys/" + config.getKeyName() + "/config", ImmutableMap.of(
-        "min_decryption_version", 12,
-        "min_encryption_version", 12))
+            "min_decryption_version", 12,
+            "min_encryption_version", 12))
 
     then:
     true
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
@@ -541,7 +545,7 @@ class VaultEncryptionServiceTest extends Specification {
     subject = new VaultEncryptionService(config)
     subject.setDriver(vaultDriver)
 
-    def responseBody  = "" +
+    def responseBody = "" +
         "{" +
         "'data' : {" +
         "'type' : 'aes256-gcm96'," +
@@ -577,9 +581,9 @@ class VaultEncryptionServiceTest extends Specification {
     key.getClass() == VaultTransitKey
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
