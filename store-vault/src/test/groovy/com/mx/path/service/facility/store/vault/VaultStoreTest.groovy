@@ -114,11 +114,11 @@ class VaultStoreTest extends Specification {
     driver.getClass() == Vault
 
     where:
-    config                  | _
-    configWithAppId()       | _
-    configWithToken()       | _
-    configWithAppRole()     | _
-    configWithAppRoleSSL()  | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
+    configWithAppRole() | _
+    configWithAppRoleSSL() | _
   }
 
   def "buildVaultDriver with invalid configuration"() {
@@ -201,9 +201,9 @@ class VaultStoreTest extends Specification {
     verify(logicalDriver).write("secret/foo", Collections.singletonMap("value", encodedValue)) || true
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
@@ -220,9 +220,9 @@ class VaultStoreTest extends Specification {
     thrown(VaultStoreUnsupportedOperation)
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
@@ -243,9 +243,9 @@ class VaultStoreTest extends Specification {
     response == "bar"
 
     where:
-    config              | _
-    configWithAppId()   | _
-    configWithToken()   | _
+    config | _
+    configWithAppId() | _
+    configWithToken() | _
     configWithAppRole() | _
   }
 
