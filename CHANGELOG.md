@@ -14,6 +14,13 @@
 
 * upgrade to core:3.0.0 ([79dbbf5](https://github.com/mxenabled/path-facilities/commit/79dbbf5e773fa3b15759c18ff088899707d774c3))
 
+## [9.0.2](https://github.com/mxenabled/path-facilities/compare/v9.0.1...v9.0.2) (2026-11-03)
+
+
+### Bug Fixes
+
+* bump dependencies to resolve CVEs ([a97e372](https://github.com/mxenabled/path-facilities/commit/a97e3725c2a2185c5b23948033594d08c8c4e3e8))
+
 ## [9.0.1](https://github.com/mxenabled/path-facilities/compare/v9.0.0...v9.0.1) (2026-10-05)
 
 
